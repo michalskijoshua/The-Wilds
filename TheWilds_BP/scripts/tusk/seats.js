@@ -91,8 +91,15 @@ world.afterEvents.itemUse.subscribe(guard("flag", (e) => {
 }));
 
 // ---- keep the crew: a player who climbs back on must be the driver; crew that fell off (reload) climbs back on
+// 0.0.4: re-seating only happens in the first 30 s after a beast loads (that is when a reload drops riders). A crew
+// member who gets off later (the Guilds+ Commander's Horn "Return to posts", a command) leaves the crew for good.
+const RESEAT_WINDOW = 600, seenAt = new Map();          // beast id -> tick this loop first saw it loaded
 system.runInterval(guard("crew", () => {
-  for (const beast of allBeasts()) {
+  const now = system.currentTick, beasts = allBeasts(), here = new Set(beasts.map((b) => b.id));
+  for (const id of seenAt.keys()) if (!here.has(id)) seenAt.delete(id);      // unloaded: fresh again when it loads
+  for (const beast of beasts) {
+    if (!seenAt.has(beast.id)) seenAt.set(beast.id, now);
+    const fresh = now - seenAt.get(beast.id) <= RESEAT_WINDOW;
     const ids = crewOf(beast); if (!ids.length) continue;
     const rd = rideable(beast), riders = rd.getRiders();
     if (riders.length && !isPlayer(riders[0]) && riders.some(isPlayer)) {          // a player mounted behind the archers
@@ -108,7 +115,7 @@ system.runInterval(guard("crew", () => {
       if (!m.isValid) continue;
       const on = ridingOn(m);
       if (on?.id === beast.id) { keep.push(id); continue; }
-      if (!on && dist(m.location, beast.location) <= BOARD_RANGE && rd.getRiders().length < SEATS) {
+      if (fresh && !on && dist(m.location, beast.location) <= BOARD_RANGE && rd.getRiders().length < SEATS) {
         if (rd.addRider(m)) { keep.push(id); dbg(`re-seated ${m.nameTag || m.typeId} after reload`); }
       }
     }

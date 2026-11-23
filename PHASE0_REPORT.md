@@ -1,4 +1,29 @@
-# The Wilds: Phase 0 report (current build 0.0.3, 23 Nov 2026)
+# The Wilds: Phase 0 report (current build 0.0.4, 23 Nov 2026)
+
+## Retest with Guilds+ 0.9.7 (Linux server, 23 Nov 2026)
+
+Guilds+ 0.9.7 (master, commit `bd92fa9`) has the three mounted-guard changes from `GUILDS_PATCH_PROPOSAL.md`.
+Same test as below, with The Wilds 0.0.3 and then 0.0.4.
+
+| Check | Guilds+ 0.9.6 | Guilds+ 0.9.7 |
+|---|---|---|
+| Errors at load (Guilds+ and The Wilds) | 1 | **1** (the same Guilds+ recipe clash) |
+| Path B fires | yes | **yes**: 26 shots in 20 s, 3 of 4 zombies killed |
+| Guard arrows and bow after Wilds shots | 128 → 117, bow 384 → 373 | **128 → 128, bow 384 → 384** |
+| New walk markers around seated guards | 0–2 at a time, replaced every ~13 s | **none** |
+| Guards stay seated, also through a restart | yes | **yes** |
+
+**Fixed in The Wilds 0.0.4:** The Wilds put any crew member who was off the beast straight back on, every 2 s. That
+was meant for reloads, but it would also undo the new Commander's Horn "Return to posts" within 2 s. Now The Wilds only
+re-seats crew in the first 30 s after a beast loads; a guard who gets off later leaves the crew. Tested: seated guards
+survived a restart, then a forced dismount after 30 s kept them off, and they went back to guarding the hall as normal
+Guilds+ guards (their walk marker was cleaned up). Re-seating with the flag still works, and Path B still fires.
+
+**Small leftover in Guilds+ (harmless):** a walk marker placed in the seconds *before* a guard boards stays in place
+until he gets off (2 seen in the test). Guilds+ then cleans it up as usual. Optional Guilds+ fix: when the patrol loop
+skips a mounted guard, drop his marker first.
+
+**Not tested here (needs a player):** the Horn itself. Path B's ammo fix and the patrol skip are confirmed.
 
 ## Retest with the newest Guilds+ (Linux server, 23 Nov 2026)
 

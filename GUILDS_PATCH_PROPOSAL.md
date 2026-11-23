@@ -1,7 +1,7 @@
-# Proposal: a small Guilds+ change for mounted guards (NOT applied)
+# Proposal: a small Guilds+ change for mounted guards (APPLIED in Guilds+ 0.9.7)
 
-Status: proposal for the owner. The Wilds does not edit Guilds+. This would go into a Guilds+ release (0.9.7) if you
-approve it. It is generic: it mentions no Wilds identifier, so Guilds+ still works fine alone.
+Status: **applied by the Guilds+ chat in 0.9.7 (parts 1–3) and server-tested with The Wilds 0.0.4.** One optional
+extra is at the end. The Wilds does not edit Guilds+. It is generic: it mentions no Wilds identifier, so Guilds+ still works fine alone.
 
 ## Why
 
@@ -62,3 +62,8 @@ Like part 1 it is generic (any mount, no Wilds name), and it changes nothing for
   has a "(!)" supply flag stuck on.
 - Dismount them. Within 4 s they walk back to their post or the hall, as before.
 - Part 3: seat two archers, let Path B fire at zombies for 20 s. Their arrow count in the guard menu stays the same.
+
+## Optional extra (found in the 0.9.7 retest)
+
+A walk marker placed in the seconds before a guard boards stays until he gets off. Harmless, but it could be tidied in
+the patrol loop: before `continue` for a mounted guard, drop his marker (`const st = S.get(e.id); if (st?.m) { dropMarker(st.m); S.delete(e.id); }`).

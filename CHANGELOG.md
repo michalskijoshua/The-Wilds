@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.4 (23 Nov 2026): works with Guilds+ 0.9.7's Horn
+
+- Crew re-seating now only happens in the first 30 s after a Tuskbeast loads (when a reload can drop riders). A crew
+  member who gets off later, for example from the Guilds+ Commander's Horn "Return to posts", leaves the crew instead
+  of being pulled back up within 2 s. (`tusk/seats.js`)
+- Retested with Guilds+ 0.9.7: Wilds arrows no longer use up guard arrows or bows, and no walk markers appear around
+  seated guards. Results in `PHASE0_REPORT.md`.
+
 ## 23 Nov 2026: Linux server retest (packs unchanged, still 0.0.3)
 
 - No pack changes, so the build stays 0.0.3.
