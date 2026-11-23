@@ -1,5 +1,15 @@
 # Changelog
 
+## 23 Nov 2026: Linux server retest (packs unchanged, still 0.0.3)
+
+- No pack changes, so the build stays 0.0.3.
+- New Linux tools, twins of the PowerShell ones: `tools/bds_install.sh` (install packs into a server world; `-n` for
+  Guilds+ alone, `-f` for a fresh world), `tools/bds_run.sh` (headless server; commands through `wilds_cmd.txt`; log
+  in `wilds_server.log`), `tools/bds_send.sh` (send commands and print the new log lines).
+- Retest with the newest Guilds+ (0.9.6, branch `claude/quirky-euler-ga1ln8`): Guilds+ loads, 1 error instead of 728,
+  The Wilds still adds 0. Path B fires with Guilds+ running. Guilds+ charges its guards for Wilds-fired arrows. Results
+  are in `PHASE0_REPORT.md`; the proposed Guilds+ fix is part 3 of `GUILDS_PATCH_PROPOSAL.md`.
+
 ## 0.0.3 (23 Nov 2026): server-tested, Path B default
 
 - Archer mode now defaults to **B** (Wilds fires for seated crew): on BDS 1.26.65, Path A did not fire.

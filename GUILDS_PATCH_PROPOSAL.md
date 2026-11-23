@@ -40,8 +40,25 @@ So that "Return to posts" also brings mounted guards down, add this inside the l
 if (res.selection === 2) { try { const v = e?.getComponent("minecraft:riding")?.entityRidingOn; v?.getComponent("minecraft:rideable")?.ejectRider(e); } catch { /* */ } }
 ```
 
+## Part 3: mounted guards don't pay for The Wilds' arrows (found 23 Nov, Linux server)
+
+When The Wilds fires for a seated guard (Path B), it takes the arrow from the Howdah chest. Guilds+ also takes one from
+that guard's own arrow count and wears his bow, because the arrow's shooter is the guard. After 22 shots each guard had
+lost 11 arrows and 11 bow uses in Guilds+; at 0 he shows "(!) no arrows" and is disarmed with a full chest.
+
+The fix, in the same file, the `shot` line near the projectile-hit hooks:
+
+```js
+const shot = (ev) => { const a = ev.source; if (a?.typeId === `guilds:merc_archer` || a?.typeId === `guilds:merc_crossbowman`) {
+  if (a.getComponent("minecraft:riding")?.entityRidingOn) return;   // NEW: riding guards shoot from their mount's supplies
+  wear(a.id, "ammo"); wear(a.id, "wpn"); } };
+```
+
+Like part 1 it is generic (any mount, no Wilds name), and it changes nothing for guards on foot.
+
 ## Test after the change
 
 - Seat two archers with the Howdah Flag and wait 30 s. No walk markers appear around the beast, and none of the archers
   has a "(!)" supply flag stuck on.
 - Dismount them. Within 4 s they walk back to their post or the hall, as before.
+- Part 3: seat two archers, let Path B fire at zombies for 20 s. Their arrow count in the guard menu stays the same.

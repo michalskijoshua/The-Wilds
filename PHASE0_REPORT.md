@@ -1,6 +1,55 @@
 # The Wilds: Phase 0 report (current build 0.0.3, 23 Nov 2026)
 
-## Server test results, build 0.0.2–0.0.3
+## Retest with the newest Guilds+ (Linux server, 23 Nov 2026)
+
+**Short version: Guilds+ works on this server now, and The Wilds works alongside it. Path B fires with Guilds+
+running. One real clash found: Guilds+ charges its guards for arrows The Wilds fires.**
+
+Setup: Bedrock Dedicated Server **1.26.65.1 for Linux**, using the new `tools/bds_*.sh` scripts. Guilds+ is the newest
+build on GitHub: **0.9.6**, branch `claude/quirky-euler-ga1ln8` (commit `535f98e`, "Cleanup 0.9.6"). The `master`
+branch is older (0.9.1). I built it with its own build tool and installed the packaged `.mcaddon`. Guilds+ was not edited.
+
+### 1. Does Guilds+ load now?
+
+| World | Errors before (Windows) | Errors now (Linux) | Guilds+ script |
+|---|---|---|---|
+| Guilds+ alone | 728 | **1** | **loads** ("guild layer ready") |
+| Guilds+ and The Wilds | 728 | **1** | **loads** |
+
+- The 1 error is Guilds+'s own: two recipes (`gatewarden_lance`, `gatewatch_halberd`) use the same ingredients, so the
+  game skips one. The Wilds still adds **0 errors**.
+- **The long-line theory is not confirmed.** `hearthfarm/contracts_data.js` is still a single 80,123-character line,
+  byte-for-byte the same, and it loads fine on Linux. So the earlier failure was either Windows-only, or the copy
+  tested on Windows was a different 0.9.6 build. **Android is what matters**, so that's the next check.
+
+### 2. Mounted archers with Guilds+ running
+
+Steps (all from the console): found guild `T1`, place its table, hire 2 archers, spawn a Tuskbeast, seat them with
+`wilds:test seat`, put 128 arrows in the Howdah chest, then zombies 10–13 blocks away. Night, mob spawning off.
+
+| Question | Answer |
+|---|---|
+| Does Path B fire? | **Yes.** 22 shots in 20 s, 3 of 4 zombies killed. Seated guards' own AI fired 0 (Path A still fails). Chest went 128 → 106, exactly 1 arrow per shot. |
+| Does the Guilds+ patrol loop move seated guards? | **No.** They stayed seated the whole test and through a server restart. |
+| Does it leave walk markers? | **Yes, a few, but they don't pile up.** Sampled every 4 s: 0–2 invisible marker blocks at a time (at most one per seated guard). Guilds+ removes each one after about 13 s and places a new one. |
+| Supply trips? | Guilds+ would send a guard on a supply trip he can't walk while seated (from reading its code; not tested, no Armoury placed). |
+| Orphan check? | **No effect.** The guards stay on the Guilds+ roster, so none turned into a pillager. |
+| Does Guilds+ count Wilds arrows against guard ammo? | **Yes, every single one.** After 22 shots each guard's Guilds+ arrows went 128 → 117 and bow 384 → 373. Guilds+ counts any arrow whose shooter is its guard, and Path B names the guard as the shooter. |
+| What happens when that count hits 0? | Guilds+ marks the guard **"(!) no arrows"** and switches him to unarmed, even though the Howdah chest is full. Path B kept firing anyway (43 shots in total). With an Armoury nearby he would also start that stuck supply trip. |
+
+**The arrows are paid for twice:** once from the Howdah chest and once from the guard's own Guilds+ supply.
+
+### Proposed fix (for the owner to approve; nothing changed yet)
+
+One more line in the Guilds+ change already proposed in `GUILDS_PATCH_PROPOSAL.md`: a guard who is riding something
+doesn't use up his own arrows or bow. The Howdah chest already pays. See that file, part 3.
+
+### Still needs Android
+
+Seat heights and standing poses, the Howdah Flag tap, steering, friendly fire with a real driver, and **whether
+Guilds+ 0.9.6 loads on your Android version**.
+
+## Server test results, build 0.0.2–0.0.3 (first test, Windows)
 
 These ran on Bedrock Dedicated Server **1.26.65.1** (Windows, Microsoft-signed), with Guilds+ 0.9.6 and The Wilds in
 one world. Commands came from the server console through `/scriptevent wilds:test …` hooks; no player was online. Logs
