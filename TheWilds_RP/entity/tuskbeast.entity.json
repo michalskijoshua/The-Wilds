@@ -1,0 +1,25 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "wilds:tuskbeast",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/tuskbeast/savanna_tuskbeast_armored" },
+      "geometry": { "default": "geometry.savanna_tuskbeast_armored" },
+      "animations": {
+        "idle": "animation.savanna_tuskbeast_armored.idle",
+        "walk": "animation.savanna_tuskbeast_armored.walk",
+        "hurt": "animation.savanna_tuskbeast_armored.hurt",
+        "death": "animation.savanna_tuskbeast_armored.death",
+        "ctrl_move": "controller.animation.wilds.tuskbeast.move",
+        "ctrl_hurt": "controller.animation.wilds.tuskbeast.hurt"
+      },
+      "scripts": {
+        "animate": ["ctrl_move", "ctrl_hurt"]
+      },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#b8894a", "overlay_color": "#5a3b1f" },
+      "enable_attachables": false
+    }
+  }
+}

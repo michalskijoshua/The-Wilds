@@ -1,0 +1,18 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "wilds:landmark_marker",
+      "materials": { "default": "entity_alphatest" },
+      "textures": {
+        "oni": "textures/blocks/wool_colored_red",
+        "colossus": "textures/blocks/wool_colored_lime",
+        "serpent": "textures/blocks/wool_colored_light_blue",
+        "storm": "textures/blocks/wool_colored_gray",
+        "herd": "textures/blocks/wool_colored_brown"
+      },
+      "geometry": { "default": "geometry.wilds_placeholder_cube" },
+      "render_controllers": ["controller.render.wilds.landmark_marker"]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "wilds:aetherseed",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "wilds:form": { "type": "int", "range": [0, 2], "default": 0, "client_sync": true }
+      }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["wilds_aetherseed", "wilds", "mob"] },
+      "minecraft:collision_box": { "width": 0.6, "height": 0.6 },
+      "minecraft:scale": { "value": 0.5 },
+      "minecraft:health": { "value": 12, "max": 12 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": true, "is_pushable_by_piston": true },
+      "minecraft:movement": { "value": 0.12 },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:navigation.walk": { "avoid_water": true, "can_walk": true },
+      "minecraft:nameable": {},
+      "minecraft:persistent": {},
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.panic": { "priority": 1, "speed_multiplier": 1.3 },
+      "minecraft:behavior.random_stroll": { "priority": 6, "speed_multiplier": 0.6, "xz_dist": 4, "interval": 200 },
+      "minecraft:behavior.random_look_around": { "priority": 8 }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "randomize": [
+          { "weight": 70, "set_property": { "wilds:form": 0 } },
+          { "weight": 20, "set_property": { "wilds:form": 1 } },
+          { "weight": 10, "set_property": { "wilds:form": 2 } }
+        ]
+      },
+      "wilds:form_original": { "set_property": { "wilds:form": 0 } },
+      "wilds:form_bloom": { "set_property": { "wilds:form": 1 } },
+      "wilds:form_withered": { "set_property": { "wilds:form": 2 } }
+    }
+  }
+}

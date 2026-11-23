@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "wilds:pebble_mimic",
+      "materials": { "default": "entity_alphatest" },
+      "textures": {
+        "stone": "textures/blocks/stone",
+        "mossy": "textures/blocks/cobblestone_mossy",
+        "sand": "textures/blocks/sand",
+        "clay": "textures/blocks/clay",
+        "coal": "textures/blocks/coal_block",
+        "copper": "textures/blocks/copper_block",
+        "iron": "textures/blocks/iron_block",
+        "gold": "textures/blocks/gold_block",
+        "diamond": "textures/blocks/diamond_block",
+        "netherite": "textures/blocks/netherite_block"
+      },
+      "geometry": { "default": "geometry.wilds_placeholder_cube" },
+      "render_controllers": ["controller.render.wilds.pebble_mimic"],
+      "spawn_egg": { "base_color": "#7d7d7d", "overlay_color": "#c9b27a" }
+    }
+  }
+}

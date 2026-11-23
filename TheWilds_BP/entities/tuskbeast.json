@@ -1,0 +1,86 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "wilds:tuskbeast",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "wilds:wounded": { "type": "bool", "default": false, "client_sync": true }
+      }
+    },
+    "component_groups": {
+      "wilds:healthy": {
+        "minecraft:movement": { "value": 0.2 }
+      },
+      "wilds:wounded": {
+        "minecraft:movement": { "value": 0.08 }
+      }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["wilds_tuskbeast", "wilds", "mob"] },
+      "minecraft:health": { "value": 300, "max": 300 },
+      "minecraft:knockback_resistance": { "value": 1.0 },
+      "minecraft:collision_box": { "width": 3.5, "height": 5.5 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": true },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:navigation.walk": { "avoid_water": true, "can_path_over_water": false, "can_walk": true },
+      "minecraft:follow_range": { "value": 16 },
+      "minecraft:persistent": {},
+      "minecraft:nameable": {},
+      "minecraft:is_tamed": {},
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:breathable": { "total_supply": 15, "suffocate_time": 0 },
+      "minecraft:input_ground_controlled": {},
+      "minecraft:rideable": {
+        "seat_count": 3,
+        "controlling_seat": 0,
+        "crouching_skip_interact": true,
+        "pull_in_entities": false,
+        "family_types": ["player", "ironhome_mercenary", "wilds_archer"],
+        "interact_text": "action.interact.ride.horse",
+        "seats": [
+          { "min_rider_count": 0, "max_rider_count": 3, "position": [0.0, 7.3, 0.56] },
+          { "min_rider_count": 0, "max_rider_count": 3, "position": [1.0, 6.95, -1.75] },
+          { "min_rider_count": 0, "max_rider_count": 3, "position": [-1.0, 6.95, -1.75] }
+        ]
+      },
+      "minecraft:inventory": { "container_type": "horse", "inventory_size": 16, "private": false },
+      "minecraft:is_chested": {},
+      "minecraft:damage_sensor": {
+        "triggers": [
+          { "cause": "fall", "deals_damage": "no" },
+          { "cause": "suffocation", "deals_damage": "no" },
+          {
+            "on_damage": { "filters": { "test": "is_riding", "subject": "other", "value": true } },
+            "deals_damage": "no"
+          },
+          {
+            "on_damage": { "filters": { "test": "is_family", "subject": "other", "value": "ironhome_mercenary" } },
+            "deals_damage": "no"
+          },
+          { "cause": "all", "deals_damage": "yes", "damage_multiplier": 0.4 }
+        ]
+      },
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.random_stroll": { "priority": 6, "speed_multiplier": 0.6, "xz_dist": 8, "interval": 240 },
+      "minecraft:behavior.look_at_player": { "priority": 7, "look_distance": 10, "probability": 0.02 },
+      "minecraft:behavior.random_look_around": { "priority": 8 }
+    },
+    "events": {
+      "minecraft:entity_spawned": { "add": { "component_groups": ["wilds:healthy"] } },
+      "wilds:become_wounded": {
+        "remove": { "component_groups": ["wilds:healthy"] },
+        "add": { "component_groups": ["wilds:wounded"] },
+        "set_property": { "wilds:wounded": true }
+      },
+      "wilds:recover": {
+        "remove": { "component_groups": ["wilds:wounded"] },
+        "add": { "component_groups": ["wilds:healthy"] },
+        "set_property": { "wilds:wounded": false }
+      }
+    }
+  }
+}

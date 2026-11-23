@@ -1,0 +1,69 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "wilds:pebble_mimic",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "wilds:affinity": { "type": "int", "range": [0, 4], "default": 0, "client_sync": false },
+        "wilds:rolled": { "type": "bool", "default": false, "client_sync": false },
+        "wilds:form": { "type": "int", "range": [0, 9], "default": 0, "client_sync": true },
+        "wilds:size": { "type": "int", "range": [0, 1], "default": 0, "client_sync": true }
+      }
+    },
+    "component_groups": {
+      "wilds:small": {
+        "minecraft:scale": { "value": 0.6 },
+        "minecraft:collision_box": { "width": 0.5, "height": 0.5 },
+        "minecraft:health": { "value": 10, "max": 10 }
+      },
+      "wilds:large": {
+        "minecraft:scale": { "value": 1.3 },
+        "minecraft:collision_box": { "width": 1.0, "height": 1.0 },
+        "minecraft:health": { "value": 24, "max": 24 }
+      }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["wilds_mimic", "wilds", "mob"] },
+      "minecraft:collision_box": { "width": 0.8, "height": 0.8 },
+      "minecraft:health": { "value": 16, "max": 16 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": true, "is_pushable_by_piston": true },
+      "minecraft:movement": { "value": 0.15 },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:navigation.walk": { "avoid_water": true, "can_walk": true },
+      "minecraft:nameable": {},
+      "minecraft:persistent": {},
+      "minecraft:conditional_bandwidth_optimization": {},
+      "minecraft:breathable": { "total_supply": 15, "suffocate_time": 0 },
+      "minecraft:behavior.float": { "priority": 0 },
+      "minecraft:behavior.panic": { "priority": 1, "speed_multiplier": 1.4 },
+      "minecraft:behavior.random_stroll": { "priority": 6, "speed_multiplier": 0.8, "xz_dist": 6, "interval": 160 },
+      "minecraft:behavior.random_look_around": { "priority": 8 }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "sequence": [
+          {
+            "set_property": { "wilds:rolled": true },
+            "randomize": [
+              { "weight": 750, "set_property": { "wilds:affinity": 0 } },
+              { "weight": 200, "set_property": { "wilds:affinity": 1 } },
+              { "weight": 40, "set_property": { "wilds:affinity": 2 } },
+              { "weight": 9, "set_property": { "wilds:affinity": 3 } },
+              { "weight": 1, "set_property": { "wilds:affinity": 4 } }
+            ]
+          },
+          {
+            "randomize": [
+              { "weight": 1, "add": { "component_groups": ["wilds:small"] }, "set_property": { "wilds:size": 0 } },
+              { "weight": 1, "add": { "component_groups": ["wilds:large"] }, "set_property": { "wilds:size": 1 } }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

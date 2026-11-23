@@ -1,0 +1,17 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "wilds:aetherseed",
+      "materials": { "default": "entity_alphatest" },
+      "textures": {
+        "original": "textures/blocks/moss_block",
+        "bloom": "textures/blocks/wool_colored_pink",
+        "withered": "textures/blocks/dirt_podzol_top"
+      },
+      "geometry": { "default": "geometry.wilds_placeholder_cube" },
+      "render_controllers": ["controller.render.wilds.aetherseed"],
+      "spawn_egg": { "base_color": "#6fae4b", "overlay_color": "#f2a7d8" }
+    }
+  }
+}

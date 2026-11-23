@@ -1,0 +1,26 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "wilds:landmark_marker",
+      "is_spawnable": false,
+      "is_summonable": true,
+      "properties": {
+        "wilds:kind": { "type": "int", "range": [0, 4], "default": 0, "client_sync": true }
+      }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["wilds_landmark", "wilds", "inanimate"] },
+      "minecraft:collision_box": { "width": 1.0, "height": 1.0 },
+      "minecraft:scale": { "value": 2.0 },
+      "minecraft:health": { "value": 40, "max": 40 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:knockback_resistance": { "value": 1.0 },
+      "minecraft:nameable": { "always_show": true, "allow_name_tag_renaming": false },
+      "minecraft:persistent": {},
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "fall", "deals_damage": "no" }] }
+    },
+    "events": {}
+  }
+}

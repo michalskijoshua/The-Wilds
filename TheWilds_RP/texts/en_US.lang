@@ -1,0 +1,11 @@
+pack.name=The Wilds (RP) 0.0.3 P0
+pack.description=The Wilds: Phase 0 prototypes only.
+entity.wilds:tuskbeast.name=Savanna Tuskbeast
+entity.wilds:pebble_mimic.name=Pebble Mimic
+entity.wilds:aetherseed.name=Aetherseed
+entity.wilds:landmark_marker.name=Landmark (placeholder)
+item.spawn_egg.entity.wilds:tuskbeast.name=Savanna Tuskbeast Spawn Egg
+item.spawn_egg.entity.wilds:pebble_mimic.name=Pebble Mimic Spawn Egg
+item.spawn_egg.entity.wilds:aetherseed.name=Aetherseed Spawn Egg
+item.wilds:howdah_flag.name=Howdah Flag
+action.hint.wilds.howdah_flag=Tap: you and your archers board the Tuskbeast. Tap again: archers climb down.

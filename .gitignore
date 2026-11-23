@@ -1,0 +1,5 @@
+dist/
+bds*/
+*.mcaddon
+*.mcpack
+test_logs/

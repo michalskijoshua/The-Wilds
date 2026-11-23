@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "the_wilds",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "wilds_howdah_flag": { "textures": "textures/items/banner_pattern" }
+  }
+}

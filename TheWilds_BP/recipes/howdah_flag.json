@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "wilds:howdah_flag" },
+    "tags": ["crafting_table"],
+    "ingredients": [
+      { "item": "minecraft:stick" },
+      { "item": "minecraft:string" },
+      { "tag": "minecraft:planks" }
+    ],
+    "result": { "item": "wilds:howdah_flag" },
+    "unlock": [{ "item": "minecraft:stick" }]
+  }
+}
