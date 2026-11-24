@@ -3,6 +3,9 @@ import { world, system, guard, guildsPresent, VERSION } from "./core/util.js";
 import { seatReport, stats as seatStats, testSeat, allBeasts, towerReport } from "./tusk/seats.js";
 import { invites, toggleInvite, uninvite, mayRide } from "./tusk/owners.js";
 import { durabilityTest } from "./tusk/durability.js";
+import { buildHowdah } from "./tusk/menu.js";
+import "./tusk/tame.js";
+import { wildVisit, wildInfo, wildAge } from "./tusk/wild.js";
 import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
@@ -51,6 +54,22 @@ const TESTS = {
     p.sendMessage("move on");
   },
   dbg: (p) => p.sendMessage(JSON.stringify(seatStats)),
+  tame: (p, [owner]) => {                                // tame the nearest beast to a stand-in owner (no real player here)
+    const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!b) return p.sendMessage("no beast");
+    b.setDynamicProperty("wilds:owner", owner); b.setDynamicProperty("wilds:owner_name", owner); b.triggerEvent("wilds:on_tame");
+    system.runTimeout(() => p.sendMessage(`tamed: is_tamed ${!!b.getComponent("minecraft:is_tamed")}, seats ${b.getComponent("minecraft:rideable")?.seatCount}, variant ${b.getComponent("minecraft:variant")?.value}`), 2);
+  },
+  howdah: (p) => {                                       // build a howdah on the nearest beast for a stand-in owner with empty pockets (Creative check off)
+    const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!b) return p.sendMessage("no beast");
+    const poor = { ...p, getComponent: () => ({ container: { size: 0, getItem: () => undefined } }), getGameMode: () => "Survival", playSound: () => {} };
+    p.sendMessage(`poor player: ${buildHowdah(b, poor)}`);
+    const rich = { ...p, getGameMode: () => "Creative", playSound: () => {} };
+    p.sendMessage(`creative player: ${buildHowdah(b, rich)}`);
+    system.runTimeout(() => p.sendMessage(`howdah: seats ${b.getComponent("minecraft:rideable")?.seatCount}, variant ${b.getComponent("minecraft:variant")?.value}, chest ${b.getComponent("minecraft:inventory")?.container?.size}`), 2);
+  },
+  wild_visit: (p) => { wildVisit(p); wildInfo(p); },
+  wild_info: (p) => wildInfo(p),
+  wild_age: (p, [h]) => wildAge(p, (+h || 0) * 3600 * 1000),
   invite_check: (p) => {                                 // the invite rules with stand-in players (no real players on the test server)
     const fake = (id, name) => ({ id, name, sendMessage: (m) => p.sendMessage(`  to ${name}: ${m}`) });
     const own = fake("wt_owner", "Olly"), pip = fake("wt_pip", "Pip"), sam = fake("wt_sam", "Sam");

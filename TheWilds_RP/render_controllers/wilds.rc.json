@@ -4,28 +4,90 @@
     "controller.render.wilds.pebble_mimic": {
       "arrays": {
         "textures": {
-          "Array.forms": ["Texture.stone", "Texture.mossy", "Texture.sand", "Texture.clay", "Texture.coal", "Texture.copper", "Texture.iron", "Texture.gold", "Texture.diamond", "Texture.netherite"]
+          "Array.forms": [
+            "Texture.stone",
+            "Texture.mossy",
+            "Texture.sand",
+            "Texture.clay",
+            "Texture.coal",
+            "Texture.copper",
+            "Texture.iron",
+            "Texture.gold",
+            "Texture.diamond",
+            "Texture.netherite"
+          ]
         }
       },
       "geometry": "Geometry.default",
-      "materials": [{ "*": "Material.default" }],
-      "textures": ["Array.forms[query.property('wilds:form')]"]
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.forms[query.property('wilds:form')]"
+      ]
     },
     "controller.render.wilds.aetherseed": {
       "arrays": {
-        "textures": { "Array.forms": ["Texture.original", "Texture.bloom", "Texture.withered"] }
+        "textures": {
+          "Array.forms": [
+            "Texture.original",
+            "Texture.bloom",
+            "Texture.withered"
+          ]
+        }
       },
       "geometry": "Geometry.default",
-      "materials": [{ "*": "Material.default" }],
-      "textures": ["Array.forms[query.property('wilds:form')]"]
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.forms[query.property('wilds:form')]"
+      ]
     },
     "controller.render.wilds.landmark_marker": {
       "arrays": {
-        "textures": { "Array.kinds": ["Texture.oni", "Texture.colossus", "Texture.serpent", "Texture.storm", "Texture.herd"] }
+        "textures": {
+          "Array.kinds": [
+            "Texture.oni",
+            "Texture.colossus",
+            "Texture.serpent",
+            "Texture.storm",
+            "Texture.herd"
+          ]
+        }
       },
       "geometry": "Geometry.default",
-      "materials": [{ "*": "Material.default" }],
-      "textures": ["Array.kinds[query.property('wilds:kind')]"]
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.kinds[query.property('wilds:kind')]"
+      ]
+    },
+    "controller.render.wilds.tuskbeast": {
+      "geometry": "Geometry.default",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Texture.default"
+      ],
+      "part_visibility": [
+        {
+          "*": true
+        },
+        {
+          "acacia_howdah": "q.variant == 1"
+        }
+      ]
     }
   }
 }

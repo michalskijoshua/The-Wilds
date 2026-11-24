@@ -18,7 +18,7 @@
       "scripts": {
         "animate": ["face_forward", "ctrl_move", "ctrl_hurt"]
       },
-      "render_controllers": ["controller.render.default"],
+      "render_controllers": ["controller.render.wilds.tuskbeast"],
       "spawn_egg": { "base_color": "#b8894a", "overlay_color": "#5a3b1f" },
       "enable_attachables": false
     }

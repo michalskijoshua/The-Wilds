@@ -1,23 +1,17 @@
-// P0-2 Tuskbeast riders and the howdah tower (0.0.5, Director 24 Nov 2026).
+// P0-2 Tuskbeast riders and the howdah tower (0.0.7, Director 24 Nov 2026).
 //
-// Seats: the driver sits on the neck, just behind the head (seat 0, steers). Four passenger seats in the corners of the
-// howdah, for anyone: the owner's (or an invited player's) Guilds+ archers and crossbowmen, or invited players.
-// Guards sit (Guilds+ plays Mojang's riding pose).
+// A wild Tuskbeast has one seat (the neck) and is tamed like a horse (tusk/tame.js). A tamed one gets a howdah from its
+// menu (tusk/menu.js): then the neck seat (driver, steers) plus 4 passenger seats in the howdah's corners, for the
+// owner's or an invited player's Guilds+ archers and crossbowmen, or invited players. Guards sit (Mojang's riding pose).
 //
 // The tower: guards can't aim well from inside the howdah, so the tower shoots for them. Every seated archer or
 // crossbowman adds shots: archer 1 arrow every 1.5 s; crossbowman 1 bolt every 2.5 s, faster and +2 damage on a hit.
 // Arrows leave from the top of the howdah at the nearest hostile mob in sight (24 blocks), and come out of the Howdah
 // chest (open your inventory while driving). The guards' own attacks are left alone.
-//
-// One tap on the Howdah Flag near a Tuskbeast (8 blocks) or while riding one:
-//   - not aboard: you climb on (driver if the neck seat is free), then your own archers and crossbowmen within 24
-//     blocks fill the free passenger seats.
-//   - aboard with guards in the howdah: the guards climb down.
-// Tap a player with the flag: invite them to ride your Tuskbeasts (tap again: un-invite). See owners.js.
 import { world, system, guard, dist, guildsPresent, dbg } from "../core/util.js";
-import { ownerOf, ownerNameOf, claim, mayRide, toggleInvite } from "./owners.js";
+import { ownerOf, ownerNameOf, claim, mayRide } from "./owners.js";
 
-const BEAST = "wilds:tuskbeast", FLAG = "wilds:howdah_flag";
+const BEAST = "wilds:tuskbeast";
 const RANGED = new Set(["guilds:merc_archer", "guilds:merc_crossbowman"]);
 const CREW = "wilds:crew";              // beast dynamic property: JSON [merc entity ids]
 const BOARD_RANGE = 24, SEATS = 5;      // driver + 4 passengers
@@ -27,6 +21,9 @@ const isCrewType = (e) => RANGED.has(e?.typeId) || (e?.isValid && e.matches({ fa
 const rideable = (b) => b.getComponent("minecraft:rideable");
 const ridingOn = (e) => { try { return e.getComponent("minecraft:riding")?.entityRidingOn; } catch { return undefined; } };
 const crewOf = (b) => { try { return JSON.parse(b.getDynamicProperty(CREW) ?? "[]"); } catch { return []; } };
+/** Wild (0), tamed (0, is_tamed) or with a howdah (variant 1). */
+export const hasHowdah = (b) => b.getComponent("minecraft:variant")?.value === 1;
+export const isTame = (b) => !!b.getComponent("minecraft:is_tamed");
 const setCrew = (b, ids) => b.setDynamicProperty(CREW, ids.length ? JSON.stringify(ids) : undefined);
 
 export function allBeasts() {
@@ -41,15 +38,9 @@ function onBeast(beast, ox, oy, oz) {
   return { x: l.x + ox * c - oz * s, y: l.y + oy, z: l.z + ox * s + oz * c };
 }
 
-function findBeast(player) {
-  const r = ridingOn(player);
-  if (r?.typeId === BEAST) return r;
-  return player.dimension.getEntities({ type: BEAST, location: player.location, maxDistance: 8, closest: 1 })[0];
-}
-
 const besideBeast = (beast, i) => onBeast(beast, i % 2 ? 3 : -3, 0.5, i < 2 ? 0 : -2);
 
-function dismountCrew(beast, player) {
+export function dismountCrew(beast, player) {
   const rd = rideable(beast), crew = rd.getRiders().filter(isCrewType);
   crew.forEach((m, i) => { try { rd.ejectRider(m); m.teleport(besideBeast(beast, i)); } catch { /* */ } });
   setCrew(beast, []);
@@ -88,10 +79,12 @@ function arrange(beast) {
 }
 const playerFirst = arrange;
 
-function boardCrew(beast, player) {
+/** Menu: "Climb aboard with my guards". The player takes a seat (the neck if free), then their own archers and
+ *  crossbowmen within 24 blocks fill the free howdah seats. */
+export function boardCrew(beast, player) {
   const rd = rideable(beast);
   if (!mayRide(player, beast)) return player.sendMessage(`§eThis Tuskbeast belongs to ${ownerNameOf(beast)}. Ask them to invite you.`);
-  if (!ownerOf(beast)) claim(beast, player);
+  if (!hasHowdah(beast)) return player.sendMessage("§eGuards need a howdah to ride in. Build one from this menu first.");
   if (!rd.getRiders().some((r) => r.id === player.id)) {
     if (rd.getRiders().filter((r) => !isKeeper(r)).length >= SEATS) return player.sendMessage("§eEvery seat is taken.");
     const k = rd.getRiders().find(isKeeper); if (k) { try { rd.ejectRider(k); k.remove(); } catch { /* */ } }
@@ -118,26 +111,6 @@ function boardCrew(beast, player) {
   player.sendMessage(`§a${cands.length} guard${cands.length === 1 ? "" : "s"} climbing into the howdah.`);
 }
 
-function flagOnBeast(p, beast) {
-  const crewAboard = rideable(beast).getRiders().filter(isCrewType);
-  if (crewAboard.length && ridingOn(p)?.id === beast.id) dismountCrew(beast, p); else boardCrew(beast, p);
-}
-
-let lastTap = -10;                                       // a tap on an entity can also fire itemUse: handle it once
-world.afterEvents.playerInteractWithEntity.subscribe(guard("flag.tap", (e) => {
-  if (e.itemStack?.typeId !== FLAG) return;
-  lastTap = system.currentTick;
-  const p = e.player, t = e.target;
-  if (isPlayer(t)) toggleInvite(p, t);
-  else if (t?.typeId === BEAST) flagOnBeast(p, t);
-}));
-world.afterEvents.itemUse.subscribe(guard("flag", (e) => {
-  if (e.itemStack?.typeId !== FLAG || system.currentTick - lastTap < 3) return;
-  const p = e.source, beast = findBeast(p);
-  if (!beast) return p.sendMessage("§eStand next to a Tuskbeast (within 8 blocks), or ride one, then tap the flag. Tap a friend with it to invite them.");
-  flagOnBeast(p, beast);
-}));
-
 // ---- riders: only the owner and invited players; a player drives; crew dropped by a reload climbs back on
 // Re-seating only happens in the first 30 s after a beast loads (that is when a reload drops riders). A guard who gets
 // off later (the Guilds+ Commander's Horn "Return to posts", a command) leaves the crew for good.
@@ -145,9 +118,10 @@ const RESEAT_WINDOW = 600, seenAt = new Map();          // beast id -> tick this
 system.runInterval(guard("riders", () => {
   for (const beast of allBeasts()) {
     const rd = rideable(beast);
+    if (!isTame(beast)) continue;                                              // wild: anyone may try to tame it
     for (const r of rd.getRiders()) {
       if (!isPlayer(r)) continue;
-      if (!ownerOf(beast)) claim(beast, r);
+      if (!ownerOf(beast)) claim(beast, r);                                    // tamed with no owner on record
       else if (!mayRide(r, beast)) { rd.ejectRider(r); r.sendMessage(`§eThis Tuskbeast belongs to ${ownerNameOf(beast)}. Ask them to invite you.`); }
     }
     playerFirst(beast);

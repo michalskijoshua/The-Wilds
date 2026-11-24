@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.0.7 (24 Nov 2026): wild Tuskbeasts, taming, the Tuskbeast menu and the howdah upgrade
+
+Director's decisions of 24 Nov 2026.
+- **Wild and rare:** the overworld is cut into 750 x 750 squares; each holds at most one wild Tuskbeast. It appears the
+  first time a player is in savanna in that square, 32-40 blocks away. Tamed or dead: a new one may come after 3 real
+  days (`tusk/wild.js`). Tuskbeast herds are gone from the landmark list.
+- **Taming, borrowed from the horse** (`minecraft:tamemount`): ride it until it stops throwing you off, or feed it
+  (hay bale +15, golden apple +10, golden carrot +5, wheat/apple/sugar +3). The rider who tames it owns it (`tusk/tame.js`).
+- **The Tuskbeast menu** replaces the Howdah Flag (removed, with its recipe): sneak + tap your beast with an empty hand
+  (`tusk/menu.js`). Owner: Build a Howdah, Climb aboard with my guards, Send guards down, Riders (invite/remove).
+  Invited players: Climb aboard with my guards. A wild beast gives a taming hint.
+- **The howdah is an upgrade:** 10 emeralds, 8 leather, 6 iron ingots, 32 planks (any wood), 8 string (free in
+  Creative). Until then the beast has only the neck seat, no chest and no tower. The howdah is hidden on beasts without one
+  (`controller.render.wilds.tuskbeast`, by `q.variant`), until the unarmoured model arrives.
+- **Felled wonders return after 3 real days** (`landmarks/cells.js`).
+- Guild friends: ready for a Guilds+ member tag (`GUILDS_PATCH_PROPOSAL.md`, part 4). Idle until Guilds+ adds it.
+- Server test: wild beasts refuse guards; tamed beasts with no howdah too; the howdah refuses a player without the
+  materials and builds in Creative (5 seats, 16-slot chest, survives a restart); the tower fired 10 shots, 4 bolt
+  bonuses, 2 of 2 zombies killed; wild spawning in a real savanna: 1 beast, no duplicates on repeat visits; killed or
+  tamed empties the square; still empty at 71 hours, a new one at 73 hours.
+
 ## 0.0.6 (24 Nov 2026): guards never drive
 
 Director (Android, 0.0.5 "works really well"): after he got off to fill the chest, a guard slid into the driver's seat.
