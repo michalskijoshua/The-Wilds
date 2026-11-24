@@ -1,5 +1,6 @@
 // The Wilds 0.0.1-p0: Phase 0 prototypes only. Works with or without Guilds+ (detected at runtime, never edited).
 import { world, system, guard, guildsPresent, VERSION } from "./core/util.js";
+import { BiomeTypes } from "@minecraft/server";
 import { seatReport, stats as seatStats, testSeat, allBeasts, towerReport } from "./tusk/seats.js";
 import { invites, toggleInvite, uninvite, mayRide } from "./tusk/owners.js";
 import { durabilityTest } from "./tusk/durability.js";
@@ -69,6 +70,13 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  forms: (p) => {                                        // form (saved) and look (mark_variant) must match
+    let ok = 0, bad = 0;
+    for (const t of ["wilds:pebble_mimic", "wilds:aetherseed"]) for (const e of p.dimension.getEntities({ type: t })) { if (e.getProperty("wilds:form") === (e.getComponent("minecraft:mark_variant")?.value ?? 0)) ok++; else bad++; }
+    p.sendMessage(`forms matching their look: ${ok}, not matching: ${bad}`);
+  },
+  biomes: (p) => { try { p.sendMessage(BiomeTypes.getAll().map((b) => b.id.replace("minecraft:", "")).sort().join(" ")); } catch (err) { p.sendMessage(`${err}`); } },
+  looks: (p) => { for (const b of p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 400 })) { const c = (id) => b.getComponent(id)?.value; p.sendMessage(`beast ${Math.floor(b.location.x)} ${Math.floor(b.location.y)} ${Math.floor(b.location.z)}: kind ${c("minecraft:mark_variant")} (${b.getDynamicProperty("wilds:kind")}), build ${c("minecraft:variant")}, wounded ${c("minecraft:skin_id")}`); } },
   wild_age: (p, [h]) => wildAge(p, (+h || 0) * 3600 * 1000),
   invite_check: (p) => {                                 // the invite rules with stand-in players (no real players on the test server)
     const fake = (id, name) => ({ id, name, sendMessage: (m) => p.sendMessage(`  to ${name}: ${m}`) });

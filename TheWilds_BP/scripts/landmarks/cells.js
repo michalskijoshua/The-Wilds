@@ -16,7 +16,7 @@ export const KINDS = [
   { key: "oni", name: "Oni Cairn", chance: 1.0, biomes: ["cherry_grove"] },
   { key: "colossus", name: "Meadow Colossus", chance: 0.5, biomes: ["meadow", "plains", "sunflower_plains", "flower_forest"] },
   { key: "serpent", name: "Serpentwreath", chance: 0.15, biomes: ["jagged_peaks", "frozen_peaks", "stony_peaks", "snowy_slopes"] },
-  { key: "storm", name: "Stormmantle", chance: 0.35, biomes: ["windswept_hills", "windswept_gravelly_hills", "windswept_forest", "stony_peaks"] },
+  { key: "storm", name: "Stormmantle", chance: 0.35, biomes: ["extreme_hills", "extreme_hills_mutated", "extreme_hills_plus_trees", "extreme_hills_plus_trees_mutated", "extreme_hills_edge", "stony_peaks"] },
 ];
 const MARKER = "wilds:landmark_marker";
 

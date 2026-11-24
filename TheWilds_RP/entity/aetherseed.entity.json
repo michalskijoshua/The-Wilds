@@ -3,15 +3,56 @@
   "minecraft:client_entity": {
     "description": {
       "identifier": "wilds:aetherseed",
-      "materials": { "default": "entity_alphatest" },
-      "textures": {
-        "original": "textures/blocks/moss_block",
-        "bloom": "textures/blocks/wool_colored_pink",
-        "withered": "textures/blocks/dirt_podzol_top"
+      "materials": {
+        "default": "entity_alphatest",
+        "glow": "entity_emissive_alpha"
       },
-      "geometry": { "default": "geometry.wilds_placeholder_cube" },
-      "render_controllers": ["controller.render.wilds.aetherseed"],
-      "spawn_egg": { "base_color": "#6fae4b", "overlay_color": "#f2a7d8" }
+      "textures": {
+        "original": "textures/entity/aetherseed/aetherseed_original",
+        "bloom": "textures/entity/aetherseed/aetherseed_bloom",
+        "withered": "textures/entity/aetherseed/aetherseed_withered",
+        "original_glow": "textures/entity/aetherseed/aetherseed_original_glow",
+        "bloom_glow": "textures/entity/aetherseed/aetherseed_bloom_glow",
+        "withered_glow": "textures/entity/aetherseed/aetherseed_withered_glow"
+      },
+      "geometry": {
+        "original": "geometry.wilds_aetherseed_original",
+        "bloom": "geometry.wilds_aetherseed_bloom",
+        "withered": "geometry.wilds_aetherseed_withered",
+        "original_glow": "geometry.wilds_aetherseed_original_layer1",
+        "bloom_glow": "geometry.wilds_aetherseed_bloom_layer1",
+        "withered_glow": "geometry.wilds_aetherseed_withered_layer1"
+      },
+      "animations": {
+        "original.idle": "animation.wilds_aetherseed_original.idle_hover",
+        "original.walk": "animation.wilds_aetherseed_original.gentle_wander",
+        "original.hurt": "animation.wilds_aetherseed_original.hit_reaction",
+        "original.death": "animation.wilds_aetherseed_original.death_explosion",
+        "bloom.idle": "animation.wilds_aetherseed_bloom.idle_hover",
+        "bloom.walk": "animation.wilds_aetherseed_bloom.gentle_wander",
+        "bloom.hurt": "animation.wilds_aetherseed_bloom.hit_reaction",
+        "bloom.death": "animation.wilds_aetherseed_bloom.death_explosion",
+        "withered.idle": "animation.wilds_aetherseed_withered.idle_hover",
+        "withered.walk": "animation.wilds_aetherseed_withered.gentle_wander",
+        "withered.hurt": "animation.wilds_aetherseed_withered.hit_reaction",
+        "withered.death": "animation.wilds_aetherseed_withered.death_explosion",
+        "ctrl": "controller.animation.wilds.aetherseed",
+        "face_forward": "animation.wilds.aetherseed.face_forward"
+      },
+      "scripts": {
+        "animate": [
+          "face_forward",
+          "ctrl"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.wilds.aetherseed",
+        "controller.render.wilds.aetherseed_glow"
+      ],
+      "spawn_egg": {
+        "base_color": "#6fae4b",
+        "overlay_color": "#f2a7d8"
+      }
     }
   }
 }

@@ -2,9 +2,32 @@
   "format_version": "1.10.0",
   "render_controllers": {
     "controller.render.wilds.pebble_mimic": {
+      "geometry": "Array.g[q.mark_variant]",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.t[q.mark_variant]"
+      ],
       "arrays": {
+        "geometries": {
+          "Array.g": [
+            "Geometry.stone",
+            "Geometry.mossy",
+            "Geometry.sand",
+            "Geometry.clay",
+            "Geometry.coal",
+            "Geometry.copper",
+            "Geometry.iron",
+            "Geometry.gold",
+            "Geometry.diamond",
+            "Geometry.netherite"
+          ]
+        },
         "textures": {
-          "Array.forms": [
+          "Array.t": [
             "Texture.stone",
             "Texture.mossy",
             "Texture.sand",
@@ -17,36 +40,34 @@
             "Texture.netherite"
           ]
         }
-      },
-      "geometry": "Geometry.default",
+      }
+    },
+    "controller.render.wilds.aetherseed": {
+      "geometry": "Array.g[q.mark_variant]",
       "materials": [
         {
           "*": "Material.default"
         }
       ],
       "textures": [
-        "Array.forms[query.property('wilds:form')]"
-      ]
-    },
-    "controller.render.wilds.aetherseed": {
+        "Array.t[q.mark_variant]"
+      ],
       "arrays": {
+        "geometries": {
+          "Array.g": [
+            "Geometry.original",
+            "Geometry.bloom",
+            "Geometry.withered"
+          ]
+        },
         "textures": {
-          "Array.forms": [
+          "Array.t": [
             "Texture.original",
             "Texture.bloom",
             "Texture.withered"
           ]
         }
-      },
-      "geometry": "Geometry.default",
-      "materials": [
-        {
-          "*": "Material.default"
-        }
-      ],
-      "textures": [
-        "Array.forms[query.property('wilds:form')]"
-      ]
+      }
     },
     "controller.render.wilds.landmark_marker": {
       "arrays": {
@@ -71,23 +92,64 @@
       ]
     },
     "controller.render.wilds.tuskbeast": {
-      "geometry": "Geometry.default",
+      "geometry": "Array.geos[q.mark_variant * 2 + q.variant]",
       "materials": [
         {
           "*": "Material.default"
         }
       ],
       "textures": [
-        "Texture.default"
+        "Array.skins[q.mark_variant * 2 + q.variant]"
       ],
-      "part_visibility": [
-        {
-          "*": true
+      "arrays": {
+        "geometries": {
+          "Array.geos": [
+            "Geometry.savanna_tuskbeast",
+            "Geometry.savanna_tuskbeast_armored",
+            "Geometry.badlands_tuskbeast",
+            "Geometry.badlands_tuskbeast_armored",
+            "Geometry.tundra_tuskbeast",
+            "Geometry.tundra_tuskbeast_armored"
+          ]
         },
-        {
-          "acacia_howdah": "q.variant == 1"
+        "textures": {
+          "Array.skins": [
+            "Texture.savanna_tuskbeast",
+            "Texture.savanna_tuskbeast_armored",
+            "Texture.badlands_tuskbeast",
+            "Texture.badlands_tuskbeast_armored",
+            "Texture.tundra_tuskbeast",
+            "Texture.tundra_tuskbeast_armored"
+          ]
         }
-      ]
+      }
+    },
+    "controller.render.wilds.aetherseed_glow": {
+      "geometry": "Array.g[q.mark_variant]",
+      "materials": [
+        {
+          "*": "Material.glow"
+        }
+      ],
+      "textures": [
+        "Array.t[q.mark_variant]"
+      ],
+      "arrays": {
+        "geometries": {
+          "Array.g": [
+            "Geometry.original_glow",
+            "Geometry.bloom_glow",
+            "Geometry.withered_glow"
+          ]
+        },
+        "textures": {
+          "Array.t": [
+            "Texture.original_glow",
+            "Texture.bloom_glow",
+            "Texture.withered_glow"
+          ]
+        }
+      }
     }
   }
 }

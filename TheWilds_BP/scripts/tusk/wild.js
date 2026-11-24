@@ -3,11 +3,19 @@
 // 32-40 blocks away from them. When it is tamed or dies, the square is empty for 3 real days, then a new one can appear.
 // One small world record per square: wilds:tb:<cx>,<cz> = { s: "pending" | "wild" | "gone", t: time gone, x, y, z }.
 // The record is written before the spawn, so two players or a crash never make two.
-// Only the Savanna Tuskbeast exists so far; Badlands and Tundra join when their models are wired in.
+// Three kinds, by biome: Savanna (savanna), Badlands (badlands, Bedrock "mesa"), Tundra (snowy plains and ice
+// spikes, Bedrock "ice_plains"). Any Tuskbeast that
+// appears (also from a spawn egg) takes the kind of the biome it stands in; elsewhere it stays Savanna.
 import { world, system, guard, jget, jset, dbg } from "../core/util.js";
 
 export const SQUARE = 750, RETURN_MS = 3 * 24 * 3600 * 1000;
-const BIOMES = ["savanna", "savanna_plateau", "windswept_savanna"];
+export const KIND_BIOMES = {
+  savanna: ["savanna", "savanna_plateau", "savanna_mutated", "savanna_plateau_mutated"],          // Bedrock biome ids
+  badlands: ["mesa", "mesa_bryce", "mesa_plateau", "mesa_plateau_mutated", "mesa_plateau_stone", "mesa_plateau_stone_mutated"],
+  tundra: ["ice_plains", "ice_plains_spikes", "ice_mountains"],
+};
+const BIOMES = Object.values(KIND_BIOMES).flat();
+export const kindOf = (biome) => Object.keys(KIND_BIOMES).find((k) => KIND_BIOMES[k].includes(biome));
 const key = (cx, cz) => `wilds:tb:${cx},${cz}`;
 const squareOf = (x, z) => ({ cx: Math.floor(x / SQUARE), cz: Math.floor(z / SQUARE) });
 
@@ -55,6 +63,15 @@ export function wildTaken(beast) {
   dbg(`square ${sq}: its wild Tuskbeast is gone; another may come in 3 days`);
 }
 
+// every new Tuskbeast takes its biome's kind (look), once
+world.afterEvents.entitySpawn.subscribe(guard("kind", (e) => {
+  const b = e.entity; if (b?.typeId !== "wilds:tuskbeast") return;
+  system.runTimeout(guard("kind2", () => {
+    if (!b.isValid || b.getDynamicProperty("wilds:kind")) return;
+    const k = kindOf(biomeAt(b.dimension, b.location)) ?? "savanna";
+    b.triggerEvent(`wilds:kind_${k}`); b.setDynamicProperty("wilds:kind", k);
+  }), 2);
+}));
 world.afterEvents.entityDie.subscribe(guard("wild.die", (e) => wildTaken(e.deadEntity)), { entityTypes: ["wilds:tuskbeast"] });
 system.runInterval(guard("wild", () => { for (const p of world.getAllPlayers()) wildVisit(p); }), 100);
 
