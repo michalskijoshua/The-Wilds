@@ -3,7 +3,7 @@
   "minecraft:entity": {
     "description": {
       "identifier": "wilds:tuskbeast",
-      "is_spawnable": true,
+      "is_spawnable": false,
       "is_summonable": true,
       "properties": {
         "wilds:wounded": {

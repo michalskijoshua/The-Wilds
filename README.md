@@ -1,6 +1,6 @@
 # The Wilds (Minecraft Bedrock add-on)
 
-Phase 0 prototypes only (build 0.0.15). Works alone; Guilds+ support is optional and detected at runtime.
+Phase 0 prototypes only (build 0.0.16). Works alone; Guilds+ support is optional and detected at runtime.
 Owner and Creative Director: michalskijoshua. Read `PHASE0_REPORT.md` first, then `CHANGELOG.md`.
 
 ## Layout

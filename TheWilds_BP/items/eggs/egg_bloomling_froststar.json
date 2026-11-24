@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:item": {
+    "description": {
+      "identifier": "wilds:egg_bloomling_froststar",
+      "menu_category": {
+        "category": "nature",
+        "group": "minecraft:itemGroup.name.mobEgg"
+      }
+    },
+    "components": {
+      "minecraft:icon": "wilds_egg_bloomling_froststar",
+      "minecraft:display_name": {
+        "value": "item.wilds:egg_bloomling_froststar.name"
+      },
+      "minecraft:max_stack_size": 64
+    }
+  }
+}

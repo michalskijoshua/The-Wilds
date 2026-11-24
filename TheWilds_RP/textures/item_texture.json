@@ -40,6 +40,78 @@
     },
     "wilds_cage_bloomling_dusk_orchid": {
       "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_egg_tuskbeast_savanna": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_tuskbeast_savanna"
+    },
+    "wilds_egg_tuskbeast_badlands": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_tuskbeast_badlands"
+    },
+    "wilds_egg_tuskbeast_tundra": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_tuskbeast_tundra"
+    },
+    "wilds_egg_aetherseed_original": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_aetherseed_original"
+    },
+    "wilds_egg_aetherseed_bloom": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_aetherseed_bloom"
+    },
+    "wilds_egg_aetherseed_withered": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_aetherseed_withered"
+    },
+    "wilds_egg_bloomling_original": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_original"
+    },
+    "wilds_egg_bloomling_ember_tulip": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_ember_tulip"
+    },
+    "wilds_egg_bloomling_sunbonnet": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_sunbonnet"
+    },
+    "wilds_egg_bloomling_moonbell": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_moonbell"
+    },
+    "wilds_egg_bloomling_froststar": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_froststar"
+    },
+    "wilds_egg_bloomling_poppy_patch": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_poppy_patch"
+    },
+    "wilds_egg_bloomling_clover_puff": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_clover_puff"
+    },
+    "wilds_egg_bloomling_dusk_orchid": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_bloomling_dusk_orchid"
+    },
+    "wilds_egg_pebble_mimic_stone": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_stone"
+    },
+    "wilds_egg_pebble_mimic_mossy": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_mossy"
+    },
+    "wilds_egg_pebble_mimic_sand": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_sand"
+    },
+    "wilds_egg_pebble_mimic_clay": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_clay"
+    },
+    "wilds_egg_pebble_mimic_coal": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_coal"
+    },
+    "wilds_egg_pebble_mimic_copper": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_copper"
+    },
+    "wilds_egg_pebble_mimic_iron": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_iron"
+    },
+    "wilds_egg_pebble_mimic_gold": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_gold"
+    },
+    "wilds_egg_pebble_mimic_diamond": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_diamond"
+    },
+    "wilds_egg_pebble_mimic_netherite": {
+      "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_netherite"
     }
   }
 }

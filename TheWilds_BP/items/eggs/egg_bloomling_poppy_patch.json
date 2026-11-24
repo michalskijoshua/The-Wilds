@@ -1,0 +1,19 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:item": {
+    "description": {
+      "identifier": "wilds:egg_bloomling_poppy_patch",
+      "menu_category": {
+        "category": "nature",
+        "group": "minecraft:itemGroup.name.mobEgg"
+      }
+    },
+    "components": {
+      "minecraft:icon": "wilds_egg_bloomling_poppy_patch",
+      "minecraft:display_name": {
+        "value": "item.wilds:egg_bloomling_poppy_patch.name"
+      },
+      "minecraft:max_stack_size": 64
+    }
+  }
+}
