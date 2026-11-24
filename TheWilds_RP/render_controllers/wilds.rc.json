@@ -150,6 +150,43 @@
           ]
         }
       }
+    },
+    "controller.render.wilds.bloomling": {
+      "geometry": "Array.g[q.mark_variant]",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.t[q.mark_variant]"
+      ],
+      "arrays": {
+        "geometries": {
+          "Array.g": [
+            "Geometry.original",
+            "Geometry.ember_tulip",
+            "Geometry.sunbonnet",
+            "Geometry.moonbell",
+            "Geometry.froststar",
+            "Geometry.poppy_patch",
+            "Geometry.clover_puff",
+            "Geometry.dusk_orchid"
+          ]
+        },
+        "textures": {
+          "Array.t": [
+            "Texture.original",
+            "Texture.ember_tulip",
+            "Texture.sunbonnet",
+            "Texture.moonbell",
+            "Texture.froststar",
+            "Texture.poppy_patch",
+            "Texture.clover_puff",
+            "Texture.dusk_orchid"
+          ]
+        }
+      }
     }
   }
 }

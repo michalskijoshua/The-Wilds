@@ -4,12 +4,13 @@
 // Tap the ground with a full cage: the creature comes out with the same look and health, and you get the empty cage back.
 // Wilting: an Original or Bloom Aetherseed kept in a cage for more than 30 minutes of play time comes out Withered.
 // Nothing ticks while it is carried: the times are only compared on release.
-// Cageable: Aetherseed (Bloomling joins in Batch D). Not cageable: Frost Lynx, Tuskbeast, Pebble Mimic, the giants.
+// Cageable: Aetherseed, Bloomling (0.0.15; a caged baby comes out grown). Not cageable: Frost Lynx, Tuskbeast, Pebble Mimic, the giants.
 // Why a cage and not a lead: a floating mob may not take a lead in Bedrock; the cage does not depend on that.
 import { world, system, ItemStack } from "@minecraft/server";
 import { guard, dbg } from "./core/util.js";
 import { squareTaken } from "./core/spawner.js";
 import { spawnSeed, dismissZombies } from "./aether/life.js";
+import { spawnBloomling, LOOKS as BLOOM_LOOKS } from "./bloomling.js";
 
 export const EMPTY = "wilds:cage";
 export const WILT_TICKS = 30 * 60 * 20;                    // 30 minutes of play time
@@ -21,6 +22,11 @@ export const CAGEABLE = {
     before: (e) => dismissZombies(e),
     wilt: (look, kept) => (look !== "withered" && kept > WILT_TICKS ? "withered" : look),
     release: (dim, at, look) => spawnSeed(dim, { x: at.x, y: at.y + 1, z: at.z }, look),
+  },
+  "wilds:bloomling": {
+    kind: "bloomling", looks: BLOOM_LOOKS,
+    lookOf: (e) => BLOOM_LOOKS[e.getComponent("minecraft:mark_variant")?.value ?? 0] ?? "original",
+    release: (dim, at, look) => spawnBloomling(dim, at, look, false),
   },
 };
 const byKind = Object.fromEntries(Object.values(CAGEABLE).map((d) => [d.kind, d]));

@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:item": {
+    "description": {
+      "identifier": "wilds:cage_bloomling_sunbonnet",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "wilds_cage_bloomling_sunbonnet",
+      "minecraft:display_name": {
+        "value": "item.wilds:cage_bloomling_sunbonnet.name"
+      },
+      "minecraft:max_stack_size": 1
+    }
+  }
+}

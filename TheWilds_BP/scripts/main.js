@@ -13,6 +13,7 @@ import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
 import { capture, release, CAGEABLE, cageStats } from "./cage.js";
 import { lynxSpawner, setMode, reward, lynxInfo, lynxStats } from "./lynx.js";
+import { bloomVisit, looksAt, spawnBloomling, bloomStats, LOOKS as BLOOM_LOOKS } from "./bloomling.js";
 import { seedSpawner, spawnSeed, boneMeal, seedReport, summonZombie, snuff, villageCheck } from "./aether/life.js";
 
 // Test commands (cheats on): /scriptevent wilds:<command> [argument]
@@ -74,6 +75,17 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Bloomling (0.0.15)
+  bloom_looks: (p) => { const r = looksAt(p.dimension, { x: Math.floor(p.location.x), y: Math.floor(p.location.y), z: Math.floor(p.location.z) }); p.sendMessage(`${r.biome}, ${r.day ? "day" : "night"}: ${r.looks.join(", ") || "none"}`); },
+  bloom_spawn: (p, [look]) => { spawnBloomling(p.dimension, p.location, look ?? "original"); p.sendMessage(`spawned ${look ?? "original"}`); },
+  bloom_visit: (p, [force]) => p.sendMessage(`visit: ${bloomVisit(p, force === "force")} | ${JSON.stringify(bloomStats)}`),
+  bloom_breed: (p, [a, b]) => {                           // two parents of looks a and b, then a baby born next to them
+    spawnBloomling(p.dimension, p.location, a, false); spawnBloomling(p.dimension, { ...p.location, x: p.location.x + 1 }, b, false);
+    system.runTimeout(() => { p.dimension.spawnEntity("wilds:bloomling", { ...p.location, z: p.location.z + 0.5 }, { spawnEvent: "minecraft:entity_born" }); }, 2);
+    system.runTimeout(() => { const kids = p.dimension.getEntities({ type: "wilds:bloomling", location: p.location, maxDistance: 3 }).filter((x) => x.getComponent("minecraft:is_baby"));
+      p.sendMessage(`babies: ${kids.map((k) => BLOOM_LOOKS[k.getComponent("minecraft:mark_variant")?.value ?? 0]).join(", ")} | ${JSON.stringify(bloomStats)}`); }, 8);
+  },
+  bloom_list: (p) => { const c = {}; for (const b of p.dimension.getEntities({ type: "wilds:bloomling", location: p.location, maxDistance: 64 })) { const k = `${BLOOM_LOOKS[b.getComponent("minecraft:mark_variant")?.value ?? 0]}${b.getComponent("minecraft:is_baby") ? "(baby)" : ""}${b.getComponent("minecraft:persistent") ? "" : "(wild)"}`; c[k] = (c[k] ?? 0) + 1; } p.sendMessage(JSON.stringify(c)); },
   // Frost Lynx (0.0.14)
   lynx_visit: (p) => { lynxSpawner.visit(p); p.sendMessage(lynxSpawner.info(p)); },
   lynx_info: (p) => { for (const l of p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 48 })) p.sendMessage(lynxInfo(l)); p.sendMessage(JSON.stringify(lynxStats)); },

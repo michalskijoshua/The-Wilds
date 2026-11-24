@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.0.15 (24 Nov 2026): Batch D, the Bloomling
+
+- **Model:** Codex's 8 Bedrock looks (`tools/bloomling_build.py`): original, Ember Tulip, Sunbonnet, Moonbell, Froststar,
+  Poppy Patch, Clover Puff, Dusk Orchid, picked by `q.mark_variant`; clips idle, hop, graze, hurt, death; turned 180°;
+  the same `armor_offset.default_neck` marker on every model.
+- **Behaviour** (`wilds:bloomling`, `scripts/bloomling.js`): passive, 3 health, rabbit-sized. Flees players who
+  don't sneak (6 blocks), wolves, foxes, cats, ocelots, lynxes and zombies; panics when hurt. Eats small flowers (the
+  flower block is removed; the graze move plays). Fed any small flower it breeds; the baby takes one parent's look at
+  random (script); babies grow up in 20 minutes. Drops what a rabbit drops. Can't be tamed. Can be caged
+  (`wilds:cage_bloomling_<look>`, 8 items, placeholder icons); a caged baby comes out grown.
+- **Spawning** (script, not light-level rules): every 20 s per player, while fewer than 8 are within 48 blocks, a 6 in
+  10 chance of a group of 2-4 of one look, 20-40 blocks away, from the looks allowed there and then:
+  Original (plains, forest, mountains, spruce; day), Ember Tulip (plains, savanna; night), Sunbonnet (within 6 blocks
+  of a sunflower any time; savanna any time), Moonbell (cherry grove, dappled forest; night), Froststar (on snow, any
+  time), Poppy Patch (spruce, dappled forest; day), Clover Puff (birch, forest, spruce; night), Dusk Orchid (spruce,
+  jungle, plains, swamp; night). No daytime Bloomlings in jungle, cherry grove or swamp. Day = in-game 0-12000.
+  Wild ones fade away when far, like rabbits; released, bred and spawn-egg ones stay.
+- Test hooks: `bloom_looks`, `bloom_spawn`, `bloom_visit`, `bloom_breed`, `bloom_list`.
+- Server test, 0 errors: 11 babies from Moonbell x Clover Puff came out 5 Moonbell / 6 Clover Puff, never anything
+  else; a caged Froststar came out a Froststar with its health; 4 Bloomlings on poppies grazed 7 times in 60 s; a lynx
+  caught a Moonbell at night; real biomes at noon and midnight gave exactly the allowed looks (plains: original by
+  day, Ember Tulip / Dusk Orchid by night; snowy plains: Froststar; savanna: Sunbonnet, plus Ember Tulip at night); a
+  sunflower placed in an ocean area allowed Sunbonnets; a night spawn try made 2 Clover Puffs in a forest.
+
 ## 0.0.14 (24 Nov 2026): Batch C, the Frost Lynx
 
 - **Model:** the Director's Frost Lynx (23 clips) converted by `tools/lynx_build.py` (turned 180°, scale 1.3).
