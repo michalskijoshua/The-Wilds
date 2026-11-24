@@ -4750,7 +4750,7 @@
           ]
         },
         {
-          "name": "neck",
+          "name": "neck_tundra",
           "pivot": [
             0,
             70,
@@ -4851,7 +4851,7 @@
             73,
             44
           ],
-          "parent": "neck",
+          "parent": "neck_tundra",
           "cubes": [
             {
               "origin": [
@@ -13568,19 +13568,7 @@
                 }
               }
             }
-          ],
-          "locators": {
-            "stand_archer_left": [
-              13,
-              110,
-              -22
-            ],
-            "stand_archer_right": [
-              -13,
-              110,
-              -22
-            ]
-          }
+          ]
         },
         {
           "name": "seat_driver",

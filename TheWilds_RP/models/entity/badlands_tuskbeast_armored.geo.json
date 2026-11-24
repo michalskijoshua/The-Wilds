@@ -3860,7 +3860,7 @@
               }
             }
           ],
-          "name": "neck",
+          "name": "neck_badlands",
           "parent": "body",
           "pivot": [
             0,
@@ -6120,7 +6120,7 @@
             }
           ],
           "name": "head",
-          "parent": "neck",
+          "parent": "neck_badlands",
           "pivot": [
             0,
             71,
@@ -15364,19 +15364,7 @@
             0,
             101,
             -12
-          ],
-          "locators": {
-            "stand_archer_left": [
-              16,
-              109,
-              -28
-            ],
-            "stand_archer_right": [
-              -16,
-              109,
-              -28
-            ]
-          }
+          ]
         },
         {
           "name": "seat_driver",

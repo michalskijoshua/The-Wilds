@@ -1,6 +1,6 @@
 // The Wilds 0.0.1-p0: Phase 0 prototypes only. Works with or without Guilds+ (detected at runtime, never edited).
 import { world, system, guard, guildsPresent, VERSION } from "./core/util.js";
-import { BiomeTypes } from "@minecraft/server";
+import { BiomeTypes, ItemStack } from "@minecraft/server";
 import { seatReport, stats as seatStats, testSeat, allBeasts, towerReport } from "./tusk/seats.js";
 import { invites, toggleInvite, uninvite, mayRide } from "./tusk/owners.js";
 import { durabilityTest } from "./tusk/durability.js";
@@ -60,12 +60,13 @@ const TESTS = {
     b.setDynamicProperty("wilds:owner", owner); b.setDynamicProperty("wilds:owner_name", owner); b.triggerEvent("wilds:on_tame");
     system.runTimeout(() => p.sendMessage(`tamed: is_tamed ${!!b.getComponent("minecraft:is_tamed")}, seats ${b.getComponent("minecraft:rideable")?.seatCount}, variant ${b.getComponent("minecraft:variant")?.value}`), 2);
   },
-  howdah: (p) => {                                       // build a howdah on the nearest beast for a stand-in owner with empty pockets (Creative check off)
+  howdah: (p) => {                                       // build a howdah on the nearest beast: first with empty pockets, then with 25 emeralds
     const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!b) return p.sendMessage("no beast");
-    const poor = { ...p, getComponent: () => ({ container: { size: 0, getItem: () => undefined } }), getGameMode: () => "Survival", playSound: () => {} };
+    const pocket = (items) => ({ size: items.length, getItem: (i) => items[i], setItem: (i, it) => { items[i] = it; } });
+    const poor = { ...p, getComponent: () => ({ container: pocket([]) }), playSound: () => {} };
     p.sendMessage(`poor player: ${buildHowdah(b, poor)}`);
-    const rich = { ...p, getGameMode: () => "Creative", playSound: () => {} };
-    p.sendMessage(`creative player: ${buildHowdah(b, rich)}`);
+    const purse = [new ItemStack("minecraft:emerald", 25)], rich = { ...p, getComponent: () => ({ container: pocket(purse) }), playSound: () => {} };
+    p.sendMessage(`player with 25 emeralds: ${buildHowdah(b, rich)} Emeralds left: ${purse[0]?.amount ?? 0}`);
     system.runTimeout(() => p.sendMessage(`howdah: seats ${b.getComponent("minecraft:rideable")?.seatCount}, variant ${b.getComponent("minecraft:variant")?.value}, chest ${b.getComponent("minecraft:inventory")?.container?.size}`), 2);
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },

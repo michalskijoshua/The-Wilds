@@ -1676,7 +1676,7 @@
               }
             }
           ],
-          "name": "neck",
+          "name": "neck_badlands",
           "parent": "body",
           "pivot": [
             0,
@@ -3180,7 +3180,7 @@
             }
           ],
           "name": "head",
-          "parent": "neck",
+          "parent": "neck_badlands",
           "pivot": [
             0,
             71,

@@ -9,13 +9,9 @@ import { ActionFormData } from "@minecraft/server-ui";
 import { ownerOf, ownerNameOf, mayRide, invites, toggleInvite, uninvite } from "./owners.js";
 import { boardCrew, dismountCrew, hasHowdah, isTame } from "./seats.js";
 
-// Howdah cost (Director: emeralds, leather, iron, any planks, string; amounts are Claude's proposal)
+// Howdah cost (Director 24 Nov 2026: emeralds only; it costs the same in Creative)
 export const HOWDAH_COST = [
-  { name: "Emeralds", n: 10, is: (it) => it.typeId === "minecraft:emerald" },
-  { name: "Leather", n: 8, is: (it) => it.typeId === "minecraft:leather" },
-  { name: "Iron Ingots", n: 6, is: (it) => it.typeId === "minecraft:iron_ingot" },
-  { name: "Planks (any wood)", n: 32, is: (it) => it.hasTag("minecraft:planks") || it.typeId.endsWith("_planks") },
-  { name: "String", n: 8, is: (it) => it.typeId === "minecraft:string" },
+  { name: "Emeralds", n: 20, is: (it) => it.typeId === "minecraft:emerald" },
 ];
 const costText = () => HOWDAH_COST.map((c) => `${c.n} ${c.name}`).join(", ");
 
@@ -36,17 +32,13 @@ function pay(player) {
     }
   });
 }
-const creative = (p) => { try { return p.getGameMode() === "Creative" || p.getGameMode() === "creative"; } catch { return false; } };
-
-/** Build the howdah. Returns a message. Free in Creative. */
+/** Build the howdah. Returns a message. */
 export function buildHowdah(beast, player) {
   if (!isTame(beast)) return "§eTame it first.";
   if (hasHowdah(beast)) return "§7It already carries a howdah.";
-  if (!creative(player)) {
-    const got = have(player), short = HOWDAH_COST.filter((c, k) => got[k] < c.n).map((c) => `${c.n - got[HOWDAH_COST.indexOf(c)]} ${c.name}`);
-    if (short.length) return `§eYou still need: ${short.join(", ")}.`;
-    pay(player);
-  }
+  const got = have(player), short = HOWDAH_COST.filter((c, k) => got[k] < c.n).map((c) => `${c.n - got[HOWDAH_COST.indexOf(c)]} more ${c.name}`);
+  if (short.length) return `§eYou need ${short.join(", ")} to build a howdah.`;
+  pay(player);
   beast.triggerEvent("wilds:build_howdah");
   try { player.playSound("random.anvil_use", { volume: 0.6 }); } catch { /* */ }
   return "§aThe howdah is built! Up to 4 riders or guards fit in it. Open your inventory while driving to fill its arrow chest.";

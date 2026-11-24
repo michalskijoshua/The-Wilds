@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.9 (24 Nov 2026): Director's first look at the real models
+
+- **Howdah costs 20 emeralds only**, the same in Creative (it was free in Creative, and the 5-item list was cut off).
+- **Steps up through snow:** `minecraft:variable_max_auto_step` 1.5625 (also when ridden). Server test: pushed forward,
+  it climbed a block topped with snow.
+- **Content-log warnings gone** (seen on Android): the archer-stand markers are removed from the models (unused; seats
+  come from the entity file), and the Badlands and Tundra neck bones are renamed `neck_badlands` / `neck_tundra` in
+  their model and moves files (Minecraft makes a marker from any bone called neck; the kinds' necks sit 1 px apart).
+  No shapes changed. Done by `tools/tusk_looks.py`.
+- Text: "Tap sneak to get off" (was `action.hint.exit.wilds:tuskbeast`); the beast is called "Tuskbeast" (all kinds).
+
 ## 0.0.8 (24 Nov 2026): the real models (Tuskbeast x 6, Pebble Mimic x 10, Aetherseed x 3)
 
 The Director shared the model folders (Codex's v2.0 Tuskbeasts with the kneel and Wounded clips, and the Blockbench

@@ -15306,19 +15306,7 @@
             0,
             103,
             -12
-          ],
-          "locators": {
-            "stand_archer_left": [
-              16,
-              111,
-              -28
-            ],
-            "stand_archer_right": [
-              -16,
-              111,
-              -28
-            ]
-          }
+          ]
         },
         {
           "name": "seat_driver",

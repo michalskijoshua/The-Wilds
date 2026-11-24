@@ -51,8 +51,32 @@ ac = {"format_version": "1.10.0", "animation_controllers": {
         "default": {"transitions": [{"hurt": "q.hurt_time > 0 && q.is_alive"}]},
         "hurt": {"animations": pick("hurt"), "transitions": [{"default": "q.all_animations_finished"}]}}}}}
 
+def tidy_models():
+    """Codex's files, made to share one entity without warnings (no shape changes): drop the archer-stand markers
+    (unused; the seats come from the entity file), and give each kind's neck bone its own name. Minecraft makes an
+    'armor_offset.default_neck' marker from any bone called neck, and the kinds' necks sit 1 px apart, which clashed.
+    Safe to run again."""
+    for k in KINDS[1:]:
+        for b in BUILDS:
+            for kind, fn in (("geo", f"models/entity/{k}_tuskbeast{b}.geo.json"), ("anim", f"animations/{k}_tuskbeast{b}.animation.json")):
+                p = os.path.join(RP, fn); d = json.load(open(p))
+                if kind == "geo":
+                    for bone in d["minecraft:geometry"][0]["bones"]:
+                        if bone["name"] == "neck": bone["name"] = f"neck_{k}"
+                        if bone.get("parent") == "neck": bone["parent"] = f"neck_{k}"
+                else:
+                    for an in d["animations"].values():
+                        if "neck" in an.get("bones", {}): an["bones"][f"neck_{k}"] = an["bones"].pop("neck")
+                with open(p, "w") as f: json.dump(d, f, indent=1 if kind == "anim" else 2); f.write("\n")
+    for k in KINDS:
+        for b in BUILDS:
+            p = os.path.join(RP, f"models/entity/{k}_tuskbeast{b}.geo.json"); d = json.load(open(p))
+            for bone in d["minecraft:geometry"][0]["bones"]: bone.pop("locators", None)
+            with open(p, "w") as f: json.dump(d, f, indent=2); f.write("\n")
+
 def write(rel, data):
     with open(os.path.join(RP, rel), "w") as f: json.dump(data, f, indent=2); f.write("\n")
+tidy_models()
 write("entity/tuskbeast.entity.json", entity)
 write("animation_controllers/tuskbeast.ac.json", ac)
 p = os.path.join(RP, "render_controllers/wilds.rc.json"); d = json.load(open(p))
