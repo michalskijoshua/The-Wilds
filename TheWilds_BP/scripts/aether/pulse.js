@@ -9,7 +9,7 @@
 import { world, system, guard, dbg } from "../core/util.js";
 
 const SEED = "wilds:aetherseed";
-export const PULSE = { everyMs: 45000, radius: 5, maxTargets: 3, below: 2, above: 3 };
+export const PULSE = { everyMs: 45000, radius: 5, maxTargets: 3, below: 3, above: 3 };   // below 3: it hovers 1-2 blocks up
 const FORM = ["original", "bloom", "withered"];
 const CROPS = new Set(["wheat", "carrots", "potatoes", "beetroot", "melon_stem", "pumpkin_stem"].map((b) => `minecraft:${b}`));
 const FLOWERS = new Set(["dandelion", "poppy", "blue_orchid", "allium", "azure_bluet", "red_tulip", "orange_tulip", "white_tulip", "pink_tulip",

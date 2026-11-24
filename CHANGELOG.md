@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.10 (24 Nov 2026): hovering Aetherseed, Mimic sizes, the neck warning
+
+Director's Android test of 0.0.9.
+- **Aetherseed hovers** 1-2 blocks up and glides over crops (allay-style flight: `can_fly`, `navigation.hover`,
+  `behavior.random_hover`, no gravity, no fall damage), and is smaller (scale 0.25, was 0.5). Its pulse reaches 3 blocks
+  down (was 2). Server test: hovering 1.4 blocks up, one pulse grew 3 wheat.
+- **Pebble Mimic:** small = half a large one (scale 0.25, was 0.13). Large unchanged (0.5).
+- **The `armor_offset.default_neck` warning, second try:** Minecraft matches any bone with "neck" in its name, so
+  `neck_badlands` still clashed. The neck bone is now called `nape` in all six builds (`tools/tusk_looks.py`).
+  No shapes changed. Only visible on a device: to be checked on Android.
+- The Spanish, Russian, Chinese etc. "Invalid lang file format" warnings come from another pack, not from The Wilds.
+
 ## 0.0.9 (24 Nov 2026): Director's first look at the real models
 
 - **Howdah costs 20 emeralds only**, the same in Creative (it was free in Creative, and the 5-item list was cut off).

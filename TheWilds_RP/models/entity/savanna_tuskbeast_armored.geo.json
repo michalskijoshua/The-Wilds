@@ -3302,7 +3302,7 @@
               }
             }
           ],
-          "name": "neck",
+          "name": "nape",
           "parent": "body",
           "pivot": [
             0,
@@ -5740,7 +5740,7 @@
             }
           ],
           "name": "head",
-          "parent": "neck",
+          "parent": "nape",
           "pivot": [
             0,
             73,

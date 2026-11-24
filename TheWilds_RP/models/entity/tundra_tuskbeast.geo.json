@@ -1464,7 +1464,7 @@
               }
             }
           ],
-          "name": "neck_tundra",
+          "name": "nape",
           "parent": "body",
           "pivot": [
             0,
@@ -2232,7 +2232,7 @@
             }
           ],
           "name": "head",
-          "parent": "neck_tundra",
+          "parent": "nape",
           "pivot": [
             0,
             73,
