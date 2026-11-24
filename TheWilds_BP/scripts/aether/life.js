@@ -7,7 +7,7 @@
 //   Withered: no light, purple specks; follows players holding a torch (main or off hand); snuffs placed torches
 //         nearby (they pop off); summons zombies now and then (at most 2, long gaps) that vanish when it dies.
 //         It never attacks anyone itself.
-import { world, system, guard, jget, jset, dbg, dist } from "../core/util.js";
+import { world, system, guard, jget, jset, dbg, dist, sfx } from "../core/util.js";
 import { squareSpawner, biomeAt, groundAt } from "../core/spawner.js";
 
 const SEED = "wilds:aetherseed", FORMS = ["original", "bloom", "withered"];
@@ -161,6 +161,7 @@ export function summonZombie(s) {
     const zb = s.dimension.spawnEntity("minecraft:zombie", { x: x + 0.5, y, z: z + 0.5 });
     zb.setDynamicProperty("wilds:summoner", s.id);
     zs.push(zb.id); s.setDynamicProperty("wilds:zombies", JSON.stringify(zs)); lifeStats.zombies++;
+    sfx(s.dimension, "wilds.aetherseed.withered_summon", s.location);
     try { s.dimension.spawnParticle("minecraft:obsidian_glow_dust_particle", zb.location); } catch { /* */ }
     return "summoned";
   }
@@ -171,7 +172,7 @@ export function snuff(s) {
   for (let x = c.x - r; x <= c.x + r; x++) for (let z = c.z - r; z <= c.z + r; z++) for (let y = c.y - 3; y <= c.y + 2; y++) {
     let b; try { b = s.dimension.getBlock({ x, y, z }); } catch { continue; }
     if (!isPlacedTorch(b)) continue;
-    try { s.dimension.runCommand(`setblock ${x} ${y} ${z} air destroy`); n++; lifeStats.snuffed++; } catch { /* */ }
+    try { s.dimension.runCommand(`setblock ${x} ${y} ${z} air destroy`); n++; lifeStats.snuffed++; sfx(s.dimension, "wilds.aetherseed.withered_snuff", { x: x + 0.5, y, z: z + 0.5 }); } catch { /* */ }
   }
   return n;
 }
@@ -211,3 +212,24 @@ export function seedReport(p) {
   for (let x = -12; x <= 12; x++) for (let z = -12; z <= 12; z++) for (let y = -6; y <= 6; y++) { try { if (isLight(p.dimension.getBlock({ x: p.location.x + x, y: p.location.y + y, z: p.location.z + z }))) lightBlocks++; } catch { /* */ } }
   return `seeds [${near.join("; ")}] | light blocks within 12: ${lightBlocks} | recorded lights ${Object.keys(r).length} | ${JSON.stringify(lifeStats)}`;
 }
+
+// ---- sounds by form (Codex, 0.0.18): idle now and then, hurt, death
+const SEED_FORMS = ["original", "bloom", "withered"];
+system.runInterval(guard("seed.sounds", () => {
+  const now = Date.now();
+  for (const s of seeds()) {
+    if (!s.isValid) continue;
+    const due = s.getDynamicProperty("wilds:next_sound") ?? 0;
+    if (now < due) continue;
+    if (due) sfx(s.dimension, `wilds.aetherseed.${SEED_FORMS[formOf(s)]}_idle`, s.location, 0.8);
+    s.setDynamicProperty("wilds:next_sound", now + 8000 + Math.random() * 14000);
+  }
+}), 20);
+world.afterEvents.entityHurt.subscribe(guard("seed.hurt", (e) => {
+  const s = e.hurtEntity; if (!s.isValid || (s.getComponent("minecraft:health")?.currentValue ?? 0) <= 0) return;
+  sfx(s.dimension, `wilds.aetherseed.${SEED_FORMS[formOf(s)]}_hurt`, s.location);
+}), { entityTypes: [SEED] });
+world.afterEvents.entityDie.subscribe(guard("seed.death", (e) => {
+  const s = e.deadEntity; let f, at, dim; try { f = formOf(s); at = s.location; dim = s.dimension; } catch { return; }
+  sfx(dim, `wilds.aetherseed.${SEED_FORMS[f]}_death`, at);
+}), { entityTypes: [SEED] });

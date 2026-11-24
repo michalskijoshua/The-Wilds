@@ -6,7 +6,7 @@
 // world; on top of that, every target must stand on soil (farmland for crops, dirt-family for the rest).
 // No duplicate pulses: one loop, the due time is stored on the seed itself (wilds:next_pulse), and a block is touched
 // by at most one seed per loop.
-import { world, system, guard, dbg } from "../core/util.js";
+import { world, system, guard, dbg, sfx } from "../core/util.js";
 
 const SEED = "wilds:aetherseed";
 export const PULSE = { everyMs: 45000, radius: 5, maxTargets: 3, below: 3, above: 3 };   // below 3: it hovers 1-2 blocks up
@@ -76,7 +76,7 @@ function pulse(seed, touched) {
     try { if (apply(form, b, dim)) n++; } catch (err) { console.warn(`[wilds] pulse apply: ${err}`); }
   }
   pulseStats.changes += n;
-  try { dim.playSound(form === 2 ? "block.composter.empty" : "item.bone_meal.use", seed.location); } catch { /* */ }
+  sfx(dim, `wilds.aetherseed.${FORM[form]}_pulse`, seed.location);
   dbg(`${FORM[form]} Aetherseed pulsed: ${n} plant${n === 1 ? "" : "s"}`);
   return n;
 }

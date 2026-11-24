@@ -13,6 +13,7 @@ import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
 import { capture, release, CAGEABLE, cageStats } from "./cage.js";
 import { hatch, eggStats } from "./eggs.js";
+import { dropsFor, DROPS } from "./mimic/drops.js";
 import { EGGS } from "./eggs_data.js";
 import { lynxSpawner, setMode, reward, lynxInfo, lynxStats } from "./lynx.js";
 import { bloomVisit, looksAt, spawnBloomling, bloomStats, LOOKS as BLOOM_LOOKS } from "./bloomling.js";
@@ -52,6 +53,7 @@ const clean = (s) => String(s).replace(/§./g, "");
 const stand = (x, y, z) => ({ dimension: world.getDimension("overworld"), location: { x, y, z }, name: "console", id: "console",
   sendMessage: (m) => console.warn(`[wilds-test] ${clean(m)}`), hasTag: () => false });
 let moveRun, cageHeld;
+const FORMS_LIST = Object.keys(DROPS);
 const TESTS = {
   seat: (p, [owner]) => { const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(b ? `seated ${testSeat(b, owner)}` : "no beast"); },
   move: (p, [on]) => {
@@ -77,6 +79,12 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Mimic drops (0.0.17): what each form drops, large and small, with a pickaxe and with a sword; then really drop one set here
+  mimic_drops: (p) => {
+    const rows = FORMS_LIST.map((f, i) => `${f}: L ${JSON.stringify(dropsFor(i, true, "minecraft:wooden_pickaxe"))} S ${JSON.stringify(dropsFor(i, false, "minecraft:netherite_pickaxe"))} sword ${JSON.stringify(dropsFor(i, true, "minecraft:diamond_sword"))}`);
+    for (const r of rows) p.sendMessage(r);
+    for (const [item, n] of dropsFor(0, true, "minecraft:iron_pickaxe")) p.dimension.spawnItem(new ItemStack(item, n), p.location);
+  },
   // Spawn eggs (0.0.16): hatch every egg in a row along x
   eggs: (p) => {
     const made = EGGS.map((g, i) => hatch(g.id, p.dimension, { x: p.location.x + i * 2, y: p.location.y, z: p.location.z }));

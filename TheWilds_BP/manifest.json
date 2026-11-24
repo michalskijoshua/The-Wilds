@@ -1,10 +1,10 @@
 {
   "format_version": 2,
   "header": {
-    "name": "The Wilds (BP) 0.0.16 P0",
+    "name": "The Wilds (BP) 0.0.18 P0",
     "description": "The Wilds: Phase 0 prototypes only. Works alone; Guilds+ support is optional.",
     "uuid": "30ecdda1-935a-4d7b-a91a-5d24a0daf938",
-    "version": [0, 0, 16],
+    "version": [0, 0, 18],
     "min_engine_version": [
       1,
       21,
@@ -15,20 +15,20 @@
     {
       "type": "data",
       "uuid": "fb997144-dbd5-4545-a23e-afd373b5ce03",
-      "version": [0, 0, 16]
+      "version": [0, 0, 18]
     },
     {
       "type": "script",
       "language": "javascript",
       "uuid": "174a878e-85c9-426f-bf36-7814260615d3",
-      "version": [0, 0, 16],
+      "version": [0, 0, 18],
       "entry": "scripts/main.js"
     }
   ],
   "dependencies": [
     {
       "uuid": "eb9b2d9f-8189-4f9b-a3e4-7f95d0e78436",
-      "version": [0, 0, 16]
+      "version": [0, 0, 18]
     },
     {
       "module_name": "@minecraft/server",
