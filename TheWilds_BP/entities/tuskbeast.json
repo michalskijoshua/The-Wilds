@@ -35,16 +35,18 @@
       "minecraft:breathable": { "total_supply": 15, "suffocate_time": 0 },
       "minecraft:input_ground_controlled": {},
       "minecraft:rideable": {
-        "seat_count": 3,
+        "seat_count": 5,
         "controlling_seat": 0,
         "crouching_skip_interact": true,
         "pull_in_entities": false,
-        "family_types": ["player", "ironhome_mercenary", "wilds_archer"],
+        "family_types": ["player", "ironhome_mercenary", "wilds_archer", "wilds_seat"],
         "interact_text": "action.interact.ride.horse",
         "seats": [
-          { "min_rider_count": 0, "max_rider_count": 3, "position": [0.0, 7.3, 0.56] },
-          { "min_rider_count": 0, "max_rider_count": 3, "position": [1.0, 6.95, -1.75] },
-          { "min_rider_count": 0, "max_rider_count": 3, "position": [-1.0, 6.95, -1.75] }
+          { "min_rider_count": 0, "max_rider_count": 5, "position": [0.0, 6.6, 2.0] },
+          { "min_rider_count": 0, "max_rider_count": 5, "position": [0.9, 6.6, 0.55] },
+          { "min_rider_count": 0, "max_rider_count": 5, "position": [-0.9, 6.6, 0.55] },
+          { "min_rider_count": 0, "max_rider_count": 5, "position": [0.9, 6.6, -2.2] },
+          { "min_rider_count": 0, "max_rider_count": 5, "position": [-0.9, 6.6, -2.2] }
         ]
       },
       "minecraft:inventory": { "container_type": "horse", "inventory_size": 16, "private": false },

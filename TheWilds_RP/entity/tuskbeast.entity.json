@@ -11,11 +11,12 @@
         "walk": "animation.savanna_tuskbeast_armored.walk",
         "hurt": "animation.savanna_tuskbeast_armored.hurt",
         "death": "animation.savanna_tuskbeast_armored.death",
+        "face_forward": "animation.wilds.tuskbeast.face_forward",
         "ctrl_move": "controller.animation.wilds.tuskbeast.move",
         "ctrl_hurt": "controller.animation.wilds.tuskbeast.hurt"
       },
       "scripts": {
-        "animate": ["ctrl_move", "ctrl_hurt"]
+        "animate": ["face_forward", "ctrl_move", "ctrl_hurt"]
       },
       "render_controllers": ["controller.render.default"],
       "spawn_egg": { "base_color": "#b8894a", "overlay_color": "#5a3b1f" },

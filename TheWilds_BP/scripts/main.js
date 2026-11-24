@@ -1,6 +1,7 @@
 // The Wilds 0.0.1-p0: Phase 0 prototypes only. Works with or without Guilds+ (detected at runtime, never edited).
 import { world, system, guard, guildsPresent, VERSION } from "./core/util.js";
-import { setArcherMode, archerMode, seatReport, stats as seatStats, testSeat, allBeasts } from "./tusk/seats.js";
+import { seatReport, stats as seatStats, testSeat, allBeasts, towerReport } from "./tusk/seats.js";
+import { invites, toggleInvite, uninvite, mayRide } from "./tusk/owners.js";
 import { durabilityTest } from "./tusk/durability.js";
 import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
@@ -10,13 +11,12 @@ import { seedForm, pulseStats } from "./aether/pulse.js";
 // Test commands (cheats on): /scriptevent wilds:<command> [argument]
 const COMMANDS = {
   status: (p) => p.sendMessage([
-    `§bThe Wilds ${VERSION}. Guilds+ ${guildsPresent() ? "§adetected" : "§7not installed"}§b. Archer mode ${archerMode()}.`,
-    `Seated archers fired: native ${seatStats.nativeShots}, Path B ${seatStats.scriptShots}.`,
+    `§bThe Wilds ${VERSION}. Guilds+ ${guildsPresent() ? "§adetected" : "§7not installed"}§b.`,
+    `Howdah towers fired ${seatStats.towerShots} (bolts ${seatStats.bolts}); seated guards fired themselves ${seatStats.nativeShots}.`,
     `Friendly fire on players (${guardStats.mode}): blocked ${guardStats.blocked}, refunded ${guardStats.refunded}.`,
     `Aetherseed pulses ${pulseStats.pulses}, plants changed ${pulseStats.changes}.`,
     ...seatReport(),
   ].join("\n")),
-  archers: (p, a) => { setArcherMode(a.toUpperCase()); p.sendMessage(`§bArcher mode is now ${archerMode()} (A = mercenaries' own AI, B = Wilds fires for them).`); },
   durability_test: (p) => durabilityTest(p),
   mimic_info: (p) => mimicInfo(p),
   mimic_census: (p) => mimicCensus(p),
@@ -50,9 +50,21 @@ const TESTS = {
     moveRun = system.runInterval(() => { for (const b of allBeasts()) { try { const r = (b.getRotation().y * Math.PI) / 180; b.applyImpulse({ x: -Math.sin(r) * 0.06, y: 0, z: Math.cos(r) * 0.06 }); } catch { /* */ } } }, 2);
     p.sendMessage("move on");
   },
-  mode: (p, [m]) => { setArcherMode((m ?? "A").toUpperCase()); p.sendMessage(`archer mode ${archerMode()}`); },
+  dbg: (p) => p.sendMessage(JSON.stringify(seatStats)),
+  invite_check: (p) => {                                 // the invite rules with stand-in players (no real players on the test server)
+    const fake = (id, name) => ({ id, name, sendMessage: (m) => p.sendMessage(`  to ${name}: ${m}`) });
+    const own = fake("wt_owner", "Olly"), pip = fake("wt_pip", "Pip"), sam = fake("wt_sam", "Sam");
+    const beast = { getDynamicProperty: (k) => ({ "wilds:owner": own.id, "wilds:owner_name": own.name })[k] };
+    const ride = () => `Olly ${mayRide(own, beast)}, Pip ${mayRide(pip, beast)}, Sam ${mayRide(sam, beast)}`;
+    p.sendMessage(`before: ${ride()}`); toggleInvite(own, pip); p.sendMessage(`Pip invited: ${ride()}`);
+    toggleInvite(own, pip); p.sendMessage(`tapped again: ${ride()}`);
+    toggleInvite(own, sam); uninvite(own, "sAm"); p.sendMessage(`typed uninvite: ${ride()}`);
+    const free = { getDynamicProperty: () => undefined }; p.sendMessage(`unowned beast, Sam may ride: ${mayRide(sam, free)}`);
+  },
+  tower: (p) => { for (const b of allBeasts()) p.sendMessage(towerReport(b)); },
+  invites: (p, [owner]) => p.sendMessage(`invites of ${owner}: ${JSON.stringify(invites(owner))}`),
   report: (p) => {
-    p.sendMessage(`guilds=${guildsPresent()} mode=${archerMode()} native=${seatStats.nativeShots} pathB=${seatStats.scriptShots} ff=${guardStats.mode}/${guardStats.blocked}/${guardStats.refunded} pulses=${pulseStats.pulses} changes=${pulseStats.changes}`);
+    p.sendMessage(`guilds=${guildsPresent()} tower=${seatStats.towerShots} bolts=${seatStats.bolts} boltHits=${seatStats.boltHits} native=${seatStats.nativeShots} ff=${guardStats.mode}/${guardStats.blocked}/${guardStats.refunded} pulses=${pulseStats.pulses} changes=${pulseStats.changes}`);
     for (const l of seatReport()) p.sendMessage(l);
   },
   mimic_spawn: (p, [n]) => mimicSpawn(p, parseInt(n, 10)),

@@ -1,0 +1,13 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "wilds:seat_keeper",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/blocks/wool_colored_white" },
+      "geometry": { "default": "geometry.wilds_placeholder_cube" },
+      "scripts": { "scale": "0" },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}

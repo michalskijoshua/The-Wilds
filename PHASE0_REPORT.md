@@ -1,4 +1,49 @@
-# The Wilds: Phase 0 report (current build 0.0.4, 23 Nov 2026)
+# The Wilds: Phase 0 report (current build 0.0.6, 24 Nov 2026)
+
+**0.0.6:** guards no longer slide into the driver's seat (an invisible seat keeper holds it). Android test of 0.0.5 by
+the Director: "works really well". See `CHANGELOG.md`.
+
+## 0.0.5 server test (Linux, with Guilds+ 0.9.18)
+
+| Check | Result |
+|---|---|
+| Errors at load: both packs / The Wilds alone | **0 / 0**. The typed commands are registered (from the console they answer "Only a player can use this.") |
+| Tower, 2 archers + 2 crossbowmen, 6 walking zombies, 20 s | **46 shots (28 arrows, 18 bolts)**, exactly the planned rates; 3–4 of 6 killed per round |
+| Crossbow bonus | 15 bonus hits from 26 bolts (a first try with damage type "projectile" was refused by the game: fixed) |
+| Guard arrows and bow | untouched (64 and 384) |
+| 4 guards seated through 3 restarts | yes |
+| Dismount (as the Horn) after 30 s, then re-seat | the 2 crossbowmen stayed off; re-seat filled 4 seats again |
+| Invite rules (stand-in players) | owner yes; invited yes; tap again removes; typed un-invite ignores capitals; others no; unowned beast: anyone |
+
+**Needs your phone:** the beast facing forward when walking, the driver's view and height on the neck, the guards
+sitting in the corners (seat height 6.6 may need tuning: guards and players sit at slightly different heights), the
+flag tap on a friend, and `/wilds:invite`.
+
+
+## Retest with Guilds+ 0.9.18 (Linux server, 24 Nov 2026)
+
+The Wilds 0.0.4, unchanged, with Guilds+ 0.9.18 (master, commit `01cedb0`, built with its own build tool in a scratch
+copy; Guilds+ not edited). Same steps as before: guild `T1`, table, 2 archers, Tuskbeast, `wilds:test seat`, 128 arrows
+in the Howdah chest, zombies 10–13 blocks out, night, mob spawning off.
+
+| Check | Guilds+ 0.9.7 | Guilds+ 0.9.18 |
+|---|---|---|
+| Errors at load (Guilds+ alone / both) | 1 / 1 | **0 / 0** (the Halberd recipe clash is fixed) |
+| Path B fires | 26 shots in 20 s, 3 of 4 killed | **24 shots in 20 s, 4 of 4 killed** (zombies free to walk) |
+| Guard arrows and bow after Wilds shots | 128 → 128, 384 → 384 | **64 → 64, 384 → 384** (guards now start with 64) |
+| Walk markers around seated guards | none | **none** (6 samples) |
+| Seated through a restart | yes | **yes** |
+| Forced dismount after 30 s (as the Horn's "Return to posts") | stayed off | **stayed off**, crew record cleared, walked back to the guild table |
+| Re-seat with the test hook, then Path B | works | **works** |
+
+**New:** seated guards' own AI fired 5 arrows in one 20 s round (Path A was 0 before). Likely Guilds+'s new aim groups.
+Those shots did not use the guard's arrows or bow either. Path B stays the default.
+
+**Test note:** zombies frozen with Slowness 255 are a poor target here: each hit knocks them back to the edge of Path B's
+20-block range, where the spread misses (2 rounds, 100 shots, 1 kill). Let zombies walk in.
+
+**Still needs Android:** seat heights and poses with the new vanilla-skeleton guards, the Howdah Flag tap, steering,
+friendly fire with a real driver, and the Horn from a real player.
 
 ## Retest with Guilds+ 0.9.7 (Linux server, 23 Nov 2026)
 
