@@ -1,4 +1,21 @@
-# The Wilds: Phase 0 report (current build 0.0.4, 23 Nov 2026)
+# The Wilds: Phase 0 report (current build 0.0.5, 24 Nov 2026)
+
+## 0.0.5 server test (Linux, with Guilds+ 0.9.18)
+
+| Check | Result |
+|---|---|
+| Errors at load: both packs / The Wilds alone | **0 / 0**. The typed commands are registered (from the console they answer "Only a player can use this.") |
+| Tower, 2 archers + 2 crossbowmen, 6 walking zombies, 20 s | **46 shots (28 arrows, 18 bolts)**, exactly the planned rates; 3–4 of 6 killed per round |
+| Crossbow bonus | 15 bonus hits from 26 bolts (a first try with damage type "projectile" was refused by the game: fixed) |
+| Guard arrows and bow | untouched (64 and 384) |
+| 4 guards seated through 3 restarts | yes |
+| Dismount (as the Horn) after 30 s, then re-seat | the 2 crossbowmen stayed off; re-seat filled 4 seats again |
+| Invite rules (stand-in players) | owner yes; invited yes; tap again removes; typed un-invite ignores capitals; others no; unowned beast: anyone |
+
+**Needs your phone:** the beast facing forward when walking, the driver's view and height on the neck, the guards
+sitting in the corners (seat height 6.6 may need tuning: guards and players sit at slightly different heights), the
+flag tap on a friend, and `/wilds:invite`.
+
 
 ## Retest with Guilds+ 0.9.18 (Linux server, 24 Nov 2026)
 

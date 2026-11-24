@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.0.5 (24 Nov 2026): the beast faces forward, driver on the neck, the howdah tower
+
+Director's Android test of 0.0.4: the beast looked like it walked tail-first, the driver sat in the howdah and couldn't see, the archers sat at the front.
+- **Faces forward:** the model was built with its head on the side Minecraft treats as the back. It is now turned 180°
+  when drawn (`animation.wilds.tuskbeast.face_forward` on the root bone). The model file itself is unchanged.
+- **Seats:** the driver sits on the neck just behind the head (`[0, 6.6, 2.0]`). 4 passenger seats in the howdah's
+  corners (`[±0.9, 6.6, 0.55]`, `[±0.9, 6.6, -2.2]`), for archers, crossbowmen or invited players. Guards sit
+  (Guilds+ plays Mojang's riding pose).
+- **The howdah tower** replaces Path A/B: each seated archer adds 1 arrow every 1.5 s, each crossbowman 1 bolt every 2.5 s
+  (faster flight, +2 damage half a second after the hit). Shots leave from the roof at the nearest hostile mob in sight
+  (24 blocks) and come from the Howdah chest. The guards' own attacks are untouched. `wilds:archers` is gone.
+- **Owner and invites:** the first player aboard owns the beast. The owner taps a player with the Howdah Flag to invite
+  them (tap again to remove), or types `/wilds:invite <name>`, `/wilds:uninvite <name>`, `/wilds:invites` (no cheats
+  needed). Anyone else who climbs on is put down. New `tusk/owners.js`.
+- Only archers and crossbowmen board.
+
 ## 0.0.4 (23 Nov 2026): works with Guilds+ 0.9.7's Horn
 
 - Crew re-seating now only happens in the first 30 s after a Tuskbeast loads (when a reload can drop riders). A crew

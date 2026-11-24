@@ -2,7 +2,7 @@
 import { world, system, EntityTypes } from "@minecraft/server";
 
 export const NS = "wilds";
-export const VERSION = "0.0.4-p0";
+export const VERSION = "0.0.5-p0";
 
 /** Wrap a callback so one error never kills a loop or an event subscription. */
 export const guard = (label, fn) => (...a) => {
