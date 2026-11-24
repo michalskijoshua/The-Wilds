@@ -56,28 +56,50 @@ function dismountCrew(beast, player) {
   player?.sendMessage(`§7${crew.length} guard${crew.length === 1 ? "" : "s"} climbed down.`);
 }
 
-/** Make sure a player holds the driver seat when any player is aboard (guards re-seat behind). */
-function playerFirst(beast) {
+/** The driver's seat (seat 0) is for players only (Director 24 Nov 2026). With a player aboard, a player sits there.
+ *  With only guards aboard, an invisible seat keeper holds it, so the guards stay in the howdah. When a rider gets off,
+ *  Minecraft slides everyone forward one seat; this puts them back within half a second. */
+const KEEPER = "wilds:seat_keeper";
+const isKeeper = (e) => e?.typeId === KEEPER;
+const shuffling = new Set();                               // beasts whose riders are being put back in order
+function arrange(beast) {
   const rd = rideable(beast), riders = rd.getRiders();
-  if (!riders.length || isPlayer(riders[0]) || !riders.some(isPlayer)) return;
-  const players = riders.filter(isPlayer), others = riders.filter((r) => !isPlayer(r));
-  riders.forEach((r) => rd.ejectRider(r));
+  const players = riders.filter(isPlayer), keepers = riders.filter(isKeeper), others = riders.filter((r) => !isPlayer(r) && !isKeeper(r));
+  if (players.length) {
+    if (isPlayer(riders[0]) && !keepers.length) return;                        // a player drives: all well
+    for (const k of keepers) { try { rd.ejectRider(k); k.remove(); } catch { /* */ } }
+    if (isPlayer(riders[0])) return;
+  } else if (others.length) {
+    if (isKeeper(riders[0]) && keepers.length === 1) return;                   // the keeper holds the driver's seat
+    for (const k of keepers.slice(1)) { try { rd.ejectRider(k); k.remove(); } catch { /* */ } }
+  } else {
+    for (const k of keepers) { try { rd.ejectRider(k); k.remove(); } catch { /* */ } }   // nobody aboard: no keeper
+    return;
+  }
+  let keeper = players.length ? undefined : keepers[0];
+  [...players, ...others, ...(keeper ? [keeper] : [])].forEach((r) => { try { rd.ejectRider(r); } catch { /* */ } });
+  shuffling.add(beast.id);
   system.runTimeout(guard("reorder", () => {
-    for (const r of [...players, ...others]) if (r.isValid && beast.isValid) rd.addRider(r);
+    shuffling.delete(beast.id);
+    if (!beast.isValid) return;
+    if (!players.length && !keeper?.isValid) keeper = beast.dimension.spawnEntity(KEEPER, beast.location);
+    for (const r of [...players, ...(keeper ? [keeper] : []), ...others]) if (r.isValid) rd.addRider(r);
   }), 2);
 }
+const playerFirst = arrange;
 
 function boardCrew(beast, player) {
   const rd = rideable(beast);
   if (!mayRide(player, beast)) return player.sendMessage(`§eThis Tuskbeast belongs to ${ownerNameOf(beast)}. Ask them to invite you.`);
   if (!ownerOf(beast)) claim(beast, player);
   if (!rd.getRiders().some((r) => r.id === player.id)) {
-    if (rd.getRiders().length >= SEATS) return player.sendMessage("§eEvery seat is taken.");
+    if (rd.getRiders().filter((r) => !isKeeper(r)).length >= SEATS) return player.sendMessage("§eEvery seat is taken.");
+    const k = rd.getRiders().find(isKeeper); if (k) { try { rd.ejectRider(k); k.remove(); } catch { /* */ } }
     if (!rd.addRider(player)) return player.sendMessage("§eCould not climb aboard here.");
     playerFirst(beast);
   }
   if (!guildsPresent()) return;
-  const free = SEATS - rd.getRiders().length;
+  const free = SEATS - rd.getRiders().filter((r) => !isKeeper(r)).length - (rd.getRiders().some(isPlayer) ? 0 : 1);
   if (free <= 0) return player.sendMessage("§7The howdah is full.");
   const cands = beast.dimension.getEntities({ families: ["ironhome_mercenary"], location: beast.location, maxDistance: BOARD_RANGE })
     .filter((m) => RANGED.has(m.typeId) && m.hasTag(`ih_merc:${player.id}`) && !ridingOn(m))
@@ -130,6 +152,9 @@ system.runInterval(guard("riders", () => {
     }
     playerFirst(beast);
   }
+  for (const d of ["overworld", "nether", "the_end"]) {                       // a seat keeper off its beast has no job
+    try { for (const k of world.getDimension(d).getEntities({ type: KEEPER })) if (!ridingOn(k)) k.remove(); } catch { /* */ }
+  }
 }), 10);
 system.runInterval(guard("crew", () => {
   const now = system.currentTick, beasts = allBeasts(), here = new Set(beasts.map((b) => b.id));
@@ -137,7 +162,7 @@ system.runInterval(guard("crew", () => {
   for (const beast of beasts) {
     if (!seenAt.has(beast.id)) seenAt.set(beast.id, now);
     const fresh = now - seenAt.get(beast.id) <= RESEAT_WINDOW;
-    const ids = crewOf(beast); if (!ids.length) continue;
+    const ids = crewOf(beast); if (!ids.length || shuffling.has(beast.id)) continue;
     const rd = rideable(beast), keep = [];
     for (const id of ids) {
       const m = world.getEntity(id);
@@ -268,7 +293,7 @@ export function testSeat(beast, ownerId) {
     .filter((m) => RANGED.has(m.typeId) && m.hasTag(`ih_merc:${ownerId}`) && !ridingOn(m));
   let n = 0;
   for (const m of cands) {
-    if (rd.getRiders().length >= SEATS) break;
+    if (rd.getRiders().length >= SEATS - 1) break;
     if (rd.addRider(m)) { n++; crew.push(m.id); }
   }
   setCrew(beast, crew);

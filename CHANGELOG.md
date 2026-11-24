@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.6 (24 Nov 2026): guards never drive
+
+Director (Android, 0.0.5 "works really well"): after he got off to fill the chest, a guard slid into the driver's seat.
+Minecraft moves every rider forward one seat when the first one leaves.
+- New invisible `wilds:seat_keeper` holds the driver's seat whenever only guards are aboard. It steps aside the moment a
+  player climbs on, and a keeper that is not on a beast is removed (checked every half second).
+- Crew put back in order no longer drop off the crew list for that split second.
+- Server test: 3 forced knock-offs in a row, the keeper is back each time, 4 guards kept, 1 keeper; the tower still fires
+  (16 shots, 5 bolt bonuses in 10 s); the Horn-style dismount clears everyone, keeper included.
+
 ## 0.0.5 (24 Nov 2026): the beast faces forward, driver on the neck, the howdah tower
 
 Director's Android test of 0.0.4: the beast looked like it walked tail-first, the driver sat in the howdah and couldn't see, the archers sat at the front.

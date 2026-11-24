@@ -39,7 +39,7 @@
         "controlling_seat": 0,
         "crouching_skip_interact": true,
         "pull_in_entities": false,
-        "family_types": ["player", "ironhome_mercenary", "wilds_archer"],
+        "family_types": ["player", "ironhome_mercenary", "wilds_archer", "wilds_seat"],
         "interact_text": "action.interact.ride.horse",
         "seats": [
           { "min_rider_count": 0, "max_rider_count": 5, "position": [0.0, 6.6, 2.0] },
