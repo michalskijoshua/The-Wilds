@@ -1,10 +1,10 @@
 // P0-4 Pebble Mimic affinity.
-// The roll happens in the entity file (minecraft:entity_spawned, weights 750/200/40/9/1 out of 1000), so it runs once at
+// The roll happens in the entity file (minecraft:entity_spawned, weights 700/200/50/45/5 out of 1000), so it runs once at
 // birth, inside the engine, and is never rerolled: entity_spawned does not fire again on reload. The value lives in
 // the entity property wilds:affinity, which saves with the mob. Size (small/large) is rolled the same way and is
 // only a scale: large = half Codex's full model (2 blocks wide), small = half a large one (Director 24 Nov 2026).
 // The look follows the form through q.mark_variant (event wilds:form_<n>), the Android-safe way.
-// Approved: the 75 % common tier. Proposal: the other tiers and which form sits in which tier (FORMS below).
+// Director 24 Nov 2026: 10 % can reach gold or better (rare 5 %, diamond 4.5 %, netherite 0.5 %); uncommon 20 %, common 70 %.
 import { world, system, guard, dbg } from "../core/util.js";
 
 const MIMIC = "wilds:pebble_mimic";

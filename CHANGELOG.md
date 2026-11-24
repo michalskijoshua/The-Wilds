@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.11 (24 Nov 2026): Mimic luck, the neck warning (third try)
+
+- **Pebble Mimic luck** (Director): 10 % can reach gold or better. Weights 700/200/50/45/5: common 70 %, uncommon 20 %,
+  rare (gold) 5 %, diamond 4.5 %, netherite 0.5 %. Server census of 400: 69.0 / 20.8 / 5.8 / 3.8 / 0.8 %.
+- **`armor_offset.default_neck`:** still reported on Android in 0.0.10 with no "neck" bone left, so Minecraft makes it
+  on every model. Each of the six Tuskbeast models now carries the same one on its root bone (`tools/tusk_looks.py`).
+  Harmless either way (it only places vanilla horse-style armour); to be checked on Android.
+
 ## 0.0.10 (24 Nov 2026): hovering Aetherseed, Mimic sizes, the neck warning
 
 Director's Android test of 0.0.9.

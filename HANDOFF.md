@@ -1,4 +1,4 @@
-# The Wilds: handoff for planning (24 Nov 2026, build 0.0.10)
+# The Wilds: handoff for planning (24 Nov 2026, build 0.0.11)
 
 ## Who and how
 - **The Director** (owner, Creative Director, not a coder) makes every design decision and playtests on **Android**. Explain in plain words with analogies: headers, then a short report. Talk about GitHub as a recipe book (draft copy, push, pull request, merge = the Director says yes).
@@ -10,7 +10,7 @@
 | | The Wilds (this project) | Guilds+ (companion, never edited from here) |
 |---|---|---|
 | Repo | `michalskijoshua/The-Wilds` (`main`) | `michalskijoshua/GuildsPlus` (`master`) |
-| Version | **0.0.10** (PR #3 open; 0.0.9 merged) | 0.9.18 |
+| Version | **0.0.11** (PR #3 open with 0.0.10; 0.0.9 merged) | 0.9.18 |
 | What | Creatures, mounts, landmarks (Bedrock add-on) | Guilds, hired workers, guards (archers, crossbowmen, swordsmen, spearmen), farming, forging |
 | Rules | Every id/key starts `wilds:`. Works alone; Guilds+ is detected at runtime. No experimental toggles. | Creatures and the Mosswing dragon belong in The Wilds. A needed Guilds+ change becomes a written proposal (`GUILDS_PATCH_PROPOSAL.md`) that the Director takes to a Guilds+ chat. |
 
@@ -44,7 +44,7 @@ Both packs use `@minecraft/server` 2.6.0 and `@minecraft/server-ui` 2.0.0, with 
 
 ### Pebble Mimic
 - 10 forms (Codex/Director models): stone, mossy, sand, clay, coal, copper, iron, gold, diamond, netherite.
-- Affinity is rolled once at birth: common 75 % / uncommon 20 % / rare 4 % / diamond 0.9 % / netherite 0.1 %.
+- Affinity is rolled once at birth: common 70 % / uncommon 20 % / rare (gold) 5 % / diamond 4.5 % / netherite 0.5 % (10 % reach gold or better).
 - It changes form by touching a block of that material, only up to its affinity tier.
 - Two sizes: large = half the full model (≈2 blocks wide), small = half a large one.
 - Clips used: idle, crawl, hit, death. The disguise/boulder clips aren't used yet.
@@ -83,12 +83,12 @@ Both packs use `@minecraft/server` 2.6.0 and `@minecraft/server-ui` 2.0.0, with 
 - Removing a component group strips its components outright: swap groups in pairs.
 - No `minecraft:inventory` on fighting mobs. A `ranged_attack` with speed 0 never shoots.
 - **Bedrock biome ids differ from Java** (`mesa`, `ice_plains`, `extreme_hills`…).
-- Several models on one entity must not have bones named with "neck" at different spots (`armor_offset.default_neck` clash).
+- Several models on one entity: Minecraft makes an `armor_offset.default_neck` marker per model; give them all the same one.
 - Codex models face +Z, so turn them 180° in game.
 - The Director reads errors from the **Content Log** on the phone (Settings > Creator) and sends screenshots.
 
 ## To do and open items
-1. **Check 0.0.10 on Android:** the neck error should be gone; the Aetherseed hovers; the small Mimic size. Then merge PR #3.
+1. **Check 0.0.11 on Android:** the neck error (third try: the same marker on all six models; harmless if it stays). Then merge.
 2. **Mimic spawn eggs:** should they pick a random form so every form can be seen? (asked, not answered)
 3. **Landmark giants are placeholders.** Models exist for the **Oni Cairn** and the **Meadow Colossus** (with a throwing rock); none for the Stormmantle. Each giant needs a design: behaviour, fight, drops.
 4. **New creature models delivered, not wired, no design yet:**

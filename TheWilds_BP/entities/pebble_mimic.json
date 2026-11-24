@@ -181,7 +181,7 @@
             },
             "randomize": [
               {
-                "weight": 750,
+                "weight": 700,
                 "set_property": {
                   "wilds:affinity": 0
                 }
@@ -193,19 +193,19 @@
                 }
               },
               {
-                "weight": 40,
+                "weight": 50,
                 "set_property": {
                   "wilds:affinity": 2
                 }
               },
               {
-                "weight": 9,
+                "weight": 45,
                 "set_property": {
                   "wilds:affinity": 3
                 }
               },
               {
-                "weight": 1,
+                "weight": 5,
                 "set_property": {
                   "wilds:affinity": 4
                 }
