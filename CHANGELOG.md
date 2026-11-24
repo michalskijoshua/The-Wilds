@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.0.12 (24 Nov 2026): Batch A, the Aetherseed's life in the wild
+
+Approved design from the planning chat's build handoff (24 Nov).
+- **Wild spawning** (new `core/spawner.js`: a reusable one-per-square spawner, the Tuskbeast's idea made general):
+  Original in `dappled_forest`, Bloom in `cherry_grove`, Withered in `roofed_forest(_mutated)`, `swampland(_mutated)`,
+  `mangrove_swamp`. Squares of 320 blocks, 7 in 10 fitting squares get one, back 1 real day after it dies (proposals).
+- **Withered near villages:** checked every minute per player; with 3+ villagers within 64 blocks, a 1 in 20 chance,
+  at most one per village area per real day, 28-40 blocks out from the village, never in `deep_dark`.
+- **Bone meal:** Withered -> Original or Bloom (50/50); Original <-> Bloom. Used up as normal (not in Creative).
+- **Glow:** Original and Bloom carry an invisible light block (level 10). Every light is recorded on the seed and in a
+  world list and removed when the seed dies, turns Withered, unloads or the world reloads; a sweep every 5 s and after
+  each load removes any light whose seed no longer holds it.
+- **Withered:** purple specks (`obsidian_glow_dust_particle`), no light; follows players holding a torch (main or off
+  hand) within 16 blocks; pops placed torches within 4 blocks (they drop as items; lanterns stay); summons a zombie every
+  2-4 min (first after 1-2 min), at most 2, and they vanish when it dies or is healed; never attacks.
+- Sounds: still the vanilla stand-ins (bone meal, composter) until Codex delivers.
+- Test hooks: `seed_spawn`, `seed_visit`, `seed_age`, `seed_light`, `seed_bonemeal`, `seed_zombie`, `seed_snuff`,
+  `seed_village`.
+- Server test (BDS 1.26.65.1, with Guilds+ 0.9.18), 0 errors: the light followed a moving seed (always exactly 1 block),
+  went out when it turned Withered, came back after bone meal, survived a real restart as 1 block, and was removed when
+  the seed died or was carried into an unloaded area; 3 placed torches popped off, the lantern stayed; zombies stopped at
+  2 and vanished when the seed died; village spawn refused by chance, then spawned, then refused as "already one";
+  real biomes: Bloom in a cherry grove, Withered in a dark forest, Original (lit) in a dappled forest.
+
 ## 0.0.11 (24 Nov 2026): Mimic luck, the neck warning (third try)
 
 - **Pebble Mimic luck** (Director): 10 % can reach gold or better. Weights 700/200/50/45/5: common 70 %, uncommon 20 %,

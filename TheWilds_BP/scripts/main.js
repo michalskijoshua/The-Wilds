@@ -11,6 +11,7 @@ import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
+import { seedSpawner, spawnSeed, boneMeal, seedReport, summonZombie, snuff, villageCheck } from "./aether/life.js";
 
 // Test commands (cheats on): /scriptevent wilds:<command> [argument]
 const COMMANDS = {
@@ -71,6 +72,15 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Aetherseed (0.0.12)
+  seed_spawn: (p, [form]) => { spawnSeed(p.dimension, p.location, form ?? "original"); p.sendMessage(`spawned ${form ?? "original"}`); },
+  seed_visit: (p) => { seedSpawner.visit(p); p.sendMessage(seedSpawner.info(p)); },
+  seed_age: (p, [h]) => p.sendMessage(seedSpawner.age(p, (+h || 0) * 3600 * 1000)),
+  seed_light: (p) => p.sendMessage(seedReport(p)),
+  seed_bonemeal: (p) => { const s = p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(s ? `now ${boneMeal(s)}` : "no seed"); },
+  seed_zombie: (p) => { const s = p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(s ? summonZombie(s) : "no seed"); },
+  seed_snuff: (p) => { const s = p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(s ? `snuffed ${snuff(s)}` : "no seed"); },
+  seed_village: (p, [force]) => p.sendMessage(`village: ${villageCheck(p, force === "force")}`),
   forms: (p) => {                                        // form (saved) and look (mark_variant) must match
     let ok = 0, bad = 0;
     for (const t of ["wilds:pebble_mimic", "wilds:aetherseed"]) for (const e of p.dimension.getEntities({ type: t })) { if (e.getProperty("wilds:form") === (e.getComponent("minecraft:mark_variant")?.value ?? 0)) ok++; else bad++; }
