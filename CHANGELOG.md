@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.0.13 (24 Nov 2026): Batch B, the cage; seeds stop glowing; a Mimic changes once
+
+Director's decisions after 0.0.12: the Kindlesprite is the creature that lights up, so **no Aetherseed glows** (the
+Withered one stays as built); **a Pebble Mimic keeps its first change forever**; the Batch A numbers are kept.
+- **Cage** (`scripts/cage.js`): an empty Cage (`wilds:cage`, stacks to 16; 8 iron bars around 1 string) used on an
+  Aetherseed puts it inside and becomes a full cage of that look (`wilds:cage_aetherseed_original|bloom|withered`, its own
+  item for its own icon), remembering health and the play time it was caught (item dynamic properties; health also in
+  the item's lore). Tap the ground with a full cage: the creature comes out with the same look and health, and you get
+  the empty cage back. **Wilting:** an Original or Bloom kept more than 30 minutes of play time comes out Withered
+  (compared only on release). Caging a Withered seed sends its zombies away; caging frees its home square for a new one.
+  Not cageable (message "That creature won't fit in a cage."): Tuskbeast, Pebble Mimic, and later the Frost Lynx and the
+  giants. Icons: placeholder iron bars until Codex delivers (`wilds_cage_empty`, `wilds_cage_<kind>_<look>` in
+  `TheWilds_RP/textures/item_texture.json`).
+- **No glow:** the travelling light is switched off; the clean-up stays, so lights left by 0.0.12 are removed.
+- **Mimic:** after its first change of form it never changes again (`wilds:changed`).
+- Test hooks: `cage_catch`, `cage_release [minutes kept]`.
+- Server test, 0 errors: no light around an Original seed; a hurt Original (7/12) caught and released at 7/12, still
+  Original; after 29 minutes still Original, after 31 minutes Withered; caging a Withered with 2 zombies sent them away;
+  the Tuskbeast was refused; two Mimics turned to sand on sandstone and stayed sand after 12 s on coal.
+
 ## 0.0.12 (24 Nov 2026): Batch A, the Aetherseed's life in the wild
 
 Approved design from the planning chat's build handoff (24 Nov).

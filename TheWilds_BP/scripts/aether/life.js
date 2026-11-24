@@ -2,8 +2,8 @@
 //   Wild: Original in dappled forest, Bloom in cherry groves, Withered in dark forest and swamps (one per square), and
 //         now and then a Withered one near a village (never in the deep dark).
 //   Bone meal: Withered -> Original or Bloom (50/50); Original <-> Bloom.
-//   Glow: Original and Bloom carry an invisible light block with them. Every light is recorded (on the seed and in a
-//         world list) and taken away when the seed dies, turns Withered, unloads or the world reloads: no orphans.
+//   No glow (Director 24 Nov 2026: the Kindlesprite is the one that lights up). 0.0.12 gave Original and Bloom a
+//         travelling light block; the clean-up below stays so any light left by 0.0.12 is removed.
 //   Withered: no light, purple specks; follows players holding a torch (main or off hand); snuffs placed torches
 //         nearby (they pop off); summons zombies now and then (at most 2, long gaps) that vanish when it dies.
 //         It never attacks anyone itself.
@@ -80,8 +80,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe((e) => {
   }));
 });
 
-// ---- glow: a light block that travels with Original and Bloom seeds
-const LIGHT = "minecraft:light_block_10", REG = "wilds:seed_lights";
+// ---- glow clean-up: 0.0.12's travelling light blocks are taken away (no seed glows any more)
+const GLOW = false, LIGHT = "minecraft:light_block_10", REG = "wilds:seed_lights";
 const isLight = (b) => b?.typeId?.startsWith("minecraft:light_block");
 const lkey = (dimId, l) => `${dimId}|${l.x},${l.y},${l.z}`;
 const parse = (k) => { const [d, xyz] = k.split("|"); const [x, y, z] = xyz.split(",").map(Number); return { d, l: { x, y, z } }; };
@@ -100,7 +100,7 @@ function dropLight(seed) {
 }
 function keepLight(seed) {
   const cur = seed.getDynamicProperty("wilds:light");
-  if (formOf(seed) === 2) { if (cur) dropLight(seed); return; }
+  if (!GLOW || formOf(seed) === 2) { if (cur) dropLight(seed); return; }
   const l = { x: Math.floor(seed.location.x), y: Math.floor(seed.location.y), z: Math.floor(seed.location.z) };
   const want = lkey(seed.dimension.id, l);
   if (cur === want) { try { if (isLight(seed.dimension.getBlock(l))) return; } catch { return; } }   // still there
@@ -148,7 +148,7 @@ const holdsTorch = (p) => {
 const isPlacedTorch = (b) => /torch$/.test(b?.typeId ?? "");            // torch, soul_torch, redstone_torch, copper_torch...
 const zombiesOf = (s) => { try { return JSON.parse(s.getDynamicProperty("wilds:zombies") ?? "[]"); } catch { return []; } };
 function vanish(z) { if (!z?.isValid) return; try { z.dimension.spawnParticle("minecraft:obsidian_glow_dust_particle", z.location); z.remove(); lifeStats.zombiesGone++; } catch { /* */ } }
-function dismissZombies(s) { for (const id of zombiesOf(s)) vanish(world.getEntity(id)); try { s.setDynamicProperty("wilds:zombies", undefined); } catch { /* */ } }
+export function dismissZombies(s) { for (const id of zombiesOf(s)) vanish(world.getEntity(id)); try { s.setDynamicProperty("wilds:zombies", undefined); } catch { /* */ } }
 export const WITHERED = { followRange: 16, snuffRange: 4, zombieMax: 2, zombieGapMs: [120000, 240000], firstZombieMs: [60000, 120000] };
 const rnd = ([a, b]) => a + Math.random() * (b - a);
 

@@ -9,3 +9,7 @@ item.spawn_egg.entity.wilds:pebble_mimic.name=Pebble Mimic Spawn Egg
 item.spawn_egg.entity.wilds:aetherseed.name=Aetherseed Spawn Egg
 action.hint.exit.wilds:tuskbeast=Tap sneak to get off
 entity.wilds:seat_keeper.name=Seat keeper
+item.wilds:cage.name=Cage
+item.wilds:cage_aetherseed_original.name=Caged Aetherseed (Original)
+item.wilds:cage_aetherseed_bloom.name=Caged Aetherseed (Bloom)
+item.wilds:cage_aetherseed_withered.name=Caged Aetherseed (Withered)

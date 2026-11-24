@@ -11,6 +11,7 @@ import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
+import { capture, release, CAGEABLE, cageStats } from "./cage.js";
 import { seedSpawner, spawnSeed, boneMeal, seedReport, summonZombie, snuff, villageCheck } from "./aether/life.js";
 
 // Test commands (cheats on): /scriptevent wilds:<command> [argument]
@@ -46,7 +47,7 @@ system.afterEvents.scriptEventReceive.subscribe(guard("scriptevent", (e) => {
 const clean = (s) => String(s).replace(/§./g, "");
 const stand = (x, y, z) => ({ dimension: world.getDimension("overworld"), location: { x, y, z }, name: "console", id: "console",
   sendMessage: (m) => console.warn(`[wilds-test] ${clean(m)}`), hasTag: () => false });
-let moveRun;
+let moveRun, cageHeld;
 const TESTS = {
   seat: (p, [owner]) => { const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(b ? `seated ${testSeat(b, owner)}` : "no beast"); },
   move: (p, [on]) => {
@@ -72,6 +73,21 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Cage (0.0.13): catch the nearest creature, then let it out here (optionally as if kept N minutes)
+  cage_catch: (p) => {
+    const e = p.dimension.getEntities({ location: p.location, maxDistance: 16, families: ["wilds"] }).filter((x) => x.typeId !== "wilds:seat_keeper")
+      .sort((a, b) => Math.hypot(a.location.x - p.location.x, a.location.z - p.location.z) - Math.hypot(b.location.x - p.location.x, b.location.z - p.location.z))[0];
+    if (!e) return p.sendMessage("nothing to catch");
+    if (!CAGEABLE[e.typeId]) return p.sendMessage(`${e.typeId}: won't fit in a cage`);
+    cageHeld = capture(e);
+    p.sendMessage(`caught: ${cageHeld.typeId}, hp ${cageHeld.getDynamicProperty("wilds:hp")}, lore ${JSON.stringify(cageHeld.getLore())}, ${e.isValid ? "still in the world!" : "gone from the world"}`);
+  },
+  cage_release: (p, [minutes]) => {
+    if (!cageHeld) return p.sendMessage("nothing caged");
+    if (minutes) cageHeld.setDynamicProperty("wilds:caught", world.getAbsoluteTime() - Math.round(+minutes * 1200));
+    const e = release(cageHeld, p.dimension, p.location); cageHeld = undefined;
+    system.runTimeout(() => p.sendMessage(`released ${e.typeId}: form ${e.getProperty("wilds:form")}, look ${e.getComponent("minecraft:mark_variant")?.value}, hp ${e.getComponent("minecraft:health")?.currentValue} | ${JSON.stringify(cageStats)}`), 2);
+  },
   // Aetherseed (0.0.12)
   seed_spawn: (p, [form]) => { spawnSeed(p.dimension, p.location, form ?? "original"); p.sendMessage(`spawned ${form ?? "original"}`); },
   seed_visit: (p) => { seedSpawner.visit(p); p.sendMessage(seedSpawner.info(p)); },

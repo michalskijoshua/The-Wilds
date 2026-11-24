@@ -4,6 +4,7 @@
 // the entity property wilds:affinity, which saves with the mob. Size (small/large) is rolled the same way and is
 // only a scale: large = half Codex's full model (2 blocks wide), small = half a large one (Director 24 Nov 2026).
 // The look follows the form through q.mark_variant (event wilds:form_<n>), the Android-safe way.
+// A Mimic changes form once: after its first change it keeps that form forever (wilds:changed, Director 24 Nov 2026).
 // Director 24 Nov 2026: 10 % can reach gold or better (rare 5 %, diamond 4.5 %, netherite 0.5 %); uncommon 20 %, common 70 %.
 import { world, system, guard, dbg } from "../core/util.js";
 
@@ -51,11 +52,11 @@ system.runInterval(guard("mimic", () => {
       const f = touching(e); if (f === undefined) continue;
       const cur = e.getProperty("wilds:form");
       if (e.getComponent("minecraft:mark_variant")?.value !== cur) e.triggerEvent(`wilds:form_${cur}`);   // the look follows the form
-      if (f === cur) continue;
+      if (f === cur || e.getDynamicProperty("wilds:changed")) continue;                     // its first change is for good (Director 24 Nov 2026)
       const aff = e.getProperty("wilds:affinity");
       last.set(e.id, t);
       if (!allowed(aff, f)) { mimicStats.refused++; dbg(`mimic (${TIERS[aff]}) touched ${FORMS[f].name}: refused`); continue; }
-      e.setProperty("wilds:form", f); e.triggerEvent(`wilds:form_${f}`);
+      e.setProperty("wilds:form", f); e.triggerEvent(`wilds:form_${f}`); e.setDynamicProperty("wilds:changed", true);
       mimicStats.transforms++;
       try { e.dimension.spawnParticle("minecraft:villager_happy", { x: e.location.x, y: e.location.y + 0.6, z: e.location.z }); } catch { /* */ }
       dbg(`mimic (${TIERS[aff]}) became ${FORMS[f].name}`);
