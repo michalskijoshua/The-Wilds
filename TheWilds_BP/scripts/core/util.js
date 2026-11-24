@@ -2,7 +2,7 @@
 import { world, system, EntityTypes } from "@minecraft/server";
 
 export const NS = "wilds";
-export const VERSION = "0.0.17-p0";
+export const VERSION = "0.0.18-p0";
 
 /** Wrap a callback so one error never kills a loop or an event subscription. */
 export const guard = (label, fn) => (...a) => {
@@ -31,6 +31,9 @@ export function dbg(msg) {
   console.info(`[wilds] ${msg}`);
   for (const p of world.getAllPlayers()) if (p.hasTag("wilds:debug")) p.sendMessage(`§7[wilds] ${msg}`);
 }
+
+/** Plays one of The Wilds' sounds (TheWilds_RP/sounds/sound_definitions.json) at a spot; never throws. */
+export function sfx(dim, id, at, volume = 1) { try { dim.playSound(id, at, { volume, pitch: 0.92 + Math.random() * 0.16 }); } catch { /* */ } }
 
 export const OVERWORLD = () => world.getDimension("overworld");
 export const now = () => Date.now();

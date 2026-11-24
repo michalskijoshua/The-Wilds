@@ -1,0 +1,336 @@
+{
+  "format_version": "1.20.20",
+  "sound_definitions": {
+    "wilds.aetherseed.bloom_death": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/bloom_death1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.bloom_hurt": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/bloom_hurt1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/bloom_hurt2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/bloom_hurt3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.bloom_idle": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/bloom_idle1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/bloom_idle2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/bloom_idle3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.bloom_pulse": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/bloom_pulse1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.original_death": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/original_death1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.original_hurt": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/original_hurt1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/original_hurt2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/original_hurt3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.original_idle": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/original_idle1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/original_idle2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/original_idle3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.original_pulse": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/original_pulse1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.withered_death": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/withered_death1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.withered_hurt": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/withered_hurt1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/withered_hurt2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/withered_hurt3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.withered_idle": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/withered_idle1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/withered_idle2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/aetherseed/withered_idle3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.withered_pulse": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/withered_pulse1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.withered_snuff": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/withered_snuff1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.aetherseed.withered_summon": {
+      "category": "hostile",
+      "sounds": [
+        {
+          "name": "sounds/wilds/aetherseed/withered_summon1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.bloomling.death": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/bloomling/death1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.bloomling.eat": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/bloomling/eat1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.bloomling.hop": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/bloomling/hop1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/bloomling/hop2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/bloomling/hop3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.bloomling.hurt": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/bloomling/hurt1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/bloomling/hurt2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/bloomling/hurt3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.bloomling.idle": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/bloomling/idle1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/bloomling/idle2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/bloomling/idle3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.death": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/death1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.eat": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/eat1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.flee": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/flee1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.hurt": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/hurt1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/frost_lynx/hurt2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/frost_lynx/hurt3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.idle": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/idle1",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/frost_lynx/idle2",
+          "volume": 1.0
+        },
+        {
+          "name": "sounds/wilds/frost_lynx/idle3",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.pounce": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/pounce1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.purr": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/purr1",
+          "volume": 1.0
+        }
+      ]
+    },
+    "wilds.frost_lynx.trick": {
+      "category": "neutral",
+      "sounds": [
+        {
+          "name": "sounds/wilds/frost_lynx/trick1",
+          "volume": 1.0
+        }
+      ]
+    }
+  }
+}

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.0.18 (24 Nov 2026): Codex's icons and sounds
+
+- **13 inventory icons** (`TheWilds_RP/textures/items/wilds/`): the empty Cage, 3 caged Aetherseeds, 8 caged Bloomlings,
+  Frost Lynx Fur. They replace the iron-bars and rabbit-hide placeholders.
+- **49 sounds** (`TheWilds_RP/sounds/wilds/`), 27 events in `sounds/sound_definitions.json` (`wilds.<creature>.<name>`,
+  every numbered take a variation).
+  - Built in (`TheWilds_RP/sounds.json`): Bloomling idle, hurt, death, hop (as steps); Frost Lynx idle, hurt, death.
+  - By script (the Aetherseed's sounds depend on its form, which the built-in events can't): Aetherseed idle every 8-22 s,
+    hurt and death per form; each form's pulse; the Withered torch snuff and zombie call; Bloomling nibbling a flower;
+    Frost Lynx hiss as a wild one bolts from a player (at most every 12 s), purr near its owner every 15-35 s, eating raw
+    meat (taming and treats), a happy chirp after a trick, the pounce/bite.
+- `CODEX_HANDOFF_ASSETS.md` marked delivered. Server: every sound and icon file found, 0 errors. Sounds and icons
+  can only be seen and heard on a device.
+
 ## 0.0.17 (24 Nov 2026): Pebble Mimic drops
 
 Director's design: a Mimic killed by a player swinging **any pickaxe** drops what it looks like; killed any other way,

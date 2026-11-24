@@ -10,7 +10,7 @@
 // sniff/eat while being tamed, taming_nuzzle when tamed, the tricks.
 import { world, system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
-import { guard, dbg } from "./core/util.js";
+import { guard, dbg, sfx, dist } from "./core/util.js";
 import { squareSpawner, squareTaken } from "./core/spawner.js";
 
 const LYNX = "wilds:frost_lynx";
@@ -57,6 +57,8 @@ export function reward(p, l) {
   const h = l.getComponent("minecraft:health"); if (h) h.setCurrentValue(Math.min(h.effectiveMax, h.currentValue + 4));
   const t = TRICKS[Math.floor(Math.random() * TRICKS.length)];
   anim(l, t); lynxStats.tricks++;
+  sfx(l.dimension, "wilds.frost_lynx.eat", l.location);
+  system.runTimeout(() => { if (l.isValid) sfx(l.dimension, "wilds.frost_lynx.trick", l.location); }, 16);
   if (p && !creative(p)) {
     const inv = p.getComponent("minecraft:inventory")?.container, slot = p.selectedSlotIndex, it = inv?.getItem(slot);
     if (it && MEAT.includes(it.typeId)) { if (it.amount > 1) { it.amount -= 1; inv.setItem(slot, it); } else inv.setItem(slot, undefined); }
@@ -66,7 +68,7 @@ export function reward(p, l) {
 world.beforeEvents.playerInteractWithEntity.subscribe((e) => {
   const l = e.target, p = e.player; if (l?.typeId !== LYNX) return;
   const item = e.itemStack?.typeId;
-  if (!isTamed(l)) { if (item && MEAT.includes(item)) system.run(() => { if (l.isValid) anim(l, "sniff_offered_food"); }); return; }   // vanilla taming does the rest
+  if (!isTamed(l)) { if (item && MEAT.includes(item)) system.run(() => { if (l.isValid) { anim(l, "sniff_offered_food"); sfx(l.dimension, "wilds.frost_lynx.eat", l.location); } }); return; }   // vanilla taming does the rest
   if (ownerId(l) !== p.id) return;
   if (!item) { e.cancel = true; system.run(guard("lynx.menu", () => { menu(p, l).catch(() => {}); })); }
   else if (MEAT.includes(item)) { e.cancel = true; system.run(guard("lynx.treat", () => { if (l.isValid) reward(p, l); })); }
@@ -75,5 +77,29 @@ world.beforeEvents.playerInteractWithEntity.subscribe((e) => {
 world.afterEvents.entityHurt.subscribe(guard("lynx.bite", (e) => {
   const a = e.damageSource?.damagingEntity; if (a?.typeId !== LYNX) return;
   anim(a, isTamed(a) ? "pin_and_bite" : "rabbit_pounce"); lynxStats.bites++;
+  sfx(a.dimension, "wilds.frost_lynx.pounce", a.location);
 }));
 export const lynxInfo = (l) => `lynx ${Math.floor(l.location.x)},${Math.floor(l.location.y)},${Math.floor(l.location.z)}: tamed ${isTamed(l)}, owner ${ownerId(l) ?? "-"}, mode ${l.getDynamicProperty("wilds:mode") ?? "-"}, staying ${l.getComponent("minecraft:skin_id")?.value === 1}, speed ${l.getComponent("minecraft:movement")?.defaultValue ?? l.getComponent("minecraft:movement")?.currentValue}, hp ${l.getComponent("minecraft:health")?.currentValue}`;
+
+// ---- sounds (Codex, 0.0.18): a hiss when a wild lynx bolts from a player, a purr near its owner now and then
+const lastHiss = new Map();
+system.runInterval(guard("lynx.sounds", () => {
+  const now = Date.now(), players = world.getAllPlayers();
+  for (const d of ["overworld", "nether", "the_end"]) {
+    let ls; try { ls = world.getDimension(d).getEntities({ type: LYNX }); } catch { continue; }
+    for (const l of ls) {
+      if (!l.isValid) continue;
+      if (!isTamed(l)) {
+        const near = players.some((p) => p.dimension.id === l.dimension.id && !p.isSneaking && dist(p.location, l.location) <= 11);
+        if (near && now - (lastHiss.get(l.id) ?? 0) > 12000) { lastHiss.set(l.id, now); sfx(l.dimension, "wilds.frost_lynx.flee", l.location); }
+      } else {
+        const owner = world.getEntity(ownerId(l) ?? "");
+        const due = l.getDynamicProperty("wilds:next_purr") ?? 0;
+        if (owner?.isValid && owner.dimension.id === l.dimension.id && dist(owner.location, l.location) <= 4 && now >= due) {
+          if (due) sfx(l.dimension, "wilds.frost_lynx.purr", l.location, 0.9);
+          l.setDynamicProperty("wilds:next_purr", now + 15000 + Math.random() * 20000);
+        }
+      }
+    }
+  }
+}), 20);

@@ -1,5 +1,7 @@
 # Codex handoff: sounds and inventory icons for The Wilds (24 Nov 2026, build 0.0.16)
 
+**Status: delivered and wired in (The Wilds 0.0.18).** 13 icons and 49 sounds.
+
 From: Claude Code (The Wilds). Owner and Creative Director: the user; they approve every look and sound.
 Project: Minecraft **Bedrock** add-on `michalskijoshua/The-Wilds` (`main`). The game is played on **Android**.
 

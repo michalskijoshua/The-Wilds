@@ -1,0 +1,34 @@
+{
+  "entity_sounds": {
+    "entities": {
+      "wilds:bloomling": {
+        "volume": 1.0,
+        "pitch": [
+          0.9,
+          1.1
+        ],
+        "events": {
+          "ambient": "wilds.bloomling.idle",
+          "hurt": "wilds.bloomling.hurt",
+          "death": "wilds.bloomling.death",
+          "step": {
+            "sound": "wilds.bloomling.hop",
+            "volume": 0.6
+          }
+        }
+      },
+      "wilds:frost_lynx": {
+        "volume": 1.0,
+        "pitch": [
+          0.9,
+          1.1
+        ],
+        "events": {
+          "ambient": "wilds.frost_lynx.idle",
+          "hurt": "wilds.frost_lynx.hurt",
+          "death": "wilds.frost_lynx.death"
+        }
+      }
+    }
+  }
+}

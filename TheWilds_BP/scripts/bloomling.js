@@ -7,7 +7,7 @@
 // Drops what a rabbit drops. Can be caged; can't be tamed. Wild ones fade away like rabbits; released, bred or
 // spawn-egg ones stay (wilds:keep).
 import { world, system } from "@minecraft/server";
-import { guard, dbg } from "./core/util.js";
+import { guard, dbg, sfx } from "./core/util.js";
 import { biomeAt, groundAt } from "./core/spawner.js";
 
 const BL = "wilds:bloomling";
@@ -103,5 +103,6 @@ world.afterEvents.entitySpawn.subscribe(guard("bloom.new", (e) => {
 world.afterEvents.dataDrivenEntityTrigger.subscribe(guard("bloom.ate", (e) => {
   const b = e.entity; const l = LOOKS[b.getComponent("minecraft:mark_variant")?.value ?? 0];
   try { b.playAnimation(`animation.wilds_bloomling_${l}.graze`); } catch { /* */ }
+  sfx(b.dimension, "wilds.bloomling.eat", b.location, 0.8);
   bloomStats.ate++;
 }), { entityTypes: [BL], eventTypes: ["wilds:ate_flower"] });
