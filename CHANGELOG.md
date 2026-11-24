@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.17 (24 Nov 2026): Pebble Mimic drops
+
+Director's design: a Mimic killed by a player swinging **any pickaxe** drops what it looks like; killed any other way,
+nothing (`scripts/mimic/drops.js`).
+- Large: stone 15 cobblestone, mossy 15 mossy cobblestone, sand 15 sand, clay 15 clay balls, coal 15 coal.
+  Small: half (8). Copper, iron, gold, diamond: 1 of that ore; netherite: 1 Ancient Debris (any size).
+- Test hook `mimic_drops`. Server test, 0 errors: the table is right for all 10 forms, large and small, with a pickaxe;
+  nothing with a sword; 15 cobblestone really drop; a Mimic killed by a command drops nothing. A real pickaxe kill needs
+  a player: check on Android.
+
 ## 0.0.16 (24 Nov 2026): spawn eggs, one per look
 
 - **24 eggs** (`wilds:egg_<creature>_<look>`, `tools/egg_build.py`): Tuskbeast x3 kinds, Aetherseed x3 forms,

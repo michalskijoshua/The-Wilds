@@ -1,10 +1,10 @@
 {
   "format_version": 2,
   "header": {
-    "name": "The Wilds (RP) 0.0.16 P0",
+    "name": "The Wilds (RP) 0.0.17 P0",
     "description": "The Wilds: Phase 0 prototypes only. Works alone; Guilds+ support is optional.",
     "uuid": "eb9b2d9f-8189-4f9b-a3e4-7f95d0e78436",
-    "version": [0, 0, 16],
+    "version": [0, 0, 17],
     "min_engine_version": [
       1,
       21,
@@ -15,7 +15,7 @@
     {
       "type": "resources",
       "uuid": "5b1e7c42-9d3a-4f6e-8a21-c47e0d9b3f58",
-      "version": [0, 0, 16]
+      "version": [0, 0, 17]
     }
   ]
 }
