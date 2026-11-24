@@ -1,0 +1,3415 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.wilds_aetherseed_original_layer1",
+        "texture_width": 256,
+        "texture_height": 256,
+        "visible_bounds_width": 4,
+        "visible_bounds_height": 4,
+        "visible_bounds_offset": [
+          0,
+          1.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "aetherseed",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": []
+        },
+        {
+          "name": "body",
+          "pivot": [
+            0,
+            25,
+            0
+          ],
+          "cubes": [],
+          "parent": "aetherseed"
+        },
+        {
+          "name": "crown_stem",
+          "pivot": [
+            0,
+            34,
+            1
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "crown_bloom",
+          "pivot": [
+            0,
+            45,
+            0
+          ],
+          "cubes": [],
+          "parent": "crown_stem"
+        },
+        {
+          "name": "crown_bloom_growth",
+          "pivot": [
+            -0.0,
+            47.0,
+            6.0
+          ],
+          "cubes": [],
+          "parent": "crown_bloom"
+        },
+        {
+          "name": "crown_bloom_petals",
+          "pivot": [
+            -0.0,
+            49.0,
+            0.0
+          ],
+          "cubes": [],
+          "parent": "crown_bloom"
+        },
+        {
+          "name": "aether_core",
+          "pivot": [
+            0,
+            27,
+            10
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "seed_pendant",
+          "pivot": [
+            0,
+            13,
+            -1
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "left_arm",
+          "pivot": [
+            7.5,
+            29,
+            -1.5
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "left_side_bloom",
+          "pivot": [
+            15,
+            36,
+            -10
+          ],
+          "cubes": [],
+          "parent": "left_arm"
+        },
+        {
+          "name": "left_side_bloom_growth",
+          "pivot": [
+            15.0,
+            38.0,
+            -4.0
+          ],
+          "cubes": [],
+          "parent": "left_side_bloom"
+        },
+        {
+          "name": "left_side_bloom_petals",
+          "pivot": [
+            15.0,
+            40.0,
+            -10.0
+          ],
+          "cubes": [],
+          "parent": "left_side_bloom"
+        },
+        {
+          "name": "right_arm",
+          "pivot": [
+            -7.5,
+            29,
+            -1.5
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "right_side_bloom",
+          "pivot": [
+            -16,
+            33,
+            -6
+          ],
+          "cubes": [],
+          "parent": "right_arm"
+        },
+        {
+          "name": "right_side_bloom_growth",
+          "pivot": [
+            -16.0,
+            35.0,
+            -1.0
+          ],
+          "cubes": [],
+          "parent": "right_side_bloom"
+        },
+        {
+          "name": "right_side_bloom_petals",
+          "pivot": [
+            -16.0,
+            37.0,
+            -6.0
+          ],
+          "cubes": [],
+          "parent": "right_side_bloom"
+        },
+        {
+          "name": "left_orbit_bloom",
+          "pivot": [
+            23,
+            22,
+            4
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "left_orbit_bloom_growth",
+          "pivot": [
+            23.0,
+            24.0,
+            9.0
+          ],
+          "cubes": [],
+          "parent": "left_orbit_bloom"
+        },
+        {
+          "name": "left_orbit_bloom_petals",
+          "pivot": [
+            23.0,
+            26.0,
+            4.0
+          ],
+          "cubes": [],
+          "parent": "left_orbit_bloom"
+        },
+        {
+          "name": "right_orbit_bloom",
+          "pivot": [
+            -21,
+            17,
+            1
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "right_orbit_bloom_growth",
+          "pivot": [
+            -21.0,
+            19.0,
+            6.0
+          ],
+          "cubes": [],
+          "parent": "right_orbit_bloom"
+        },
+        {
+          "name": "right_orbit_bloom_petals",
+          "pivot": [
+            -21.0,
+            21.0,
+            1.0
+          ],
+          "cubes": [],
+          "parent": "right_orbit_bloom"
+        },
+        {
+          "name": "left_aether_link",
+          "pivot": [
+            23,
+            34,
+            3
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "right_aether_link",
+          "pivot": [
+            -21,
+            29,
+            0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "stone_heart",
+          "pivot": [
+            -0.0,
+            24.0,
+            0.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "front_casing",
+          "pivot": [
+            -0.0,
+            25.0,
+            8.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "rear_casing",
+          "pivot": [
+            -0.0,
+            25.0,
+            -8.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "left_chassis",
+          "pivot": [
+            9.0,
+            27.0,
+            0.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "right_chassis",
+          "pivot": [
+            -9.0,
+            27.0,
+            0.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "keel_stones",
+          "pivot": [
+            -0.0,
+            14.0,
+            0.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "front_vines",
+          "pivot": [
+            -0.0,
+            22.0,
+            11.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "rear_vines",
+          "pivot": [
+            -0.0,
+            30.0,
+            -11.0
+          ],
+          "cubes": [],
+          "parent": "body"
+        },
+        {
+          "name": "aether_effects",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [],
+          "parent": "aetherseed"
+        },
+        {
+          "name": "aura_ring_1",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.9875,
+                -0.5
+              ],
+              "size": [
+                1.0,
+                0.02499999999999858,
+                1.0
+              ],
+              "uv": {
+                "up": {
+                  "uv": [
+                    2,
+                    2
+                  ],
+                  "uv_size": [
+                    76,
+                    76
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    2,
+                    2
+                  ],
+                  "uv_size": [
+                    76,
+                    76
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "aura_ring_2",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.9875,
+                -0.5
+              ],
+              "size": [
+                1.0,
+                0.02499999999999858,
+                1.0
+              ],
+              "uv": {
+                "up": {
+                  "uv": [
+                    84,
+                    2
+                  ],
+                  "uv_size": [
+                    76,
+                    76
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    84,
+                    2
+                  ],
+                  "uv_size": [
+                    76,
+                    76
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "aura_ring_3",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.9875,
+                -0.5
+              ],
+              "size": [
+                1.0,
+                0.02499999999999858,
+                1.0
+              ],
+              "uv": {
+                "up": {
+                  "uv": [
+                    166,
+                    2
+                  ],
+                  "uv_size": [
+                    76,
+                    76
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    166,
+                    2
+                  ],
+                  "uv_size": [
+                    76,
+                    76
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_01",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_02",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_03",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_04",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_05",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_06",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_07",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_08",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_09",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_10",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_11",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_12",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_13",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_14",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "fertile_spore_15",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    4,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_01",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_02",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_03",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_04",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_05",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_06",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_07",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_08",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_09",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_10",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_11",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_12",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_13",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_14",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "bloom_spark_15",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    18,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_01",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_02",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_03",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_04",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_05",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_06",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_07",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_08",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_09",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_10",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "burst_fragment_11",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.325
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.65
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "east": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "west": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "up": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "down": {
+                  "uv": [
+                    32,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        },
+        {
+          "name": "aether_burst_flash",
+          "pivot": [
+            -0.0,
+            25.0,
+            0.0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -0.5,
+                24.5,
+                -0.02
+              ],
+              "size": [
+                1.0,
+                1.0,
+                0.04
+              ],
+              "uv": {
+                "north": {
+                  "uv": [
+                    46,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                },
+                "south": {
+                  "uv": [
+                    46,
+                    86
+                  ],
+                  "uv_size": [
+                    9,
+                    9
+                  ]
+                }
+              }
+            }
+          ],
+          "parent": "aether_effects"
+        }
+      ]
+    }
+  ]
+}

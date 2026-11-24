@@ -1,0 +1,178 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.wilds.pebble_mimic": {
+      "initial_state": "idle",
+      "states": {
+        "idle": {
+          "animations": [
+            {
+              "stone.idle": "q.mark_variant == 0"
+            },
+            {
+              "mossy.idle": "q.mark_variant == 1"
+            },
+            {
+              "sand.idle": "q.mark_variant == 2"
+            },
+            {
+              "clay.idle": "q.mark_variant == 3"
+            },
+            {
+              "coal.idle": "q.mark_variant == 4"
+            },
+            {
+              "copper.idle": "q.mark_variant == 5"
+            },
+            {
+              "iron.idle": "q.mark_variant == 6"
+            },
+            {
+              "gold.idle": "q.mark_variant == 7"
+            },
+            {
+              "diamond.idle": "q.mark_variant == 8"
+            },
+            {
+              "netherite.idle": "q.mark_variant == 9"
+            }
+          ],
+          "blend_transition": 0.25,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "hurt": "q.hurt_time > 0"
+            },
+            {
+              "walk": "q.modified_move_speed > 0.05"
+            }
+          ]
+        },
+        "walk": {
+          "animations": [
+            {
+              "stone.walk": "q.mark_variant == 0"
+            },
+            {
+              "mossy.walk": "q.mark_variant == 1"
+            },
+            {
+              "sand.walk": "q.mark_variant == 2"
+            },
+            {
+              "clay.walk": "q.mark_variant == 3"
+            },
+            {
+              "coal.walk": "q.mark_variant == 4"
+            },
+            {
+              "copper.walk": "q.mark_variant == 5"
+            },
+            {
+              "iron.walk": "q.mark_variant == 6"
+            },
+            {
+              "gold.walk": "q.mark_variant == 7"
+            },
+            {
+              "diamond.walk": "q.mark_variant == 8"
+            },
+            {
+              "netherite.walk": "q.mark_variant == 9"
+            }
+          ],
+          "blend_transition": 0.25,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "hurt": "q.hurt_time > 0"
+            },
+            {
+              "idle": "q.modified_move_speed <= 0.05"
+            }
+          ]
+        },
+        "hurt": {
+          "animations": [
+            {
+              "stone.hurt": "q.mark_variant == 0"
+            },
+            {
+              "mossy.hurt": "q.mark_variant == 1"
+            },
+            {
+              "sand.hurt": "q.mark_variant == 2"
+            },
+            {
+              "clay.hurt": "q.mark_variant == 3"
+            },
+            {
+              "coal.hurt": "q.mark_variant == 4"
+            },
+            {
+              "copper.hurt": "q.mark_variant == 5"
+            },
+            {
+              "iron.hurt": "q.mark_variant == 6"
+            },
+            {
+              "gold.hurt": "q.mark_variant == 7"
+            },
+            {
+              "diamond.hurt": "q.mark_variant == 8"
+            },
+            {
+              "netherite.hurt": "q.mark_variant == 9"
+            }
+          ],
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "idle": "q.all_animations_finished"
+            }
+          ]
+        },
+        "dead": {
+          "animations": [
+            {
+              "stone.death": "q.mark_variant == 0"
+            },
+            {
+              "mossy.death": "q.mark_variant == 1"
+            },
+            {
+              "sand.death": "q.mark_variant == 2"
+            },
+            {
+              "clay.death": "q.mark_variant == 3"
+            },
+            {
+              "coal.death": "q.mark_variant == 4"
+            },
+            {
+              "copper.death": "q.mark_variant == 5"
+            },
+            {
+              "iron.death": "q.mark_variant == 6"
+            },
+            {
+              "gold.death": "q.mark_variant == 7"
+            },
+            {
+              "diamond.death": "q.mark_variant == 8"
+            },
+            {
+              "netherite.death": "q.mark_variant == 9"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

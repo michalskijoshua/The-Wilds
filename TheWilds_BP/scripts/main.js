@@ -1,8 +1,12 @@
 // The Wilds 0.0.1-p0: Phase 0 prototypes only. Works with or without Guilds+ (detected at runtime, never edited).
 import { world, system, guard, guildsPresent, VERSION } from "./core/util.js";
+import { BiomeTypes, ItemStack } from "@minecraft/server";
 import { seatReport, stats as seatStats, testSeat, allBeasts, towerReport } from "./tusk/seats.js";
 import { invites, toggleInvite, uninvite, mayRide } from "./tusk/owners.js";
 import { durabilityTest } from "./tusk/durability.js";
+import { buildHowdah } from "./tusk/menu.js";
+import "./tusk/tame.js";
+import { wildVisit, wildInfo, wildAge } from "./tusk/wild.js";
 import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
@@ -51,6 +55,30 @@ const TESTS = {
     p.sendMessage("move on");
   },
   dbg: (p) => p.sendMessage(JSON.stringify(seatStats)),
+  tame: (p, [owner]) => {                                // tame the nearest beast to a stand-in owner (no real player here)
+    const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!b) return p.sendMessage("no beast");
+    b.setDynamicProperty("wilds:owner", owner); b.setDynamicProperty("wilds:owner_name", owner); b.triggerEvent("wilds:on_tame");
+    system.runTimeout(() => p.sendMessage(`tamed: is_tamed ${!!b.getComponent("minecraft:is_tamed")}, seats ${b.getComponent("minecraft:rideable")?.seatCount}, variant ${b.getComponent("minecraft:variant")?.value}`), 2);
+  },
+  howdah: (p) => {                                       // build a howdah on the nearest beast: first with empty pockets, then with 25 emeralds
+    const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!b) return p.sendMessage("no beast");
+    const pocket = (items) => ({ size: items.length, getItem: (i) => items[i], setItem: (i, it) => { items[i] = it; } });
+    const poor = { ...p, getComponent: () => ({ container: pocket([]) }), playSound: () => {} };
+    p.sendMessage(`poor player: ${buildHowdah(b, poor)}`);
+    const purse = [new ItemStack("minecraft:emerald", 25)], rich = { ...p, getComponent: () => ({ container: pocket(purse) }), playSound: () => {} };
+    p.sendMessage(`player with 25 emeralds: ${buildHowdah(b, rich)} Emeralds left: ${purse[0]?.amount ?? 0}`);
+    system.runTimeout(() => p.sendMessage(`howdah: seats ${b.getComponent("minecraft:rideable")?.seatCount}, variant ${b.getComponent("minecraft:variant")?.value}, chest ${b.getComponent("minecraft:inventory")?.container?.size}`), 2);
+  },
+  wild_visit: (p) => { wildVisit(p); wildInfo(p); },
+  wild_info: (p) => wildInfo(p),
+  forms: (p) => {                                        // form (saved) and look (mark_variant) must match
+    let ok = 0, bad = 0;
+    for (const t of ["wilds:pebble_mimic", "wilds:aetherseed"]) for (const e of p.dimension.getEntities({ type: t })) { if (e.getProperty("wilds:form") === (e.getComponent("minecraft:mark_variant")?.value ?? 0)) ok++; else bad++; }
+    p.sendMessage(`forms matching their look: ${ok}, not matching: ${bad}`);
+  },
+  biomes: (p) => { try { p.sendMessage(BiomeTypes.getAll().map((b) => b.id.replace("minecraft:", "")).sort().join(" ")); } catch (err) { p.sendMessage(`${err}`); } },
+  looks: (p) => { for (const b of p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 400 })) { const c = (id) => b.getComponent(id)?.value; p.sendMessage(`beast ${Math.floor(b.location.x)} ${Math.floor(b.location.y)} ${Math.floor(b.location.z)}: kind ${c("minecraft:mark_variant")} (${b.getDynamicProperty("wilds:kind")}), build ${c("minecraft:variant")}, wounded ${c("minecraft:skin_id")}`); } },
+  wild_age: (p, [h]) => wildAge(p, (+h || 0) * 3600 * 1000),
   invite_check: (p) => {                                 // the invite rules with stand-in players (no real players on the test server)
     const fake = (id, name) => ({ id, name, sendMessage: (m) => p.sendMessage(`  to ${name}: ${m}`) });
     const own = fake("wt_owner", "Olly"), pip = fake("wt_pip", "Pip"), sam = fake("wt_sam", "Sam");

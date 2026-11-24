@@ -2,7 +2,8 @@
 // The roll happens in the entity file (minecraft:entity_spawned, weights 750/200/40/9/1 out of 1000), so it runs once at
 // birth, inside the engine, and is never rerolled: entity_spawned does not fire again on reload. The value lives in
 // the entity property wilds:affinity, which saves with the mob. Size (small/large) is rolled the same way and is
-// only a scale, not new geometry.
+// only a scale: small = the size of Codex's "Mini" model, large = half the full model (proposal, 24 Nov 2026).
+// The look follows the form through q.mark_variant (event wilds:form_<n>), the Android-safe way.
 // Approved: the 75 % common tier. Proposal: the other tiers and which form sits in which tier (FORMS below).
 import { world, system, guard, dbg } from "../core/util.js";
 
@@ -48,11 +49,13 @@ system.runInterval(guard("mimic", () => {
     for (const e of list) {
       if (!e.isValid || t - (last.get(e.id) ?? 0) < COOLDOWN_MS) continue;
       const f = touching(e); if (f === undefined) continue;
-      const cur = e.getProperty("wilds:form"); if (f === cur) continue;
+      const cur = e.getProperty("wilds:form");
+      if (e.getComponent("minecraft:mark_variant")?.value !== cur) e.triggerEvent(`wilds:form_${cur}`);   // the look follows the form
+      if (f === cur) continue;
       const aff = e.getProperty("wilds:affinity");
       last.set(e.id, t);
       if (!allowed(aff, f)) { mimicStats.refused++; dbg(`mimic (${TIERS[aff]}) touched ${FORMS[f].name}: refused`); continue; }
-      e.setProperty("wilds:form", f);
+      e.setProperty("wilds:form", f); e.triggerEvent(`wilds:form_${f}`);
       mimicStats.transforms++;
       try { e.dimension.spawnParticle("minecraft:villager_happy", { x: e.location.x, y: e.location.y + 0.6, z: e.location.z }); } catch { /* */ }
       dbg(`mimic (${TIERS[aff]}) became ${FORMS[f].name}`);

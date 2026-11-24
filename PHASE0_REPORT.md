@@ -1,4 +1,8 @@
-# The Wilds: Phase 0 report (current build 0.0.6, 24 Nov 2026)
+# The Wilds: Phase 0 report (current build 0.0.8, 24 Nov 2026)
+
+**0.0.8:** the real models for the Tuskbeast (3 kinds, wild and howdah looks, Wounded clips), the Pebble Mimic and the Aetherseed. See `CHANGELOG.md`.
+
+**0.0.7:** wild Tuskbeasts (one per 750-block square), horse-style taming, the Tuskbeast menu and the howdah upgrade. See `CHANGELOG.md`.
 
 **0.0.6:** guards no longer slide into the driver's seat (an invisible seat keeper holds it). Android test of 0.0.5 by
 the Director: "works really well". See `CHANGELOG.md`.

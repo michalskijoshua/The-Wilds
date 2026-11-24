@@ -2,30 +2,154 @@
   "format_version": "1.10.0",
   "render_controllers": {
     "controller.render.wilds.pebble_mimic": {
-      "arrays": {
-        "textures": {
-          "Array.forms": ["Texture.stone", "Texture.mossy", "Texture.sand", "Texture.clay", "Texture.coal", "Texture.copper", "Texture.iron", "Texture.gold", "Texture.diamond", "Texture.netherite"]
+      "geometry": "Array.g[q.mark_variant]",
+      "materials": [
+        {
+          "*": "Material.default"
         }
-      },
-      "geometry": "Geometry.default",
-      "materials": [{ "*": "Material.default" }],
-      "textures": ["Array.forms[query.property('wilds:form')]"]
+      ],
+      "textures": [
+        "Array.t[q.mark_variant]"
+      ],
+      "arrays": {
+        "geometries": {
+          "Array.g": [
+            "Geometry.stone",
+            "Geometry.mossy",
+            "Geometry.sand",
+            "Geometry.clay",
+            "Geometry.coal",
+            "Geometry.copper",
+            "Geometry.iron",
+            "Geometry.gold",
+            "Geometry.diamond",
+            "Geometry.netherite"
+          ]
+        },
+        "textures": {
+          "Array.t": [
+            "Texture.stone",
+            "Texture.mossy",
+            "Texture.sand",
+            "Texture.clay",
+            "Texture.coal",
+            "Texture.copper",
+            "Texture.iron",
+            "Texture.gold",
+            "Texture.diamond",
+            "Texture.netherite"
+          ]
+        }
+      }
     },
     "controller.render.wilds.aetherseed": {
+      "geometry": "Array.g[q.mark_variant]",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.t[q.mark_variant]"
+      ],
       "arrays": {
-        "textures": { "Array.forms": ["Texture.original", "Texture.bloom", "Texture.withered"] }
-      },
-      "geometry": "Geometry.default",
-      "materials": [{ "*": "Material.default" }],
-      "textures": ["Array.forms[query.property('wilds:form')]"]
+        "geometries": {
+          "Array.g": [
+            "Geometry.original",
+            "Geometry.bloom",
+            "Geometry.withered"
+          ]
+        },
+        "textures": {
+          "Array.t": [
+            "Texture.original",
+            "Texture.bloom",
+            "Texture.withered"
+          ]
+        }
+      }
     },
     "controller.render.wilds.landmark_marker": {
       "arrays": {
-        "textures": { "Array.kinds": ["Texture.oni", "Texture.colossus", "Texture.serpent", "Texture.storm", "Texture.herd"] }
+        "textures": {
+          "Array.kinds": [
+            "Texture.oni",
+            "Texture.colossus",
+            "Texture.serpent",
+            "Texture.storm",
+            "Texture.herd"
+          ]
+        }
       },
       "geometry": "Geometry.default",
-      "materials": [{ "*": "Material.default" }],
-      "textures": ["Array.kinds[query.property('wilds:kind')]"]
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.kinds[query.property('wilds:kind')]"
+      ]
+    },
+    "controller.render.wilds.tuskbeast": {
+      "geometry": "Array.geos[q.mark_variant * 2 + q.variant]",
+      "materials": [
+        {
+          "*": "Material.default"
+        }
+      ],
+      "textures": [
+        "Array.skins[q.mark_variant * 2 + q.variant]"
+      ],
+      "arrays": {
+        "geometries": {
+          "Array.geos": [
+            "Geometry.savanna_tuskbeast",
+            "Geometry.savanna_tuskbeast_armored",
+            "Geometry.badlands_tuskbeast",
+            "Geometry.badlands_tuskbeast_armored",
+            "Geometry.tundra_tuskbeast",
+            "Geometry.tundra_tuskbeast_armored"
+          ]
+        },
+        "textures": {
+          "Array.skins": [
+            "Texture.savanna_tuskbeast",
+            "Texture.savanna_tuskbeast_armored",
+            "Texture.badlands_tuskbeast",
+            "Texture.badlands_tuskbeast_armored",
+            "Texture.tundra_tuskbeast",
+            "Texture.tundra_tuskbeast_armored"
+          ]
+        }
+      }
+    },
+    "controller.render.wilds.aetherseed_glow": {
+      "geometry": "Array.g[q.mark_variant]",
+      "materials": [
+        {
+          "*": "Material.glow"
+        }
+      ],
+      "textures": [
+        "Array.t[q.mark_variant]"
+      ],
+      "arrays": {
+        "geometries": {
+          "Array.g": [
+            "Geometry.original_glow",
+            "Geometry.bloom_glow",
+            "Geometry.withered_glow"
+          ]
+        },
+        "textures": {
+          "Array.t": [
+            "Texture.original_glow",
+            "Texture.bloom_glow",
+            "Texture.withered_glow"
+          ]
+        }
+      }
     }
   }
 }

@@ -4,19 +4,19 @@
 // cell, its plan is written to world data (one small property per cell: wilds:lm:<cx>,<cz>). A kind is placed the first
 // time a player is in a fitting biome inside that cell: at the anchor if the anchor is loaded and fits, otherwise at a
 // fitting spot near the player on the side toward the anchor. The record is written BEFORE the spawn, so a crash,
-// a second player or a Realm restart can never place it twice. Felled landmarks stay felled (RETURN_FELLED).
+// a second player or a Realm restart can never place it twice. A felled landmark returns after 3 real days (Director
+// 24 Nov 2026). Tuskbeasts are no longer landmarks: they are solitary, one per square (tusk/wild.js).
 // Placeholders: the landmark is a coloured marker block with a floating name. No creature models in Phase 0.
 import { world, system, guard, jget, jset, dbg, dist2d } from "../core/util.js";
 
 export const CELL = 1500;
-export const RETURN_FELLED = false;           // open question 4: do felled wonders return?
+export const RETURN_FELLED = true, RETURN_MS = 3 * 24 * 3600 * 1000;   // felled wonders return after 3 real days
 export const KINDS = [
   // chance = share of cells that hold this kind (proposal, except Oni: cherry groves only, approved)
   { key: "oni", name: "Oni Cairn", chance: 1.0, biomes: ["cherry_grove"] },
   { key: "colossus", name: "Meadow Colossus", chance: 0.5, biomes: ["meadow", "plains", "sunflower_plains", "flower_forest"] },
   { key: "serpent", name: "Serpentwreath", chance: 0.15, biomes: ["jagged_peaks", "frozen_peaks", "stony_peaks", "snowy_slopes"] },
-  { key: "storm", name: "Stormmantle", chance: 0.35, biomes: ["windswept_hills", "windswept_gravelly_hills", "windswept_forest", "stony_peaks"] },
-  { key: "herd", name: "Tuskbeast herd", chance: 0.7, biomes: ["savanna", "savanna_plateau", "windswept_savanna", "badlands", "eroded_badlands", "wooded_badlands", "snowy_plains"] },
+  { key: "storm", name: "Stormmantle", chance: 0.35, biomes: ["extreme_hills", "extreme_hills_mutated", "extreme_hills_plus_trees", "extreme_hills_plus_trees_mutated", "extreme_hills_edge", "stony_peaks"] },
 ];
 const MARKER = "wilds:landmark_marker";
 
@@ -94,7 +94,9 @@ export function visit(p) {
     if (!rec) { rec = plan(cx, cz); jset(recKey(cx, cz), rec); dbg(`cell ${cx},${cz} planned: ${Object.entries(rec.kinds).filter(([, v]) => v.state === "pending").map(([k]) => k).join(", ") || "nothing"}`); }
     KINDS.forEach((k, i) => {
       const e = rec.kinds[k.key];
-      if (e?.state === "pending" || (RETURN_FELLED && e?.state === "felled")) { if (e.state === "felled") e.state = "pending"; place(p, cx, cz, rec, k, i); }
+      if (!e) return;
+      if (RETURN_FELLED && e.state === "felled" && Date.now() - (e.ft ?? 0) >= RETURN_MS) e.state = "pending";
+      if (e.state === "pending") place(p, cx, cz, rec, k, i);
     });
   }
 }
@@ -103,8 +105,8 @@ world.afterEvents.entityDie.subscribe(guard("lm.die", (e) => {
   const key = e.deadEntity.getDynamicProperty("wilds:lm_key"); if (!key) return;
   const [cell, kind] = key.split(":"); const [cx, cz] = cell.split(",").map(Number);
   const rec = jget(recKey(cx, cz), null); if (!rec?.kinds[kind]) return;
-  rec.kinds[kind].state = "felled"; jset(recKey(cx, cz), rec);
-  dbg(`${kind} in cell ${cell} felled; it will ${RETURN_FELLED ? "" : "not "}return`);
+  rec.kinds[kind].state = "felled"; rec.kinds[kind].ft = Date.now(); jset(recKey(cx, cz), rec);
+  dbg(`${kind} in cell ${cell} felled; it will ${RETURN_FELLED ? "return in 3 days" : "not return"}`);
 }), { entityTypes: [MARKER] });
 
 export function landmarkInfo(player) {

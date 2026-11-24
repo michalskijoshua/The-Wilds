@@ -4,7 +4,37 @@
     "animation.wilds.tuskbeast.face_forward": {
       "loop": true,
       "bones": {
-        "root": { "rotation": [0, 180, 0] }
+        "root": {
+          "rotation": [
+            0,
+            180,
+            0
+          ]
+        }
+      }
+    },
+    "animation.wilds.pebble_mimic.face_forward": {
+      "loop": true,
+      "bones": {
+        "pebble_mimic": {
+          "rotation": [
+            0,
+            180,
+            0
+          ]
+        }
+      }
+    },
+    "animation.wilds.aetherseed.face_forward": {
+      "loop": true,
+      "bones": {
+        "aetherseed": {
+          "rotation": [
+            0,
+            180,
+            0
+          ]
+        }
       }
     }
   }

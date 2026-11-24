@@ -1,0 +1,94 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.wilds.aetherseed": {
+      "initial_state": "idle",
+      "states": {
+        "idle": {
+          "animations": [
+            {
+              "original.idle": "q.mark_variant == 0"
+            },
+            {
+              "bloom.idle": "q.mark_variant == 1"
+            },
+            {
+              "withered.idle": "q.mark_variant == 2"
+            }
+          ],
+          "blend_transition": 0.25,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "hurt": "q.hurt_time > 0"
+            },
+            {
+              "walk": "q.modified_move_speed > 0.05"
+            }
+          ]
+        },
+        "walk": {
+          "animations": [
+            {
+              "original.walk": "q.mark_variant == 0"
+            },
+            {
+              "bloom.walk": "q.mark_variant == 1"
+            },
+            {
+              "withered.walk": "q.mark_variant == 2"
+            }
+          ],
+          "blend_transition": 0.25,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "hurt": "q.hurt_time > 0"
+            },
+            {
+              "idle": "q.modified_move_speed <= 0.05"
+            }
+          ]
+        },
+        "hurt": {
+          "animations": [
+            {
+              "original.hurt": "q.mark_variant == 0"
+            },
+            {
+              "bloom.hurt": "q.mark_variant == 1"
+            },
+            {
+              "withered.hurt": "q.mark_variant == 2"
+            }
+          ],
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "idle": "q.all_animations_finished"
+            }
+          ]
+        },
+        "dead": {
+          "animations": [
+            {
+              "original.death": "q.mark_variant == 0"
+            },
+            {
+              "bloom.death": "q.mark_variant == 1"
+            },
+            {
+              "withered.death": "q.mark_variant == 2"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

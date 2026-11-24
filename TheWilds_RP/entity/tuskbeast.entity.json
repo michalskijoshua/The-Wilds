@@ -3,23 +3,80 @@
   "minecraft:client_entity": {
     "description": {
       "identifier": "wilds:tuskbeast",
-      "materials": { "default": "entity_alphatest" },
-      "textures": { "default": "textures/entity/tuskbeast/savanna_tuskbeast_armored" },
-      "geometry": { "default": "geometry.savanna_tuskbeast_armored" },
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "savanna_tuskbeast": "textures/entity/tuskbeast/savanna_tuskbeast",
+        "savanna_tuskbeast_armored": "textures/entity/tuskbeast/savanna_tuskbeast_armored",
+        "badlands_tuskbeast": "textures/entity/tuskbeast/badlands_tuskbeast",
+        "badlands_tuskbeast_armored": "textures/entity/tuskbeast/badlands_tuskbeast_armored",
+        "tundra_tuskbeast": "textures/entity/tuskbeast/tundra_tuskbeast",
+        "tundra_tuskbeast_armored": "textures/entity/tuskbeast/tundra_tuskbeast_armored"
+      },
+      "geometry": {
+        "savanna_tuskbeast": "geometry.savanna_tuskbeast",
+        "savanna_tuskbeast_armored": "geometry.savanna_tuskbeast_armored",
+        "badlands_tuskbeast": "geometry.badlands_tuskbeast",
+        "badlands_tuskbeast_armored": "geometry.badlands_tuskbeast_armored",
+        "tundra_tuskbeast": "geometry.tundra_tuskbeast",
+        "tundra_tuskbeast_armored": "geometry.tundra_tuskbeast_armored"
+      },
       "animations": {
-        "idle": "animation.savanna_tuskbeast_armored.idle",
-        "walk": "animation.savanna_tuskbeast_armored.walk",
-        "hurt": "animation.savanna_tuskbeast_armored.hurt",
-        "death": "animation.savanna_tuskbeast_armored.death",
         "face_forward": "animation.wilds.tuskbeast.face_forward",
         "ctrl_move": "controller.animation.wilds.tuskbeast.move",
-        "ctrl_hurt": "controller.animation.wilds.tuskbeast.hurt"
+        "ctrl_hurt": "controller.animation.wilds.tuskbeast.hurt",
+        "savanna_tuskbeast.idle": "animation.savanna_tuskbeast.idle",
+        "savanna_tuskbeast.walk": "animation.savanna_tuskbeast.walk",
+        "savanna_tuskbeast.wounded_idle": "animation.savanna_tuskbeast.wounded_idle",
+        "savanna_tuskbeast.wounded_walk": "animation.savanna_tuskbeast.wounded_walk",
+        "savanna_tuskbeast.hurt": "animation.savanna_tuskbeast.hurt",
+        "savanna_tuskbeast.death": "animation.savanna_tuskbeast.death",
+        "savanna_tuskbeast_armored.idle": "animation.savanna_tuskbeast_armored.idle",
+        "savanna_tuskbeast_armored.walk": "animation.savanna_tuskbeast_armored.walk",
+        "savanna_tuskbeast_armored.wounded_idle": "animation.savanna_tuskbeast_armored.wounded_idle",
+        "savanna_tuskbeast_armored.wounded_walk": "animation.savanna_tuskbeast_armored.wounded_walk",
+        "savanna_tuskbeast_armored.hurt": "animation.savanna_tuskbeast_armored.hurt",
+        "savanna_tuskbeast_armored.death": "animation.savanna_tuskbeast_armored.death",
+        "badlands_tuskbeast.idle": "animation.badlands_tuskbeast.idle",
+        "badlands_tuskbeast.walk": "animation.badlands_tuskbeast.walk",
+        "badlands_tuskbeast.wounded_idle": "animation.badlands_tuskbeast.wounded_idle",
+        "badlands_tuskbeast.wounded_walk": "animation.badlands_tuskbeast.wounded_walk",
+        "badlands_tuskbeast.hurt": "animation.badlands_tuskbeast.hurt",
+        "badlands_tuskbeast.death": "animation.badlands_tuskbeast.death",
+        "badlands_tuskbeast_armored.idle": "animation.badlands_tuskbeast_armored.idle",
+        "badlands_tuskbeast_armored.walk": "animation.badlands_tuskbeast_armored.walk",
+        "badlands_tuskbeast_armored.wounded_idle": "animation.badlands_tuskbeast_armored.wounded_idle",
+        "badlands_tuskbeast_armored.wounded_walk": "animation.badlands_tuskbeast_armored.wounded_walk",
+        "badlands_tuskbeast_armored.hurt": "animation.badlands_tuskbeast_armored.hurt",
+        "badlands_tuskbeast_armored.death": "animation.badlands_tuskbeast_armored.death",
+        "tundra_tuskbeast.idle": "animation.tundra_tuskbeast.idle",
+        "tundra_tuskbeast.walk": "animation.tundra_tuskbeast.walk",
+        "tundra_tuskbeast.wounded_idle": "animation.tundra_tuskbeast.wounded_idle",
+        "tundra_tuskbeast.wounded_walk": "animation.tundra_tuskbeast.wounded_walk",
+        "tundra_tuskbeast.hurt": "animation.tundra_tuskbeast.hurt",
+        "tundra_tuskbeast.death": "animation.tundra_tuskbeast.death",
+        "tundra_tuskbeast_armored.idle": "animation.tundra_tuskbeast_armored.idle",
+        "tundra_tuskbeast_armored.walk": "animation.tundra_tuskbeast_armored.walk",
+        "tundra_tuskbeast_armored.wounded_idle": "animation.tundra_tuskbeast_armored.wounded_idle",
+        "tundra_tuskbeast_armored.wounded_walk": "animation.tundra_tuskbeast_armored.wounded_walk",
+        "tundra_tuskbeast_armored.hurt": "animation.tundra_tuskbeast_armored.hurt",
+        "tundra_tuskbeast_armored.death": "animation.tundra_tuskbeast_armored.death"
       },
       "scripts": {
-        "animate": ["face_forward", "ctrl_move", "ctrl_hurt"]
+        "animate": [
+          "face_forward",
+          "ctrl_move",
+          "ctrl_hurt"
+        ]
       },
-      "render_controllers": ["controller.render.default"],
-      "spawn_egg": { "base_color": "#b8894a", "overlay_color": "#5a3b1f" },
+      "render_controllers": [
+        "controller.render.wilds.tuskbeast"
+      ],
+      "spawn_egg": {
+        "base_color": "#b8894a",
+        "overlay_color": "#5a3b1f"
+      },
       "enable_attachables": false
     }
   }

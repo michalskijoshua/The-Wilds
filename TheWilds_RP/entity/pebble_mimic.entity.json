@@ -3,22 +3,91 @@
   "minecraft:client_entity": {
     "description": {
       "identifier": "wilds:pebble_mimic",
-      "materials": { "default": "entity_alphatest" },
-      "textures": {
-        "stone": "textures/blocks/stone",
-        "mossy": "textures/blocks/cobblestone_mossy",
-        "sand": "textures/blocks/sand",
-        "clay": "textures/blocks/clay",
-        "coal": "textures/blocks/coal_block",
-        "copper": "textures/blocks/copper_block",
-        "iron": "textures/blocks/iron_block",
-        "gold": "textures/blocks/gold_block",
-        "diamond": "textures/blocks/diamond_block",
-        "netherite": "textures/blocks/netherite_block"
+      "materials": {
+        "default": "entity_alphatest",
+        "glow": "entity_emissive_alpha"
       },
-      "geometry": { "default": "geometry.wilds_placeholder_cube" },
-      "render_controllers": ["controller.render.wilds.pebble_mimic"],
-      "spawn_egg": { "base_color": "#7d7d7d", "overlay_color": "#c9b27a" }
+      "textures": {
+        "stone": "textures/entity/pebble_mimic/pebble_mimic_stone",
+        "mossy": "textures/entity/pebble_mimic/pebble_mimic_mossy",
+        "sand": "textures/entity/pebble_mimic/pebble_mimic_sand",
+        "clay": "textures/entity/pebble_mimic/pebble_mimic_clay",
+        "coal": "textures/entity/pebble_mimic/pebble_mimic_coal",
+        "copper": "textures/entity/pebble_mimic/pebble_mimic_copper",
+        "iron": "textures/entity/pebble_mimic/pebble_mimic_iron",
+        "gold": "textures/entity/pebble_mimic/pebble_mimic_gold",
+        "diamond": "textures/entity/pebble_mimic/pebble_mimic_diamond",
+        "netherite": "textures/entity/pebble_mimic/pebble_mimic_netherite"
+      },
+      "geometry": {
+        "stone": "geometry.wilds_pebble_mimic_stone",
+        "mossy": "geometry.wilds_pebble_mimic_mossy",
+        "sand": "geometry.wilds_pebble_mimic_sand",
+        "clay": "geometry.wilds_pebble_mimic_clay",
+        "coal": "geometry.wilds_pebble_mimic_coal",
+        "copper": "geometry.wilds_pebble_mimic_copper",
+        "iron": "geometry.wilds_pebble_mimic_iron",
+        "gold": "geometry.wilds_pebble_mimic_gold",
+        "diamond": "geometry.wilds_pebble_mimic_diamond",
+        "netherite": "geometry.wilds_pebble_mimic_netherite"
+      },
+      "animations": {
+        "stone.idle": "animation.wilds_pebble_mimic_stone.standing_idle",
+        "stone.walk": "animation.wilds_pebble_mimic_stone.slow_crawl",
+        "stone.hurt": "animation.wilds_pebble_mimic_stone.hit_reaction",
+        "stone.death": "animation.wilds_pebble_mimic_stone.death_collapse",
+        "mossy.idle": "animation.wilds_pebble_mimic_mossy.standing_idle",
+        "mossy.walk": "animation.wilds_pebble_mimic_mossy.slow_crawl",
+        "mossy.hurt": "animation.wilds_pebble_mimic_mossy.hit_reaction",
+        "mossy.death": "animation.wilds_pebble_mimic_mossy.death_collapse",
+        "sand.idle": "animation.wilds_pebble_mimic_sand.standing_idle",
+        "sand.walk": "animation.wilds_pebble_mimic_sand.slow_crawl",
+        "sand.hurt": "animation.wilds_pebble_mimic_sand.hit_reaction",
+        "sand.death": "animation.wilds_pebble_mimic_sand.death_collapse",
+        "clay.idle": "animation.wilds_pebble_mimic_clay.standing_idle",
+        "clay.walk": "animation.wilds_pebble_mimic_clay.slow_crawl",
+        "clay.hurt": "animation.wilds_pebble_mimic_clay.hit_reaction",
+        "clay.death": "animation.wilds_pebble_mimic_clay.death_collapse",
+        "coal.idle": "animation.wilds_pebble_mimic_coal.standing_idle",
+        "coal.walk": "animation.wilds_pebble_mimic_coal.slow_crawl",
+        "coal.hurt": "animation.wilds_pebble_mimic_coal.hit_reaction",
+        "coal.death": "animation.wilds_pebble_mimic_coal.death_collapse",
+        "copper.idle": "animation.wilds_pebble_mimic_copper.standing_idle",
+        "copper.walk": "animation.wilds_pebble_mimic_copper.slow_crawl",
+        "copper.hurt": "animation.wilds_pebble_mimic_copper.hit_reaction",
+        "copper.death": "animation.wilds_pebble_mimic_copper.death_collapse",
+        "iron.idle": "animation.wilds_pebble_mimic_iron.standing_idle",
+        "iron.walk": "animation.wilds_pebble_mimic_iron.slow_crawl",
+        "iron.hurt": "animation.wilds_pebble_mimic_iron.hit_reaction",
+        "iron.death": "animation.wilds_pebble_mimic_iron.death_collapse",
+        "gold.idle": "animation.wilds_pebble_mimic_gold.standing_idle",
+        "gold.walk": "animation.wilds_pebble_mimic_gold.slow_crawl",
+        "gold.hurt": "animation.wilds_pebble_mimic_gold.hit_reaction",
+        "gold.death": "animation.wilds_pebble_mimic_gold.death_collapse",
+        "diamond.idle": "animation.wilds_pebble_mimic_diamond.standing_idle",
+        "diamond.walk": "animation.wilds_pebble_mimic_diamond.slow_crawl",
+        "diamond.hurt": "animation.wilds_pebble_mimic_diamond.hit_reaction",
+        "diamond.death": "animation.wilds_pebble_mimic_diamond.death_collapse",
+        "netherite.idle": "animation.wilds_pebble_mimic_netherite.standing_idle",
+        "netherite.walk": "animation.wilds_pebble_mimic_netherite.slow_crawl",
+        "netherite.hurt": "animation.wilds_pebble_mimic_netherite.hit_reaction",
+        "netherite.death": "animation.wilds_pebble_mimic_netherite.death_collapse",
+        "ctrl": "controller.animation.wilds.pebble_mimic",
+        "face_forward": "animation.wilds.pebble_mimic.face_forward"
+      },
+      "scripts": {
+        "animate": [
+          "face_forward",
+          "ctrl"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.wilds.pebble_mimic"
+      ],
+      "spawn_egg": {
+        "base_color": "#7d7d7d",
+        "overlay_color": "#c9b27a"
+      }
     }
   }
 }

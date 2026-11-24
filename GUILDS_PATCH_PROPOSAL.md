@@ -67,3 +67,20 @@ Like part 1 it is generic (any mount, no Wilds name), and it changes nothing for
 
 A walk marker placed in the seconds before a guard boards stays until he gets off. Harmless, but it could be tidied in
 the patrol loop: before `continue` for a mounted guard, drop his marker (`const st = S.get(e.id); if (st?.m) { dropMarker(st.m); S.delete(e.id); }`).
+
+## Part 4 (proposed 24 Nov 2026, not applied): guild friends ride without invites
+
+**Why:** the Director wants guild friends to hop on and off each other's Tuskbeasts without invites, and enemies kept
+off (for example two guilds at war).
+
+**What Guilds+ has today:** one player per guild (the owner), no member list and no wars. Each pack keeps its own saved
+records, so The Wilds can't read Guilds+'s records even when a list exists.
+
+**The ask (a Guilds+ design job first):**
+1. Guild members: a way for a guild owner to add and remove members (Guilds+ decides the menus and rules).
+2. **Share membership as a player tag**, the one thing both packs can see: every member, the owner included, carries
+   `guilds_member:<guild owner's player id>`, kept up to date when they join, leave or are removed.
+3. Wars, if Guilds+ adds them, need nothing extra here: an enemy never carries the owner's tag.
+
+**The Wilds side is already built (0.0.7) and idle until the tag exists:** a player carrying `guilds_member:<owner id>`
+may ride that owner's Tuskbeasts with no invite. Everyone else still needs an invite, so a war enemy can't take a seat.
