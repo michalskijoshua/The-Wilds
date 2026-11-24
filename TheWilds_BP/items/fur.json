@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:item": {
+    "description": {
+      "identifier": "wilds:fur",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:icon": "wilds_fur",
+      "minecraft:display_name": {
+        "value": "item.wilds:fur.name"
+      },
+      "minecraft:max_stack_size": 64
+    }
+  }
+}

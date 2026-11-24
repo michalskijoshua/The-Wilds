@@ -13,3 +13,6 @@ item.wilds:cage.name=Cage
 item.wilds:cage_aetherseed_original.name=Caged Aetherseed (Original)
 item.wilds:cage_aetherseed_bloom.name=Caged Aetherseed (Bloom)
 item.wilds:cage_aetherseed_withered.name=Caged Aetherseed (Withered)
+entity.wilds:frost_lynx.name=Frost Lynx
+item.spawn_egg.entity.wilds:frost_lynx.name=Frost Lynx Spawn Egg
+item.wilds:fur.name=Frost Lynx Fur

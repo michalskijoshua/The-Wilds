@@ -1,0 +1,345 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "wilds:frost_lynx",
+      "is_spawnable": true,
+      "is_summonable": true
+    },
+    "component_groups": {
+      "wilds:wild": {
+        "minecraft:tameable": {
+          "probability": 0.33,
+          "tame_items": [
+            "minecraft:beef",
+            "minecraft:porkchop",
+            "minecraft:mutton",
+            "minecraft:chicken",
+            "minecraft:rabbit"
+          ],
+          "tame_event": {
+            "event": "wilds:on_tame",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.panic": {
+          "priority": 1,
+          "speed_multiplier": 2.0
+        },
+        "minecraft:behavior.avoid_mob_type": {
+          "priority": 2,
+          "entity_types": [
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "is_sneaking",
+                    "subject": "other",
+                    "value": false
+                  }
+                ]
+              },
+              "max_dist": 11,
+              "walk_speed_multiplier": 1.4,
+              "sprint_speed_multiplier": 2.3
+            },
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "is_sneaking",
+                    "subject": "other",
+                    "value": true
+                  },
+                  {
+                    "none_of": [
+                      {
+                        "test": "has_equipment",
+                        "subject": "other",
+                        "domain": "hand",
+                        "value": "minecraft:beef"
+                      },
+                      {
+                        "test": "has_equipment",
+                        "subject": "other",
+                        "domain": "hand",
+                        "value": "minecraft:porkchop"
+                      },
+                      {
+                        "test": "has_equipment",
+                        "subject": "other",
+                        "domain": "hand",
+                        "value": "minecraft:mutton"
+                      },
+                      {
+                        "test": "has_equipment",
+                        "subject": "other",
+                        "domain": "hand",
+                        "value": "minecraft:chicken"
+                      },
+                      {
+                        "test": "has_equipment",
+                        "subject": "other",
+                        "domain": "hand",
+                        "value": "minecraft:rabbit"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "max_dist": 4,
+              "walk_speed_multiplier": 1.4,
+              "sprint_speed_multiplier": 2.3
+            }
+          ]
+        },
+        "minecraft:behavior.tempt": {
+          "priority": 3,
+          "speed_multiplier": 0.6,
+          "within_radius": 10,
+          "items": [
+            "minecraft:beef",
+            "minecraft:porkchop",
+            "minecraft:mutton",
+            "minecraft:chicken",
+            "minecraft:rabbit"
+          ],
+          "can_get_scared": true
+        },
+        "minecraft:behavior.nearest_attackable_target": {
+          "priority": 4,
+          "must_see": true,
+          "reselect_targets": true,
+          "within_radius": 16,
+          "entity_types": [
+            {
+              "filters": {
+                "all_of": [
+                  {
+                    "any_of": [
+                      {
+                        "test": "is_family",
+                        "subject": "other",
+                        "value": "rabbit"
+                      },
+                      {
+                        "test": "is_family",
+                        "subject": "other",
+                        "value": "chicken"
+                      },
+                      {
+                        "test": "is_family",
+                        "subject": "other",
+                        "value": "wilds_bloomling"
+                      }
+                    ]
+                  },
+                  {
+                    "test": "is_daytime",
+                    "value": false
+                  }
+                ]
+              },
+              "max_dist": 16
+            }
+          ]
+        },
+        "minecraft:behavior.random_stroll": {
+          "priority": 7,
+          "speed_multiplier": 0.8
+        },
+        "minecraft:movement": {
+          "value": 0.3
+        },
+        "minecraft:skin_id": {
+          "value": 0
+        }
+      },
+      "wilds:tamed": {
+        "minecraft:is_tamed": {},
+        "minecraft:health": {
+          "value": 20,
+          "max": 20
+        },
+        "minecraft:behavior.owner_hurt_by_target": {
+          "priority": 1
+        }
+      },
+      "wilds:mode_follow": {
+        "minecraft:behavior.follow_owner": {
+          "priority": 4,
+          "speed_multiplier": 1.1,
+          "start_distance": 6,
+          "stop_distance": 2
+        },
+        "minecraft:movement": {
+          "value": 0.3
+        },
+        "minecraft:skin_id": {
+          "value": 0
+        }
+      },
+      "wilds:mode_stay": {
+        "minecraft:movement": {
+          "value": 0.0
+        },
+        "minecraft:skin_id": {
+          "value": 1
+        }
+      },
+      "wilds:mode_wander": {
+        "minecraft:behavior.random_stroll": {
+          "priority": 7,
+          "speed_multiplier": 0.8
+        },
+        "minecraft:movement": {
+          "value": 0.3
+        },
+        "minecraft:skin_id": {
+          "value": 0
+        }
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "wilds_frost_lynx",
+          "wilds",
+          "lynx",
+          "mob"
+        ]
+      },
+      "minecraft:collision_box": {
+        "width": 0.7,
+        "height": 0.7
+      },
+      "minecraft:scale": {
+        "value": 1.3
+      },
+      "minecraft:health": {
+        "value": 16,
+        "max": 16
+      },
+      "minecraft:attack": {
+        "damage": 3
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:navigation.walk": {
+        "can_path_over_water": true,
+        "avoid_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:nameable": {},
+      "minecraft:persistent": {},
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:loot": {
+        "table": "loot_tables/entities/wilds_frost_lynx.json"
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "fall",
+            "deals_damage": "yes",
+            "damage_modifier": -5
+          }
+        ]
+      },
+      "minecraft:behavior.float": {
+        "priority": 0
+      },
+      "minecraft:behavior.melee_attack": {
+        "priority": 3,
+        "speed_multiplier": 1.4,
+        "track_target": true
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 8,
+        "look_distance": 6,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "wilds:wild"
+          ]
+        }
+      },
+      "wilds:on_tame": {
+        "remove": {
+          "component_groups": [
+            "wilds:wild"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:tamed",
+            "wilds:mode_follow"
+          ]
+        }
+      },
+      "wilds:mode_follow": {
+        "remove": {
+          "component_groups": [
+            "wilds:mode_stay",
+            "wilds:mode_wander"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:mode_follow"
+          ]
+        }
+      },
+      "wilds:mode_stay": {
+        "remove": {
+          "component_groups": [
+            "wilds:mode_follow",
+            "wilds:mode_wander"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:mode_stay"
+          ]
+        }
+      },
+      "wilds:mode_wander": {
+        "remove": {
+          "component_groups": [
+            "wilds:mode_follow",
+            "wilds:mode_stay"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:mode_wander"
+          ]
+        }
+      }
+    }
+  }
+}

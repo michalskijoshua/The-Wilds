@@ -13,6 +13,9 @@
     },
     "wilds_cage_aetherseed_withered": {
       "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_fur": {
+      "textures": "textures/items/rabbit_hide"
     }
   }
 }

@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.0.14 (24 Nov 2026): Batch C, the Frost Lynx
+
+- **Model:** the Director's Frost Lynx (23 clips) converted by `tools/lynx_build.py` (turned 180°, scale 1.3).
+  Client switches use vanilla queries only (ground speed, hurt, alive, `q.is_tamed`, and `q.skin_id == 1` = told to
+  Stay); the bite, the pounce, sniffing food, the taming nuzzle and the tricks are started by the script
+  (`Entity.playAnimation`).
+- **Wild** (`scripts/lynx.js`, entity `wilds:frost_lynx`): snowy spruce (`cold_taiga`, `cold_taiga_hills`,
+  `cold_taiga_mutated`), one per 500 x 500 square, back 1 real day after it dies or is tamed. Flees players at 11 blocks
+  (4 when they sneak; a sneaking player holding raw meat is not feared, and the meat tempts it). Never fights back.
+  Hunts rabbits, chickens and Bloomlings at dusk and night only.
+- **Taming:** raw beef, porkchop, mutton, chicken or rabbit, about 1 in 3 per feed (vanilla `tameable`). The tamer owns it.
+- **Tamed:** 20 health; tap with an empty hand (owner) for **Follow / Stay / Wander**; defends its owner; never hunts;
+  raw meat from the owner = a random trick (spin, offer paw, listen and peek) and +4 health.
+  Stay = speed 0 and the sit moves. Each mode group carries its own speed, so swapping modes never strips movement.
+- **Fur** (`wilds:fur`, "Frost Lynx Fur", placeholder icon: rabbit hide): 1-2 per lynx (+1 with Looting), wild or tamed.
+- Not cageable. Test hooks: `lynx_visit`, `lynx_info`, `lynx_tame`, `lynx_mode`, `lynx_trick`.
+- Server test, 0 errors: at night it killed a rabbit and a chicken within 20 s (pounce played 3 times); at noon a rabbit
+  lived; tamed: Follow / Stay (speed 0) / Wander / Follow all switched; a trick played; a tamed lynx at night left two
+  rabbits alone; the cage refused it; it dropped Fur; a real `cold_taiga` square got one lynx, a second visit none.
+  Not testable without a player: fleeing, sneaking up, taming by feeding, the menu.
+
 ## 0.0.13 (24 Nov 2026): Batch B, the cage; seeds stop glowing; a Mimic changes once
 
 Director's decisions after 0.0.12: the Kindlesprite is the creature that lights up, so **no Aetherseed glows** (the

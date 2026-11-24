@@ -12,6 +12,7 @@ import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
 import { capture, release, CAGEABLE, cageStats } from "./cage.js";
+import { lynxSpawner, setMode, reward, lynxInfo, lynxStats } from "./lynx.js";
 import { seedSpawner, spawnSeed, boneMeal, seedReport, summonZombie, snuff, villageCheck } from "./aether/life.js";
 
 // Test commands (cheats on): /scriptevent wilds:<command> [argument]
@@ -73,6 +74,13 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Frost Lynx (0.0.14)
+  lynx_visit: (p) => { lynxSpawner.visit(p); p.sendMessage(lynxSpawner.info(p)); },
+  lynx_info: (p) => { for (const l of p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 48 })) p.sendMessage(lynxInfo(l)); p.sendMessage(JSON.stringify(lynxStats)); },
+  lynx_tame: (p, [owner]) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!l) return p.sendMessage("no lynx");
+    l.triggerEvent("wilds:on_tame"); l.setDynamicProperty("wilds:owner", owner ?? "test"); l.setDynamicProperty("wilds:mode", "follow"); system.runTimeout(() => p.sendMessage(lynxInfo(l)), 2); },
+  lynx_mode: (p, [mode]) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!l) return p.sendMessage("no lynx"); setMode(l, mode); system.runTimeout(() => p.sendMessage(lynxInfo(l)), 2); },
+  lynx_trick: (p) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(l ? `trick ${reward(undefined, l)} | ${JSON.stringify(lynxStats)}` : "no lynx"); },
   // Cage (0.0.13): catch the nearest creature, then let it out here (optionally as if kept N minutes)
   cage_catch: (p) => {
     const e = p.dimension.getEntities({ location: p.location, maxDistance: 16, families: ["wilds"] }).filter((x) => x.typeId !== "wilds:seat_keeper")
