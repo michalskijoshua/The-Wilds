@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.0.16 (24 Nov 2026): spawn eggs, one per look
+
+- **24 eggs** (`wilds:egg_<creature>_<look>`, `tools/egg_build.py`): Tuskbeast x3 kinds, Aetherseed x3 forms,
+  Bloomling x8 looks, Pebble Mimic x10 forms. Listed with the spawn eggs in Creative (`menu_category` group
+  `minecraft:itemGroup.name.mobEgg`, no experimental toggle; loaded with no content-log warnings on the server).
+- **Icons:** Minecraft's egg template coloured from each look's own texture (most common colour = shell, a lively,
+  different one = spots). No Codex sprites.
+- **Hatching** (`scripts/eggs.js`): tap the ground; the creature comes out in that look. Tuskbeast eggs give the chosen
+  kind (wild ones still follow the biome); Mimics come out large, in the chosen form, and keep it (it counts as their one
+  change; their affinity is raised to allow that form). Used up as normal except in Creative.
+- The engine's single egg for the Tuskbeast, Aetherseed, Bloomling and Mimic is hidden; the Frost Lynx keeps its own.
+- Test hook: `eggs` (hatches all 24 in a row). Server test: all 24 came out in the right look and form, Mimics large,
+  Tuskbeast kinds kept after the biome check, 0 errors.
+
 ## 0.0.15 (24 Nov 2026): Batch D, the Bloomling
 
 - **Model:** Codex's 8 Bedrock looks (`tools/bloomling_build.py`): original, Ember Tulip, Sunbonnet, Moonbell, Froststar,

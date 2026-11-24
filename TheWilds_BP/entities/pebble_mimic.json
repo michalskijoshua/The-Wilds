@@ -3,7 +3,7 @@
   "minecraft:entity": {
     "description": {
       "identifier": "wilds:pebble_mimic",
-      "is_spawnable": true,
+      "is_spawnable": false,
       "is_summonable": true,
       "properties": {
         "wilds:affinity": {
@@ -438,6 +438,21 @@
           "component_groups": [
             "wilds:form_9"
           ]
+        }
+      },
+      "wilds:size_large": {
+        "remove": {
+          "component_groups": [
+            "wilds:small"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:large"
+          ]
+        },
+        "set_property": {
+          "wilds:size": 1
         }
       }
     }

@@ -12,6 +12,8 @@ import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
 import { capture, release, CAGEABLE, cageStats } from "./cage.js";
+import { hatch, eggStats } from "./eggs.js";
+import { EGGS } from "./eggs_data.js";
 import { lynxSpawner, setMode, reward, lynxInfo, lynxStats } from "./lynx.js";
 import { bloomVisit, looksAt, spawnBloomling, bloomStats, LOOKS as BLOOM_LOOKS } from "./bloomling.js";
 import { seedSpawner, spawnSeed, boneMeal, seedReport, summonZombie, snuff, villageCheck } from "./aether/life.js";
@@ -75,6 +77,12 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Spawn eggs (0.0.16): hatch every egg in a row along x
+  eggs: (p) => {
+    const made = EGGS.map((g, i) => hatch(g.id, p.dimension, { x: p.location.x + i * 2, y: p.location.y, z: p.location.z }));
+    system.runTimeout(() => p.sendMessage(made.map((e, i) => { const v = (id) => e.getComponent(id)?.value; const g = EGGS[i];
+      return `${g.creature}/${g.look}=${e.typeId.split(":")[1]} mark ${v("minecraft:mark_variant") ?? "-"}${e.typeId.endsWith("mimic") ? ` form ${e.getProperty("wilds:form")} size ${e.getProperty("wilds:size")}` : e.typeId.endsWith("seed") ? ` form ${e.getProperty("wilds:form")}` : ""}`; }).join("; ") + ` | ${JSON.stringify(eggStats)}`), 3);
+  },
   // Bloomling (0.0.15)
   bloom_looks: (p) => { const r = looksAt(p.dimension, { x: Math.floor(p.location.x), y: Math.floor(p.location.y), z: Math.floor(p.location.z) }); p.sendMessage(`${r.biome}, ${r.day ? "day" : "night"}: ${r.looks.join(", ") || "none"}`); },
   bloom_spawn: (p, [look]) => { spawnBloomling(p.dimension, p.location, look ?? "original"); p.sendMessage(`spawned ${look ?? "original"}`); },
