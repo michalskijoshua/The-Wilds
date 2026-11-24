@@ -1,0 +1,541 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "wilds:bloomling",
+      "is_spawnable": true,
+      "is_summonable": true
+    },
+    "component_groups": {
+      "wilds:look_0": {
+        "minecraft:mark_variant": {
+          "value": 0
+        }
+      },
+      "wilds:look_1": {
+        "minecraft:mark_variant": {
+          "value": 1
+        }
+      },
+      "wilds:look_2": {
+        "minecraft:mark_variant": {
+          "value": 2
+        }
+      },
+      "wilds:look_3": {
+        "minecraft:mark_variant": {
+          "value": 3
+        }
+      },
+      "wilds:look_4": {
+        "minecraft:mark_variant": {
+          "value": 4
+        }
+      },
+      "wilds:look_5": {
+        "minecraft:mark_variant": {
+          "value": 5
+        }
+      },
+      "wilds:look_6": {
+        "minecraft:mark_variant": {
+          "value": 6
+        }
+      },
+      "wilds:look_7": {
+        "minecraft:mark_variant": {
+          "value": 7
+        }
+      },
+      "wilds:adult": {
+        "minecraft:breedable": {
+          "require_tame": false,
+          "breed_items": [
+            "minecraft:dandelion",
+            "minecraft:poppy",
+            "minecraft:blue_orchid",
+            "minecraft:allium",
+            "minecraft:azure_bluet",
+            "minecraft:red_tulip",
+            "minecraft:orange_tulip",
+            "minecraft:white_tulip",
+            "minecraft:pink_tulip",
+            "minecraft:oxeye_daisy",
+            "minecraft:cornflower",
+            "minecraft:lily_of_the_valley"
+          ],
+          "breeds_with": {
+            "mate_type": "wilds:bloomling",
+            "baby_type": "wilds:bloomling",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          }
+        },
+        "minecraft:behavior.breed": {
+          "priority": 3,
+          "speed_multiplier": 1.0
+        },
+        "minecraft:loot": {
+          "table": "loot_tables/entities/rabbit.json"
+        }
+      },
+      "wilds:baby": {
+        "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.5
+        },
+        "minecraft:ageable": {
+          "duration": 1200,
+          "feed_items": [
+            "minecraft:dandelion",
+            "minecraft:poppy",
+            "minecraft:blue_orchid",
+            "minecraft:allium",
+            "minecraft:azure_bluet",
+            "minecraft:red_tulip",
+            "minecraft:orange_tulip",
+            "minecraft:white_tulip",
+            "minecraft:pink_tulip",
+            "minecraft:oxeye_daisy",
+            "minecraft:cornflower",
+            "minecraft:lily_of_the_valley"
+          ],
+          "grow_up": {
+            "event": "wilds:grow_up",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.follow_parent": {
+          "priority": 5,
+          "speed_multiplier": 1.1
+        }
+      },
+      "wilds:wild": {
+        "minecraft:despawn": {
+          "despawn_from_distance": {
+            "min_distance": 32,
+            "max_distance": 96
+          }
+        }
+      },
+      "wilds:kept": {
+        "minecraft:persistent": {}
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "wilds_bloomling",
+          "bloomling",
+          "wilds",
+          "mob"
+        ]
+      },
+      "minecraft:collision_box": {
+        "width": 0.4,
+        "height": 0.45
+      },
+      "minecraft:health": {
+        "value": 3,
+        "max": 3
+      },
+      "minecraft:movement": {
+        "value": 0.3
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:navigation.walk": {
+        "avoid_water": true,
+        "avoid_damage_blocks": true
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": true,
+        "is_pushable_by_piston": true
+      },
+      "minecraft:nameable": {},
+      "minecraft:breathable": {
+        "total_supply": 15,
+        "suffocate_time": 0
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "fall",
+            "deals_damage": "no"
+          }
+        ]
+      },
+      "minecraft:behavior.float": {
+        "priority": 0
+      },
+      "minecraft:behavior.panic": {
+        "priority": 1,
+        "speed_multiplier": 2.0
+      },
+      "minecraft:behavior.avoid_mob_type": {
+        "priority": 2,
+        "entity_types": [
+          {
+            "filters": {
+              "all_of": [
+                {
+                  "test": "is_family",
+                  "subject": "other",
+                  "value": "player"
+                },
+                {
+                  "test": "is_sneaking",
+                  "subject": "other",
+                  "value": false
+                }
+              ]
+            },
+            "max_dist": 6,
+            "walk_speed_multiplier": 1.4,
+            "sprint_speed_multiplier": 1.8
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "wolf"
+            },
+            "max_dist": 8,
+            "walk_speed_multiplier": 1.4,
+            "sprint_speed_multiplier": 1.8
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "fox"
+            },
+            "max_dist": 8,
+            "walk_speed_multiplier": 1.4,
+            "sprint_speed_multiplier": 1.8
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "ocelot"
+            },
+            "max_dist": 8,
+            "walk_speed_multiplier": 1.4,
+            "sprint_speed_multiplier": 1.8
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "cat"
+            },
+            "max_dist": 8,
+            "walk_speed_multiplier": 1.4,
+            "sprint_speed_multiplier": 1.8
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "lynx"
+            },
+            "max_dist": 8,
+            "walk_speed_multiplier": 1.4,
+            "sprint_speed_multiplier": 1.8
+          },
+          {
+            "filters": {
+              "test": "is_family",
+              "subject": "other",
+              "value": "zombie"
+            },
+            "max_dist": 8,
+            "walk_speed_multiplier": 1.4,
+            "sprint_speed_multiplier": 1.8
+          }
+        ]
+      },
+      "minecraft:behavior.tempt": {
+        "priority": 4,
+        "speed_multiplier": 1.0,
+        "items": [
+          "minecraft:dandelion",
+          "minecraft:poppy",
+          "minecraft:blue_orchid",
+          "minecraft:allium",
+          "minecraft:azure_bluet",
+          "minecraft:red_tulip",
+          "minecraft:orange_tulip",
+          "minecraft:white_tulip",
+          "minecraft:pink_tulip",
+          "minecraft:oxeye_daisy",
+          "minecraft:cornflower",
+          "minecraft:lily_of_the_valley"
+        ],
+        "within_radius": 8
+      },
+      "minecraft:behavior.eat_block": {
+        "priority": 6,
+        "success_chance": "0.0025",
+        "time_until_eat": 1.5,
+        "eat_and_replace_block_pairs": [
+          {
+            "eat_block": "dandelion",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "poppy",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "blue_orchid",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "allium",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "azure_bluet",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "red_tulip",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "orange_tulip",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "white_tulip",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "pink_tulip",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "oxeye_daisy",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "cornflower",
+            "replace_block": "air"
+          },
+          {
+            "eat_block": "lily_of_the_valley",
+            "replace_block": "air"
+          }
+        ],
+        "on_eat": {
+          "event": "wilds:ate_flower",
+          "target": "self"
+        }
+      },
+      "minecraft:behavior.random_stroll": {
+        "priority": 7,
+        "speed_multiplier": 0.8
+      },
+      "minecraft:behavior.look_at_player": {
+        "priority": 8,
+        "look_distance": 6,
+        "probability": 0.02
+      },
+      "minecraft:behavior.random_look_around": {
+        "priority": 9
+      }
+    },
+    "events": {
+      "wilds:look_0": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_1",
+            "wilds:look_2",
+            "wilds:look_3",
+            "wilds:look_4",
+            "wilds:look_5",
+            "wilds:look_6",
+            "wilds:look_7"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_0"
+          ]
+        }
+      },
+      "wilds:look_1": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_0",
+            "wilds:look_2",
+            "wilds:look_3",
+            "wilds:look_4",
+            "wilds:look_5",
+            "wilds:look_6",
+            "wilds:look_7"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_1"
+          ]
+        }
+      },
+      "wilds:look_2": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_0",
+            "wilds:look_1",
+            "wilds:look_3",
+            "wilds:look_4",
+            "wilds:look_5",
+            "wilds:look_6",
+            "wilds:look_7"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_2"
+          ]
+        }
+      },
+      "wilds:look_3": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_0",
+            "wilds:look_1",
+            "wilds:look_2",
+            "wilds:look_4",
+            "wilds:look_5",
+            "wilds:look_6",
+            "wilds:look_7"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_3"
+          ]
+        }
+      },
+      "wilds:look_4": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_0",
+            "wilds:look_1",
+            "wilds:look_2",
+            "wilds:look_3",
+            "wilds:look_5",
+            "wilds:look_6",
+            "wilds:look_7"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_4"
+          ]
+        }
+      },
+      "wilds:look_5": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_0",
+            "wilds:look_1",
+            "wilds:look_2",
+            "wilds:look_3",
+            "wilds:look_4",
+            "wilds:look_6",
+            "wilds:look_7"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_5"
+          ]
+        }
+      },
+      "wilds:look_6": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_0",
+            "wilds:look_1",
+            "wilds:look_2",
+            "wilds:look_3",
+            "wilds:look_4",
+            "wilds:look_5",
+            "wilds:look_7"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_6"
+          ]
+        }
+      },
+      "wilds:look_7": {
+        "remove": {
+          "component_groups": [
+            "wilds:look_0",
+            "wilds:look_1",
+            "wilds:look_2",
+            "wilds:look_3",
+            "wilds:look_4",
+            "wilds:look_5",
+            "wilds:look_6"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:look_7"
+          ]
+        }
+      },
+      "minecraft:entity_spawned": {
+        "add": {
+          "component_groups": [
+            "wilds:adult",
+            "wilds:wild"
+          ]
+        }
+      },
+      "minecraft:entity_born": {
+        "add": {
+          "component_groups": [
+            "wilds:baby",
+            "wilds:kept"
+          ]
+        }
+      },
+      "wilds:grow_up": {
+        "remove": {
+          "component_groups": [
+            "wilds:baby"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:adult"
+          ]
+        }
+      },
+      "wilds:ate_flower": {},
+      "wilds:keep": {
+        "remove": {
+          "component_groups": [
+            "wilds:wild"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:kept"
+          ]
+        }
+      }
+    }
+  }
+}

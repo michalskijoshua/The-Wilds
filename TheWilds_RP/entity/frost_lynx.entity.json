@@ -1,0 +1,45 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "wilds:frost_lynx",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/frost_lynx/frost_lynx"
+      },
+      "geometry": {
+        "default": "geometry.wilds_frost_lynx"
+      },
+      "animations": {
+        "face_forward": "animation.wilds_frost_lynx.face_forward",
+        "move": "controller.animation.wilds.frost_lynx.move",
+        "hurt": "controller.animation.wilds.frost_lynx.hurt",
+        "curious_idle": "animation.wilds_frost_lynx.curious_idle",
+        "roam_walk": "animation.wilds_frost_lynx.roam_walk",
+        "flee_sprint": "animation.wilds_frost_lynx.flee_sprint",
+        "follow_trot": "animation.wilds_frost_lynx.follow_trot",
+        "sit_down": "animation.wilds_frost_lynx.sit_down",
+        "sit_idle": "animation.wilds_frost_lynx.sit_idle",
+        "stand_up": "animation.wilds_frost_lynx.stand_up",
+        "hit_reaction": "animation.wilds_frost_lynx.hit_reaction",
+        "death_collapse": "animation.wilds_frost_lynx.death_collapse"
+      },
+      "scripts": {
+        "animate": [
+          "face_forward",
+          "move",
+          "hurt"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.default"
+      ],
+      "spawn_egg": {
+        "base_color": "#d9e4ea",
+        "overlay_color": "#6f8796"
+      }
+    }
+  }
+}

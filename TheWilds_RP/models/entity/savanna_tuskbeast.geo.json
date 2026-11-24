@@ -9,7 +9,14 @@
             0,
             0,
             0
-          ]
+          ],
+          "locators": {
+            "armor_offset.default_neck": [
+              0,
+              0,
+              0
+            ]
+          }
         },
         {
           "cubes": [

@@ -11,6 +11,10 @@ import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
+import { capture, release, CAGEABLE, cageStats } from "./cage.js";
+import { lynxSpawner, setMode, reward, lynxInfo, lynxStats } from "./lynx.js";
+import { bloomVisit, looksAt, spawnBloomling, bloomStats, LOOKS as BLOOM_LOOKS } from "./bloomling.js";
+import { seedSpawner, spawnSeed, boneMeal, seedReport, summonZombie, snuff, villageCheck } from "./aether/life.js";
 
 // Test commands (cheats on): /scriptevent wilds:<command> [argument]
 const COMMANDS = {
@@ -45,7 +49,7 @@ system.afterEvents.scriptEventReceive.subscribe(guard("scriptevent", (e) => {
 const clean = (s) => String(s).replace(/§./g, "");
 const stand = (x, y, z) => ({ dimension: world.getDimension("overworld"), location: { x, y, z }, name: "console", id: "console",
   sendMessage: (m) => console.warn(`[wilds-test] ${clean(m)}`), hasTag: () => false });
-let moveRun;
+let moveRun, cageHeld;
 const TESTS = {
   seat: (p, [owner]) => { const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(b ? `seated ${testSeat(b, owner)}` : "no beast"); },
   move: (p, [on]) => {
@@ -71,6 +75,48 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Bloomling (0.0.15)
+  bloom_looks: (p) => { const r = looksAt(p.dimension, { x: Math.floor(p.location.x), y: Math.floor(p.location.y), z: Math.floor(p.location.z) }); p.sendMessage(`${r.biome}, ${r.day ? "day" : "night"}: ${r.looks.join(", ") || "none"}`); },
+  bloom_spawn: (p, [look]) => { spawnBloomling(p.dimension, p.location, look ?? "original"); p.sendMessage(`spawned ${look ?? "original"}`); },
+  bloom_visit: (p, [force]) => p.sendMessage(`visit: ${bloomVisit(p, force === "force")} | ${JSON.stringify(bloomStats)}`),
+  bloom_breed: (p, [a, b]) => {                           // two parents of looks a and b, then a baby born next to them
+    spawnBloomling(p.dimension, p.location, a, false); spawnBloomling(p.dimension, { ...p.location, x: p.location.x + 1 }, b, false);
+    system.runTimeout(() => { p.dimension.spawnEntity("wilds:bloomling", { ...p.location, z: p.location.z + 0.5 }, { spawnEvent: "minecraft:entity_born" }); }, 2);
+    system.runTimeout(() => { const kids = p.dimension.getEntities({ type: "wilds:bloomling", location: p.location, maxDistance: 3 }).filter((x) => x.getComponent("minecraft:is_baby"));
+      p.sendMessage(`babies: ${kids.map((k) => BLOOM_LOOKS[k.getComponent("minecraft:mark_variant")?.value ?? 0]).join(", ")} | ${JSON.stringify(bloomStats)}`); }, 8);
+  },
+  bloom_list: (p) => { const c = {}; for (const b of p.dimension.getEntities({ type: "wilds:bloomling", location: p.location, maxDistance: 64 })) { const k = `${BLOOM_LOOKS[b.getComponent("minecraft:mark_variant")?.value ?? 0]}${b.getComponent("minecraft:is_baby") ? "(baby)" : ""}${b.getComponent("minecraft:persistent") ? "" : "(wild)"}`; c[k] = (c[k] ?? 0) + 1; } p.sendMessage(JSON.stringify(c)); },
+  // Frost Lynx (0.0.14)
+  lynx_visit: (p) => { lynxSpawner.visit(p); p.sendMessage(lynxSpawner.info(p)); },
+  lynx_info: (p) => { for (const l of p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 48 })) p.sendMessage(lynxInfo(l)); p.sendMessage(JSON.stringify(lynxStats)); },
+  lynx_tame: (p, [owner]) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!l) return p.sendMessage("no lynx");
+    l.triggerEvent("wilds:on_tame"); l.setDynamicProperty("wilds:owner", owner ?? "test"); l.setDynamicProperty("wilds:mode", "follow"); system.runTimeout(() => p.sendMessage(lynxInfo(l)), 2); },
+  lynx_mode: (p, [mode]) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 16, closest: 1 })[0]; if (!l) return p.sendMessage("no lynx"); setMode(l, mode); system.runTimeout(() => p.sendMessage(lynxInfo(l)), 2); },
+  lynx_trick: (p) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(l ? `trick ${reward(undefined, l)} | ${JSON.stringify(lynxStats)}` : "no lynx"); },
+  // Cage (0.0.13): catch the nearest creature, then let it out here (optionally as if kept N minutes)
+  cage_catch: (p) => {
+    const e = p.dimension.getEntities({ location: p.location, maxDistance: 16, families: ["wilds"] }).filter((x) => x.typeId !== "wilds:seat_keeper")
+      .sort((a, b) => Math.hypot(a.location.x - p.location.x, a.location.z - p.location.z) - Math.hypot(b.location.x - p.location.x, b.location.z - p.location.z))[0];
+    if (!e) return p.sendMessage("nothing to catch");
+    if (!CAGEABLE[e.typeId]) return p.sendMessage(`${e.typeId}: won't fit in a cage`);
+    cageHeld = capture(e);
+    p.sendMessage(`caught: ${cageHeld.typeId}, hp ${cageHeld.getDynamicProperty("wilds:hp")}, lore ${JSON.stringify(cageHeld.getLore())}, ${e.isValid ? "still in the world!" : "gone from the world"}`);
+  },
+  cage_release: (p, [minutes]) => {
+    if (!cageHeld) return p.sendMessage("nothing caged");
+    if (minutes) cageHeld.setDynamicProperty("wilds:caught", world.getAbsoluteTime() - Math.round(+minutes * 1200));
+    const e = release(cageHeld, p.dimension, p.location); cageHeld = undefined;
+    system.runTimeout(() => p.sendMessage(`released ${e.typeId}: form ${e.getProperty("wilds:form")}, look ${e.getComponent("minecraft:mark_variant")?.value}, hp ${e.getComponent("minecraft:health")?.currentValue} | ${JSON.stringify(cageStats)}`), 2);
+  },
+  // Aetherseed (0.0.12)
+  seed_spawn: (p, [form]) => { spawnSeed(p.dimension, p.location, form ?? "original"); p.sendMessage(`spawned ${form ?? "original"}`); },
+  seed_visit: (p) => { seedSpawner.visit(p); p.sendMessage(seedSpawner.info(p)); },
+  seed_age: (p, [h]) => p.sendMessage(seedSpawner.age(p, (+h || 0) * 3600 * 1000)),
+  seed_light: (p) => p.sendMessage(seedReport(p)),
+  seed_bonemeal: (p) => { const s = p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(s ? `now ${boneMeal(s)}` : "no seed"); },
+  seed_zombie: (p) => { const s = p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(s ? summonZombie(s) : "no seed"); },
+  seed_snuff: (p) => { const s = p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 16, closest: 1 })[0]; p.sendMessage(s ? `snuffed ${snuff(s)}` : "no seed"); },
+  seed_village: (p, [force]) => p.sendMessage(`village: ${villageCheck(p, force === "force")}`),
   forms: (p) => {                                        // form (saved) and look (mark_variant) must match
     let ok = 0, bad = 0;
     for (const t of ["wilds:pebble_mimic", "wilds:aetherseed"]) for (const e of p.dimension.getEntities({ type: t })) { if (e.getProperty("wilds:form") === (e.getComponent("minecraft:mark_variant")?.value ?? 0)) ok++; else bad++; }

@@ -1,0 +1,45 @@
+{
+  "resource_pack_name": "the_wilds",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "wilds_cage_empty": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_aetherseed_original": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_aetherseed_bloom": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_aetherseed_withered": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_fur": {
+      "textures": "textures/items/rabbit_hide"
+    },
+    "wilds_cage_bloomling_original": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_bloomling_ember_tulip": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_bloomling_sunbonnet": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_bloomling_moonbell": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_bloomling_froststar": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_bloomling_poppy_patch": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_bloomling_clover_puff": {
+      "textures": "textures/blocks/iron_bars"
+    },
+    "wilds_cage_bloomling_dusk_orchid": {
+      "textures": "textures/blocks/iron_bars"
+    }
+  }
+}

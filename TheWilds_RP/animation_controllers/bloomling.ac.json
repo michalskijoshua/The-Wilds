@@ -1,0 +1,157 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.wilds.bloomling": {
+      "initial_state": "idle",
+      "states": {
+        "idle": {
+          "animations": [
+            {
+              "original.idle": "q.mark_variant == 0"
+            },
+            {
+              "ember_tulip.idle": "q.mark_variant == 1"
+            },
+            {
+              "sunbonnet.idle": "q.mark_variant == 2"
+            },
+            {
+              "moonbell.idle": "q.mark_variant == 3"
+            },
+            {
+              "froststar.idle": "q.mark_variant == 4"
+            },
+            {
+              "poppy_patch.idle": "q.mark_variant == 5"
+            },
+            {
+              "clover_puff.idle": "q.mark_variant == 6"
+            },
+            {
+              "dusk_orchid.idle": "q.mark_variant == 7"
+            }
+          ],
+          "blend_transition": 0.2,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "hop": "q.ground_speed > 0.3"
+            }
+          ]
+        },
+        "hop": {
+          "animations": [
+            {
+              "original.hop": "q.mark_variant == 0"
+            },
+            {
+              "ember_tulip.hop": "q.mark_variant == 1"
+            },
+            {
+              "sunbonnet.hop": "q.mark_variant == 2"
+            },
+            {
+              "moonbell.hop": "q.mark_variant == 3"
+            },
+            {
+              "froststar.hop": "q.mark_variant == 4"
+            },
+            {
+              "poppy_patch.hop": "q.mark_variant == 5"
+            },
+            {
+              "clover_puff.hop": "q.mark_variant == 6"
+            },
+            {
+              "dusk_orchid.hop": "q.mark_variant == 7"
+            }
+          ],
+          "blend_transition": 0.2,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "idle": "q.ground_speed <= 0.3"
+            }
+          ]
+        },
+        "dead": {
+          "animations": [
+            {
+              "original.death": "q.mark_variant == 0"
+            },
+            {
+              "ember_tulip.death": "q.mark_variant == 1"
+            },
+            {
+              "sunbonnet.death": "q.mark_variant == 2"
+            },
+            {
+              "moonbell.death": "q.mark_variant == 3"
+            },
+            {
+              "froststar.death": "q.mark_variant == 4"
+            },
+            {
+              "poppy_patch.death": "q.mark_variant == 5"
+            },
+            {
+              "clover_puff.death": "q.mark_variant == 6"
+            },
+            {
+              "dusk_orchid.death": "q.mark_variant == 7"
+            }
+          ]
+        }
+      }
+    },
+    "controller.animation.wilds.bloomling.hurt": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "hurt": "q.hurt_time > 0 && q.is_alive"
+            }
+          ]
+        },
+        "hurt": {
+          "animations": [
+            {
+              "original.hurt": "q.mark_variant == 0"
+            },
+            {
+              "ember_tulip.hurt": "q.mark_variant == 1"
+            },
+            {
+              "sunbonnet.hurt": "q.mark_variant == 2"
+            },
+            {
+              "moonbell.hurt": "q.mark_variant == 3"
+            },
+            {
+              "froststar.hurt": "q.mark_variant == 4"
+            },
+            {
+              "poppy_patch.hurt": "q.mark_variant == 5"
+            },
+            {
+              "clover_puff.hurt": "q.mark_variant == 6"
+            },
+            {
+              "dusk_orchid.hurt": "q.mark_variant == 7"
+            }
+          ],
+          "transitions": [
+            {
+              "default": "q.all_animations_finished"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

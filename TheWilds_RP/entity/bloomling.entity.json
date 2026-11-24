@@ -1,0 +1,90 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "wilds:bloomling",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "original": "textures/entity/bloomling/bloomling_original",
+        "ember_tulip": "textures/entity/bloomling/bloomling_ember_tulip",
+        "sunbonnet": "textures/entity/bloomling/bloomling_sunbonnet",
+        "moonbell": "textures/entity/bloomling/bloomling_moonbell",
+        "froststar": "textures/entity/bloomling/bloomling_froststar",
+        "poppy_patch": "textures/entity/bloomling/bloomling_poppy_patch",
+        "clover_puff": "textures/entity/bloomling/bloomling_clover_puff",
+        "dusk_orchid": "textures/entity/bloomling/bloomling_dusk_orchid"
+      },
+      "geometry": {
+        "original": "geometry.wilds_bloomling_original",
+        "ember_tulip": "geometry.wilds_bloomling_ember_tulip",
+        "sunbonnet": "geometry.wilds_bloomling_sunbonnet",
+        "moonbell": "geometry.wilds_bloomling_moonbell",
+        "froststar": "geometry.wilds_bloomling_froststar",
+        "poppy_patch": "geometry.wilds_bloomling_poppy_patch",
+        "clover_puff": "geometry.wilds_bloomling_clover_puff",
+        "dusk_orchid": "geometry.wilds_bloomling_dusk_orchid"
+      },
+      "animations": {
+        "face_forward": "animation.wilds_bloomling.face_forward",
+        "ctrl": "controller.animation.wilds.bloomling",
+        "ctrl_hurt": "controller.animation.wilds.bloomling.hurt",
+        "original.idle": "animation.wilds_bloomling_original.idle",
+        "original.hop": "animation.wilds_bloomling_original.hop",
+        "original.graze": "animation.wilds_bloomling_original.graze",
+        "original.hurt": "animation.wilds_bloomling_original.hurt",
+        "original.death": "animation.wilds_bloomling_original.death",
+        "ember_tulip.idle": "animation.wilds_bloomling_ember_tulip.idle",
+        "ember_tulip.hop": "animation.wilds_bloomling_ember_tulip.hop",
+        "ember_tulip.graze": "animation.wilds_bloomling_ember_tulip.graze",
+        "ember_tulip.hurt": "animation.wilds_bloomling_ember_tulip.hurt",
+        "ember_tulip.death": "animation.wilds_bloomling_ember_tulip.death",
+        "sunbonnet.idle": "animation.wilds_bloomling_sunbonnet.idle",
+        "sunbonnet.hop": "animation.wilds_bloomling_sunbonnet.hop",
+        "sunbonnet.graze": "animation.wilds_bloomling_sunbonnet.graze",
+        "sunbonnet.hurt": "animation.wilds_bloomling_sunbonnet.hurt",
+        "sunbonnet.death": "animation.wilds_bloomling_sunbonnet.death",
+        "moonbell.idle": "animation.wilds_bloomling_moonbell.idle",
+        "moonbell.hop": "animation.wilds_bloomling_moonbell.hop",
+        "moonbell.graze": "animation.wilds_bloomling_moonbell.graze",
+        "moonbell.hurt": "animation.wilds_bloomling_moonbell.hurt",
+        "moonbell.death": "animation.wilds_bloomling_moonbell.death",
+        "froststar.idle": "animation.wilds_bloomling_froststar.idle",
+        "froststar.hop": "animation.wilds_bloomling_froststar.hop",
+        "froststar.graze": "animation.wilds_bloomling_froststar.graze",
+        "froststar.hurt": "animation.wilds_bloomling_froststar.hurt",
+        "froststar.death": "animation.wilds_bloomling_froststar.death",
+        "poppy_patch.idle": "animation.wilds_bloomling_poppy_patch.idle",
+        "poppy_patch.hop": "animation.wilds_bloomling_poppy_patch.hop",
+        "poppy_patch.graze": "animation.wilds_bloomling_poppy_patch.graze",
+        "poppy_patch.hurt": "animation.wilds_bloomling_poppy_patch.hurt",
+        "poppy_patch.death": "animation.wilds_bloomling_poppy_patch.death",
+        "clover_puff.idle": "animation.wilds_bloomling_clover_puff.idle",
+        "clover_puff.hop": "animation.wilds_bloomling_clover_puff.hop",
+        "clover_puff.graze": "animation.wilds_bloomling_clover_puff.graze",
+        "clover_puff.hurt": "animation.wilds_bloomling_clover_puff.hurt",
+        "clover_puff.death": "animation.wilds_bloomling_clover_puff.death",
+        "dusk_orchid.idle": "animation.wilds_bloomling_dusk_orchid.idle",
+        "dusk_orchid.hop": "animation.wilds_bloomling_dusk_orchid.hop",
+        "dusk_orchid.graze": "animation.wilds_bloomling_dusk_orchid.graze",
+        "dusk_orchid.hurt": "animation.wilds_bloomling_dusk_orchid.hurt",
+        "dusk_orchid.death": "animation.wilds_bloomling_dusk_orchid.death"
+      },
+      "scripts": {
+        "animate": [
+          "face_forward",
+          "ctrl",
+          "ctrl_hurt"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.wilds.bloomling"
+      ],
+      "spawn_egg": {
+        "base_color": "#8fcf6a",
+        "overlay_color": "#f4a6c8"
+      }
+    }
+  }
+}

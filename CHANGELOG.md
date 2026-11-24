@@ -1,5 +1,102 @@
 # Changelog
 
+## 0.0.15 (24 Nov 2026): Batch D, the Bloomling
+
+- **Model:** Codex's 8 Bedrock looks (`tools/bloomling_build.py`): original, Ember Tulip, Sunbonnet, Moonbell, Froststar,
+  Poppy Patch, Clover Puff, Dusk Orchid, picked by `q.mark_variant`; clips idle, hop, graze, hurt, death; turned 180°;
+  the same `armor_offset.default_neck` marker on every model.
+- **Behaviour** (`wilds:bloomling`, `scripts/bloomling.js`): passive, 3 health, rabbit-sized. Flees players who
+  don't sneak (6 blocks), wolves, foxes, cats, ocelots, lynxes and zombies; panics when hurt. Eats small flowers (the
+  flower block is removed; the graze move plays). Fed any small flower it breeds; the baby takes one parent's look at
+  random (script); babies grow up in 20 minutes. Drops what a rabbit drops. Can't be tamed. Can be caged
+  (`wilds:cage_bloomling_<look>`, 8 items, placeholder icons); a caged baby comes out grown.
+- **Spawning** (script, not light-level rules): every 20 s per player, while fewer than 8 are within 48 blocks, a 6 in
+  10 chance of a group of 2-4 of one look, 20-40 blocks away, from the looks allowed there and then:
+  Original (plains, forest, mountains, spruce; day), Ember Tulip (plains, savanna; night), Sunbonnet (within 6 blocks
+  of a sunflower any time; savanna any time), Moonbell (cherry grove, dappled forest; night), Froststar (on snow, any
+  time), Poppy Patch (spruce, dappled forest; day), Clover Puff (birch, forest, spruce; night), Dusk Orchid (spruce,
+  jungle, plains, swamp; night). No daytime Bloomlings in jungle, cherry grove or swamp. Day = in-game 0-12000.
+  Wild ones fade away when far, like rabbits; released, bred and spawn-egg ones stay.
+- Test hooks: `bloom_looks`, `bloom_spawn`, `bloom_visit`, `bloom_breed`, `bloom_list`.
+- Server test, 0 errors: 11 babies from Moonbell x Clover Puff came out 5 Moonbell / 6 Clover Puff, never anything
+  else; a caged Froststar came out a Froststar with its health; 4 Bloomlings on poppies grazed 7 times in 60 s; a lynx
+  caught a Moonbell at night; real biomes at noon and midnight gave exactly the allowed looks (plains: original by
+  day, Ember Tulip / Dusk Orchid by night; snowy plains: Froststar; savanna: Sunbonnet, plus Ember Tulip at night); a
+  sunflower placed in an ocean area allowed Sunbonnets; a night spawn try made 2 Clover Puffs in a forest.
+
+## 0.0.14 (24 Nov 2026): Batch C, the Frost Lynx
+
+- **Model:** the Director's Frost Lynx (23 clips) converted by `tools/lynx_build.py` (turned 180°, scale 1.3).
+  Client switches use vanilla queries only (ground speed, hurt, alive, `q.is_tamed`, and `q.skin_id == 1` = told to
+  Stay); the bite, the pounce, sniffing food, the taming nuzzle and the tricks are started by the script
+  (`Entity.playAnimation`).
+- **Wild** (`scripts/lynx.js`, entity `wilds:frost_lynx`): snowy spruce (`cold_taiga`, `cold_taiga_hills`,
+  `cold_taiga_mutated`), one per 500 x 500 square, back 1 real day after it dies or is tamed. Flees players at 11 blocks
+  (4 when they sneak; a sneaking player holding raw meat is not feared, and the meat tempts it). Never fights back.
+  Hunts rabbits, chickens and Bloomlings at dusk and night only.
+- **Taming:** raw beef, porkchop, mutton, chicken or rabbit, about 1 in 3 per feed (vanilla `tameable`). The tamer owns it.
+- **Tamed:** 20 health; tap with an empty hand (owner) for **Follow / Stay / Wander**; defends its owner; never hunts;
+  raw meat from the owner = a random trick (spin, offer paw, listen and peek) and +4 health.
+  Stay = speed 0 and the sit moves. Each mode group carries its own speed, so swapping modes never strips movement.
+- **Fur** (`wilds:fur`, "Frost Lynx Fur", placeholder icon: rabbit hide): 1-2 per lynx (+1 with Looting), wild or tamed.
+- Not cageable. Test hooks: `lynx_visit`, `lynx_info`, `lynx_tame`, `lynx_mode`, `lynx_trick`.
+- Server test, 0 errors: at night it killed a rabbit and a chicken within 20 s (pounce played 3 times); at noon a rabbit
+  lived; tamed: Follow / Stay (speed 0) / Wander / Follow all switched; a trick played; a tamed lynx at night left two
+  rabbits alone; the cage refused it; it dropped Fur; a real `cold_taiga` square got one lynx, a second visit none.
+  Not testable without a player: fleeing, sneaking up, taming by feeding, the menu.
+
+## 0.0.13 (24 Nov 2026): Batch B, the cage; seeds stop glowing; a Mimic changes once
+
+Director's decisions after 0.0.12: the Kindlesprite is the creature that lights up, so **no Aetherseed glows** (the
+Withered one stays as built); **a Pebble Mimic keeps its first change forever**; the Batch A numbers are kept.
+- **Cage** (`scripts/cage.js`): an empty Cage (`wilds:cage`, stacks to 16; 8 iron bars around 1 string) used on an
+  Aetherseed puts it inside and becomes a full cage of that look (`wilds:cage_aetherseed_original|bloom|withered`, its own
+  item for its own icon), remembering health and the play time it was caught (item dynamic properties; health also in
+  the item's lore). Tap the ground with a full cage: the creature comes out with the same look and health, and you get
+  the empty cage back. **Wilting:** an Original or Bloom kept more than 30 minutes of play time comes out Withered
+  (compared only on release). Caging a Withered seed sends its zombies away; caging frees its home square for a new one.
+  Not cageable (message "That creature won't fit in a cage."): Tuskbeast, Pebble Mimic, and later the Frost Lynx and the
+  giants. Icons: placeholder iron bars until Codex delivers (`wilds_cage_empty`, `wilds_cage_<kind>_<look>` in
+  `TheWilds_RP/textures/item_texture.json`).
+- **No glow:** the travelling light is switched off; the clean-up stays, so lights left by 0.0.12 are removed.
+- **Mimic:** after its first change of form it never changes again (`wilds:changed`).
+- Test hooks: `cage_catch`, `cage_release [minutes kept]`.
+- Server test, 0 errors: no light around an Original seed; a hurt Original (7/12) caught and released at 7/12, still
+  Original; after 29 minutes still Original, after 31 minutes Withered; caging a Withered with 2 zombies sent them away;
+  the Tuskbeast was refused; two Mimics turned to sand on sandstone and stayed sand after 12 s on coal.
+
+## 0.0.12 (24 Nov 2026): Batch A, the Aetherseed's life in the wild
+
+Approved design from the planning chat's build handoff (24 Nov).
+- **Wild spawning** (new `core/spawner.js`: a reusable one-per-square spawner, the Tuskbeast's idea made general):
+  Original in `dappled_forest`, Bloom in `cherry_grove`, Withered in `roofed_forest(_mutated)`, `swampland(_mutated)`,
+  `mangrove_swamp`. Squares of 320 blocks, 7 in 10 fitting squares get one, back 1 real day after it dies (proposals).
+- **Withered near villages:** checked every minute per player; with 3+ villagers within 64 blocks, a 1 in 20 chance,
+  at most one per village area per real day, 28-40 blocks out from the village, never in `deep_dark`.
+- **Bone meal:** Withered -> Original or Bloom (50/50); Original <-> Bloom. Used up as normal (not in Creative).
+- **Glow:** Original and Bloom carry an invisible light block (level 10). Every light is recorded on the seed and in a
+  world list and removed when the seed dies, turns Withered, unloads or the world reloads; a sweep every 5 s and after
+  each load removes any light whose seed no longer holds it.
+- **Withered:** purple specks (`obsidian_glow_dust_particle`), no light; follows players holding a torch (main or off
+  hand) within 16 blocks; pops placed torches within 4 blocks (they drop as items; lanterns stay); summons a zombie every
+  2-4 min (first after 1-2 min), at most 2, and they vanish when it dies or is healed; never attacks.
+- Sounds: still the vanilla stand-ins (bone meal, composter) until Codex delivers.
+- Test hooks: `seed_spawn`, `seed_visit`, `seed_age`, `seed_light`, `seed_bonemeal`, `seed_zombie`, `seed_snuff`,
+  `seed_village`.
+- Server test (BDS 1.26.65.1, with Guilds+ 0.9.18), 0 errors: the light followed a moving seed (always exactly 1 block),
+  went out when it turned Withered, came back after bone meal, survived a real restart as 1 block, and was removed when
+  the seed died or was carried into an unloaded area; 3 placed torches popped off, the lantern stayed; zombies stopped at
+  2 and vanished when the seed died; village spawn refused by chance, then spawned, then refused as "already one";
+  real biomes: Bloom in a cherry grove, Withered in a dark forest, Original (lit) in a dappled forest.
+
+## 0.0.11 (24 Nov 2026): Mimic luck, the neck warning (third try)
+
+- **Pebble Mimic luck** (Director): 10 % can reach gold or better. Weights 700/200/50/45/5: common 70 %, uncommon 20 %,
+  rare (gold) 5 %, diamond 4.5 %, netherite 0.5 %. Server census of 400: 69.0 / 20.8 / 5.8 / 3.8 / 0.8 %.
+- **`armor_offset.default_neck`:** still reported on Android in 0.0.10 with no "neck" bone left, so Minecraft makes it
+  on every model. Each of the six Tuskbeast models now carries the same one on its root bone (`tools/tusk_looks.py`).
+  Harmless either way (it only places vanilla horse-style armour); to be checked on Android.
+
 ## 0.0.10 (24 Nov 2026): hovering Aetherseed, Mimic sizes, the neck warning
 
 Director's Android test of 0.0.9.

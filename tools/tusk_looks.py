@@ -55,7 +55,8 @@ def tidy_models():
     """Codex's files, made to share one entity without warnings (no shape changes): drop the archer-stand markers
     (unused; the seats come from the entity file), and rename the neck bone to "nape" in every build. Minecraft makes an
     'armor_offset.default_neck' marker from any bone with "neck" in its name, and the kinds' necks sit 1 px apart, which
-    clashed on Android (0.0.8, and 0.0.9 with "neck_<kind>"). Safe to run again."""
+    clashed on Android (0.0.8, and 0.0.9 with "neck_<kind>"). 0.0.10 showed Minecraft makes that marker on every model
+    anyway, so 0.0.11 also gives each model the SAME one on its root bone. Safe to run again."""
     ren = lambda n: "nape" if n and "neck" in n else n
     for k in KINDS:
         for b in BUILDS:
@@ -66,6 +67,8 @@ def tidy_models():
                         bone["name"] = ren(bone["name"])
                         if bone.get("parent"): bone["parent"] = ren(bone["parent"])
                         bone.pop("locators", None)
+                        if not bone.get("parent"):          # the same armor_offset.default_neck in all six (see above)
+                            bone["locators"] = {"armor_offset.default_neck": [0, 0, 0]}
                 else:
                     for an in d["animations"].values():
                         bones = an.get("bones", {})

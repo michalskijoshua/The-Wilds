@@ -1,0 +1,140 @@
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.wilds.frost_lynx.move": {
+      "initial_state": "idle",
+      "states": {
+        "idle": {
+          "animations": [
+            "curious_idle"
+          ],
+          "blend_transition": 0.2,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "sit": "q.skin_id == 1"
+            },
+            {
+              "run": "q.ground_speed > 5.5"
+            },
+            {
+              "walk": "q.ground_speed > 0.4"
+            }
+          ]
+        },
+        "walk": {
+          "animations": [
+            {
+              "follow_trot": "q.is_tamed"
+            },
+            {
+              "roam_walk": "!q.is_tamed"
+            }
+          ],
+          "blend_transition": 0.2,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "sit": "q.skin_id == 1"
+            },
+            {
+              "run": "q.ground_speed > 5.5"
+            },
+            {
+              "idle": "q.ground_speed <= 0.4"
+            }
+          ]
+        },
+        "run": {
+          "animations": [
+            "flee_sprint"
+          ],
+          "blend_transition": 0.2,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "walk": "!(q.ground_speed > 5.5) && q.ground_speed > 0.4"
+            },
+            {
+              "idle": "q.ground_speed <= 0.4"
+            }
+          ]
+        },
+        "sit": {
+          "animations": [
+            "sit_down"
+          ],
+          "blend_transition": 0.3,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "stand": "q.skin_id != 1"
+            },
+            {
+              "sitting": "q.all_animations_finished"
+            }
+          ]
+        },
+        "sitting": {
+          "animations": [
+            "sit_idle"
+          ],
+          "blend_transition": 0.2,
+          "transitions": [
+            {
+              "dead": "!q.is_alive"
+            },
+            {
+              "stand": "q.skin_id != 1"
+            }
+          ]
+        },
+        "stand": {
+          "animations": [
+            "stand_up"
+          ],
+          "transitions": [
+            {
+              "idle": "q.all_animations_finished || q.ground_speed > 0.4"
+            }
+          ]
+        },
+        "dead": {
+          "animations": [
+            "death_collapse"
+          ]
+        }
+      }
+    },
+    "controller.animation.wilds.frost_lynx.hurt": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "hurt": "q.hurt_time > 0 && q.is_alive"
+            }
+          ]
+        },
+        "hurt": {
+          "animations": [
+            "hit_reaction"
+          ],
+          "transitions": [
+            {
+              "default": "q.all_animations_finished"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
