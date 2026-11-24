@@ -4750,7 +4750,7 @@
           ]
         },
         {
-          "name": "neck_tundra",
+          "name": "nape",
           "pivot": [
             0,
             70,
@@ -4851,7 +4851,7 @@
             73,
             44
           ],
-          "parent": "neck_tundra",
+          "parent": "nape",
           "cubes": [
             {
               "origin": [

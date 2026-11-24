@@ -43,11 +43,11 @@
     "component_groups": {
       "wilds:small": {
         "minecraft:scale": {
-          "value": 0.13
+          "value": 0.25
         },
         "minecraft:collision_box": {
-          "width": 0.5,
-          "height": 0.4
+          "width": 0.9,
+          "height": 0.5
         },
         "minecraft:health": {
           "value": 10,
