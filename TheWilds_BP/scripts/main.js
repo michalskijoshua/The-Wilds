@@ -1,6 +1,6 @@
 // The Wilds 0.0.1-p0: Phase 0 prototypes only. Works with or without Guilds+ (detected at runtime, never edited).
 import { world, system, guard, guildsPresent, VERSION } from "./core/util.js";
-import { BiomeTypes, ItemStack } from "@minecraft/server";
+import { ItemStack } from "@minecraft/server";
 import { seatReport, stats as seatStats, testSeat, allBeasts, towerReport } from "./tusk/seats.js";
 import { invites, toggleInvite, uninvite, mayRide } from "./tusk/owners.js";
 import { durabilityTest } from "./tusk/durability.js";
@@ -11,8 +11,12 @@ import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
 import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
-import { capture, release, CAGEABLE, cageStats } from "./cage.js";
+import { capture, release, CAGEABLE, cageStats, catchWith, releaseWith, EMPTY } from "./cage.js";
+import { dismountCrew } from "./tusk/seats.js";
 import { hatch, eggStats } from "./eggs.js";
+import { allSpawners, spawnerStats } from "./core/spawner.js";
+import { lock, unlock } from "./core/txn.js";
+import { immunityStats } from "./tusk/durability.js";
 import { dropsFor, DROPS } from "./mimic/drops.js";
 import { EGGS } from "./eggs_data.js";
 import { lynxSpawner, setMode, reward, lynxInfo, lynxStats } from "./lynx.js";
@@ -79,6 +83,53 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Checkpoint A (0.0.19)
+  sq_remove: (p) => { const e = p.dimension.getEntities({ location: p.location, maxDistance: 64 }).find((x) => x.getDynamicProperty("wilds:sq") || x.getDynamicProperty("wilds:tb_square")); if (!e) return p.sendMessage("none"); p.sendMessage(`removed ${e.typeId} quietly (no death)`); e.remove(); },
+  sq_fake: (p) => { const cx = Math.floor(p.location.x / 750), cz = Math.floor(p.location.z / 750); world.setDynamicProperty(`wilds:sq:tuskbeast:${cx},${cz}`, JSON.stringify({ v: 2, s: "live", id: null, t: Date.now() - 61000 })); p.sendMessage("fake reservation with no creature, 61 s old"); },
+  sq_legacy: (p) => { const cx = Math.floor(p.location.x / 750), cz = Math.floor(p.location.z / 750);
+    world.setDynamicProperty(`wilds:sq:tuskbeast:${cx},${cz}`, undefined);
+    world.setDynamicProperty(`wilds:tb:${cx},${cz}`, JSON.stringify({ s: "wild", x: Math.floor(p.location.x), y: Math.floor(p.location.y), z: Math.floor(p.location.z) }));
+    const b = p.dimension.spawnEntity("wilds:tuskbeast", p.location); b.setDynamicProperty("wilds:tb_square", `${cx},${cz}`); p.sendMessage(`old-style record and beast in square ${cx},${cz}`); },
+  zombies: (p) => p.sendMessage(p.dimension.getEntities({ type: "minecraft:zombie" }).map((z) => `${Math.floor(z.location.x)},${Math.floor(z.location.y)},${Math.floor(z.location.z)} spell=${z.getDynamicProperty("wilds:spell") ?? "-"}`).join("; ") || "no zombies"),
+  // a stand-in player with a 9-slot inventory: slot 0 holds the given items
+  txn: (p, [what]) => {
+    const slots = Array(9).fill(undefined), log = [];
+    const fake = (sel = 0) => ({ id: "T1", name: "Tester", isValid: true, dimension: p.dimension, location: p.location, selectedSlotIndex: sel,
+      getGameMode: () => "Survival", sendMessage: (m) => log.push(m),
+      getComponent: () => ({ container: { size: 9, getItem: (i) => slots[i]?.clone(), setItem: (i, it) => { slots[i] = it?.clone(); }, addItem: (it) => { const k = slots.findIndex((x) => !x); if (k < 0) return it; slots[k] = it.clone(); return undefined; } } }) });
+    const seed = () => p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 8, closest: 1 })[0];
+    const show = () => slots.map((x, i) => (x ? `${i}:${x.typeId.split(":")[1]}x${x.amount}` : "")).filter(Boolean).join(" ");
+    slots[0] = new ItemStack(EMPTY, 3);
+    if (what === "switched") { p.sendMessage(`catch after switching slot: ${catchWith(fake(4), 0, seed())} | ${show()} | seed still here: ${!!seed()}`); return; }
+    if (what === "busy") { lock(seed()); p.sendMessage(`catch while busy: ${catchWith(fake(), 0, seed())} | ${show()}`); unlock(seed()); return; }
+    if (what === "far") { const s = seed(); s.teleport({ ...p.location, x: p.location.x + 10 }); p.sendMessage(`catch from 10 blocks: ${catchWith(fake(), 0, s)} | ${show()}`); s.teleport(p.location); return; }
+    const r1 = catchWith(fake(), 0, seed());
+    const full = slots.find((x) => x?.typeId.startsWith("wilds:cage_")), fslot = slots.indexOf(full);
+    p.sendMessage(`catch: ${r1} | ${show()} | seed still here: ${!!seed()}`);
+    const caught = slots[fslot].getDynamicProperty("wilds:caught");
+    if (what === "moved") { slots[7] = slots[fslot]; slots[fslot] = undefined; p.sendMessage(`release after moving the cage: ${releaseWith(fake(fslot), fslot, full.typeId, caught, p.location)} | ${show()} | seed: ${!!seed()}`); return; }
+    p.sendMessage(`release: ${releaseWith(fake(fslot), fslot, full.typeId, caught, p.location)} | ${show()} | seed: ${!!seed()}`);
+    p.sendMessage(`release again with the same cage: ${releaseWith(fake(fslot), fslot, full.typeId, caught, p.location)} | ${show()}`);
+  },
+  senddown: (p, [who]) => {                                // who: a player id (T1 = the beast's owner in these tests)
+    const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 24, closest: 1 })[0];
+    const before = b.getComponent("minecraft:rideable").getRiders().length;
+    dismountCrew(b, { id: who, sendMessage: (m) => p.sendMessage(`  to ${who}: ${m}`) });
+    p.sendMessage(`${who}: riders ${before} -> ${b.getComponent("minecraft:rideable").getRiders().length}`);
+  },
+  sq_check: (p) => { for (const s of allSpawners()) { s.reconcile(p); p.sendMessage(s.info(p)); } p.sendMessage(JSON.stringify(spawnerStats)); },
+  tusk_hit: (p, [who]) => {                               // who: crew (riding this beast) | mounted (skeleton riding a spider) | foot (guard on foot)
+    const b = p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 24, closest: 1 })[0]; if (!b) return p.sendMessage("no beast");
+    const h = b.getComponent("minecraft:health"), before = h.currentValue;
+    let a;
+    if (who === "crew") a = b.getComponent("minecraft:rideable").getRiders().find((r) => r.typeId.startsWith("guilds:merc_"));
+    else if (who === "mounted") { const m = p.dimension.spawnEntity("minecraft:spider", { ...p.location, x: p.location.x + 6 }); a = p.dimension.spawnEntity("minecraft:skeleton", m.location); m.getComponent("minecraft:rideable").addRider(a); }
+    else if (who === "other") a = p.dimension.getEntities({ families: ["ironhome_mercenary"], location: p.location, maxDistance: 48 }).find((m) => { const r = m.getComponent("minecraft:riding")?.entityRidingOn; return r?.typeId === "wilds:tuskbeast" && r.id !== b.id; });
+    else a = p.dimension.getEntities({ families: ["ironhome_mercenary"], location: p.location, maxDistance: 32 }).find((m) => !m.getComponent("minecraft:riding"));
+    if (!a) return p.sendMessage(`no attacker for ${who}`);
+    b.applyDamage(10, { cause: "entityAttack", damagingEntity: a });
+    system.runTimeout(() => p.sendMessage(`${who} (${a.typeId}, riding ${a.getComponent("minecraft:riding")?.entityRidingOn?.typeId ?? "nothing"}): health ${before} -> ${h.currentValue} | ${JSON.stringify(immunityStats)}`), 2);
+  },
   // Mimic drops (0.0.17): what each form drops, large and small, with a pickaxe and with a sword; then really drop one set here
   mimic_drops: (p) => {
     const rows = FORMS_LIST.map((f, i) => `${f}: L ${JSON.stringify(dropsFor(i, true, "minecraft:wooden_pickaxe"))} S ${JSON.stringify(dropsFor(i, false, "minecraft:netherite_pickaxe"))} sword ${JSON.stringify(dropsFor(i, true, "minecraft:diamond_sword"))}`);
@@ -138,7 +189,7 @@ const TESTS = {
     for (const t of ["wilds:pebble_mimic", "wilds:aetherseed"]) for (const e of p.dimension.getEntities({ type: t })) { if (e.getProperty("wilds:form") === (e.getComponent("minecraft:mark_variant")?.value ?? 0)) ok++; else bad++; }
     p.sendMessage(`forms matching their look: ${ok}, not matching: ${bad}`);
   },
-  biomes: (p) => { try { p.sendMessage(BiomeTypes.getAll().map((b) => b.id.replace("minecraft:", "")).sort().join(" ")); } catch (err) { p.sendMessage(`${err}`); } },
+  biomes: (p) => { try { p.sendMessage(`biome here: ${p.dimension.getBiome(p.location)?.id}`); } catch (err) { p.sendMessage(`${err}`); } },   // TW-01: BiomeTypes is not in @minecraft/server 2.6.0
   looks: (p) => { for (const b of p.dimension.getEntities({ type: "wilds:tuskbeast", location: p.location, maxDistance: 400 })) { const c = (id) => b.getComponent(id)?.value; p.sendMessage(`beast ${Math.floor(b.location.x)} ${Math.floor(b.location.y)} ${Math.floor(b.location.z)}: kind ${c("minecraft:mark_variant")} (${b.getDynamicProperty("wilds:kind")}), build ${c("minecraft:variant")}, wounded ${c("minecraft:skin_id")}`); } },
   wild_age: (p, [h]) => wildAge(p, (+h || 0) * 3600 * 1000),
   invite_check: (p) => {                                 // the invite rules with stand-in players (no real players on the test server)

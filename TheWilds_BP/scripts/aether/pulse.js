@@ -31,7 +31,7 @@ function eligible(form, b, under) {
   return false;
 }
 
-function apply(form, b, dim) {
+function apply(form, b, dim, touched) {
   const id = b.typeId, at = { x: b.location.x + 0.5, y: b.location.y + 0.5, z: b.location.z + 0.5 };
   if (CROPS.has(id)) {
     const g = b.permutation.getState("growth");
@@ -46,7 +46,7 @@ function apply(form, b, dim) {
     for (const [dx, dz] of spots) {
       const t = dim.getBlock({ x: b.location.x + dx, y: b.location.y, z: b.location.z + dz });
       const u = dim.getBlock({ x: b.location.x + dx, y: b.location.y - 1, z: b.location.z + dz });
-      if (t?.isAir && u?.typeId === "minecraft:grass_block") { t.setType(id); done = true; break; }
+      if (t?.isAir && u?.typeId === "minecraft:grass_block") { t.setType(id); touched?.add(tkey(dim, t.location)); done = true; break; }   // TW-24: the new flower counts as touched
     }
     if (!done) return false;
   }
@@ -54,6 +54,8 @@ function apply(form, b, dim) {
   return true;
 }
 
+/** TW-24: one key per block per dimension ("dimensionId:x:y:z"), so the same coordinates in two dimensions differ. */
+const tkey = (dim, l) => `${dim.id}:${l.x}:${l.y}:${l.z}`;
 function pulse(seed, touched) {
   const form = seed.getProperty("wilds:form"), dim = seed.dimension;
   const cx = Math.floor(seed.location.x), cy = Math.floor(seed.location.y), cz = Math.floor(seed.location.z);
@@ -62,7 +64,7 @@ function pulse(seed, touched) {
     for (let z = cz - PULSE.radius; z <= cz + PULSE.radius; z++) {
       if ((x - cx) ** 2 + (z - cz) ** 2 > PULSE.radius ** 2) continue;
       for (let y = cy - PULSE.below; y <= cy + PULSE.above; y++) {
-        const k = `${x},${y},${z}`; if (touched.has(k)) continue;
+        const k = tkey(dim, { x, y, z }); if (touched.has(k)) continue;
         let b, u; try { b = dim.getBlock({ x, y, z }); if (!b || b.isAir) continue; u = dim.getBlock({ x, y: y - 1, z }); } catch { continue; }
         if (eligible(form, b, u)) found.push(b);
       }
@@ -72,8 +74,8 @@ function pulse(seed, touched) {
   let n = 0;
   for (const b of found.sort(() => Math.random() - 0.5)) {
     if (n >= PULSE.maxTargets) break;
-    touched.add(`${b.location.x},${b.location.y},${b.location.z}`);
-    try { if (apply(form, b, dim)) n++; } catch (err) { console.warn(`[wilds] pulse apply: ${err}`); }
+    touched.add(tkey(dim, b.location));
+    try { if (apply(form, b, dim, touched)) n++; } catch (err) { console.warn(`[wilds] pulse apply: ${err}`); }
   }
   pulseStats.changes += n;
   sfx(dim, `wilds.aetherseed.${FORM[form]}_pulse`, seed.location);

@@ -40,11 +40,15 @@ function onBeast(beast, ox, oy, oz) {
 
 const besideBeast = (beast, i) => onBeast(beast, i % 2 ? 3 : -3, 0.5, i < 2 ? 0 : -2);
 
+/** Guards climb down. TW-12 (0.0.19): the beast's owner sends down every guard; anyone else only their own guards
+ *  (tag ih_merc:<their id>). The crew record drops them at once, so they are never pulled back on (TW-13). */
 export function dismountCrew(beast, player) {
-  const rd = rideable(beast), crew = rd.getRiders().filter(isCrewType);
+  const rd = rideable(beast), mine = !player || ownerOf(beast) === player.id;
+  const crew = rd.getRiders().filter((m) => isCrewType(m) && (mine || m.hasTag(`ih_merc:${player.id}`)));
   crew.forEach((m, i) => { try { rd.ejectRider(m); m.teleport(besideBeast(beast, i)); } catch { /* */ } });
-  setCrew(beast, []);
-  player?.sendMessage(`§7${crew.length} guard${crew.length === 1 ? "" : "s"} climbed down.`);
+  const gone = new Set(crew.map((m) => m.id));
+  setCrew(beast, crewOf(beast).filter((id) => !gone.has(id)));
+  player?.sendMessage(crew.length ? `§7${crew.length} guard${crew.length === 1 ? "" : "s"} climbed down.` : "§7None of the guards aboard are yours to send down.");
 }
 
 /** The driver's seat (seat 0) is for players only (Director 24 Nov 2026). With a player aboard, a player sits there.
@@ -114,7 +118,7 @@ export function boardCrew(beast, player) {
 // ---- riders: only the owner and invited players; a player drives; crew dropped by a reload climbs back on
 // Re-seating only happens in the first 30 s after a beast loads (that is when a reload drops riders). A guard who gets
 // off later (the Guilds+ Commander's Horn "Return to posts", a command) leaves the crew for good.
-const RESEAT_WINDOW = 600, seenAt = new Map();          // beast id -> tick this loop first saw it loaded
+const RESEAT_WINDOW = 200, RESEAT_NEAR = 4, seenAt = new Map();   // TW-13: 10 s, and only guards still beside the beast
 system.runInterval(guard("riders", () => {
   for (const beast of allBeasts()) {
     const rd = rideable(beast);
@@ -144,7 +148,7 @@ system.runInterval(guard("crew", () => {
       if (!m.isValid) continue;
       const on = ridingOn(m);
       if (on?.id === beast.id) { keep.push(id); continue; }
-      if (fresh && !on && dist(m.location, beast.location) <= BOARD_RANGE && rd.getRiders().length < SEATS) {
+      if (fresh && !on && dist(m.location, beast.location) <= RESEAT_NEAR && rd.getRiders().length < SEATS) {
         if (rd.addRider(m)) { keep.push(id); dbg(`re-seated ${m.nameTag || m.typeId} after reload`); }
       }
     }

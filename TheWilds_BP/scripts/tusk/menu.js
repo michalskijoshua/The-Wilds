@@ -66,11 +66,16 @@ async function openMenu(p, beast) {
   const acts = [];
   if (own && !howdah) { f.button(`§6Build a Howdah§r\n§8${costText()}`); acts.push(() => p.sendMessage(buildHowdah(beast, p))); }
   if (howdah) { f.button("§2Climb aboard with my guards§r\n§8Your archers and crossbowmen nearby"); acts.push(() => boardCrew(beast, p)); }
-  if (howdah && crewAboard) { f.button("§9Send guards down§r\n§8Everyone off but the players"); acts.push(() => dismountCrew(beast, p)); }
+  if (howdah && crewAboard) { f.button(`§9Send guards down§r\n§8${own ? "Every guard climbs down" : "Your own guards climb down"}`); acts.push(() => dismountCrew(beast, p)); }
   if (own) { f.button("§bRiders§r\n§8Invite or remove players"); acts.push(() => ridersMenu(p).catch(() => {})); }
   f.button("Close"); acts.push(() => {});
   const r = await f.show(p);
-  if (!r.canceled && r.selection !== undefined) acts[r.selection]();
+  if (r.canceled || r.selection === undefined) return;
+  // TW-15: the world may have changed while the menu was open; check again before acting
+  if (!p.isValid || !beast.isValid || p.dimension.id !== beast.dimension.id) return;
+  if (Math.hypot(p.location.x - beast.location.x, p.location.z - beast.location.z) > 10) return p.sendMessage("§eYou walked too far from the Tuskbeast.");
+  if (ownerOf(beast) !== p.id && (!own ? !mayRide(p, beast) : true)) return p.sendMessage("§eYou can't do that with this Tuskbeast any more.");
+  acts[r.selection]();
 }
 
 world.beforeEvents.playerInteractWithEntity.subscribe((e) => {

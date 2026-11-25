@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.0.19 (25 Nov 2026): Checkpoint A, critical stabilization (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`.
+- TW-01: APIs checked against Mojang's 2.6.0 packages; `BiomeTypes` removed; `min_engine_version` 1.26.10.
+- TW-03: new `core/txn.js` (re-check, pay first, refund, one exchange per creature): cage catch/release, Aetherseed bone
+  meal, Frost Lynx treats.
+- TW-04: the Frost Lynx's owner is the player who fed it (recorded at the feeding), saved as a player id.
+- TW-05 (+ TW-49, TW-52): spawn records with id, dimension, spot, times and misses; failed spawns and lost creatures
+  free their square; unloaded is never dead; records written only on change; the Tuskbeast moved onto the shared
+  spawner with its old records carried over.
+- TW-09, TW-10: a Tuskbeast only ignores damage from its own riders; other riders and guards hurt it normally.
+- TW-12, TW-13, TW-15: owners send down every guard, invited riders only their own; sent-down guards leave the crew at
+  once; re-seat after a load only 10 s and within 4 blocks; menus re-check before acting.
+- TW-22: summoned zombies vanish only when their seed's spell has ended (death, cage, healing), not when it's unloaded.
+- TW-24: pulse deduplication keyed by dimension; new flowers count as touched.
+- Test hooks: `tusk_hit`, `senddown`, `txn`, `sq_check`, `sq_remove`, `sq_fake`, `sq_legacy`, `zombies`.
+
 ## 0.0.18 (24 Nov 2026): Codex's icons and sounds
 
 - **13 inventory icons** (`TheWilds_RP/textures/items/wilds/`): the empty Cage, 3 caged Aetherseeds, 8 caged Bloomlings,
