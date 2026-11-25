@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.23 (25 Nov 2026): Aetherseed Roost model
+
+- The Roost's placeholder look is replaced by the real model: a carved oak pedestal with a woven, mossy nest
+  (`geometry.wilds_aetherseed_roost`, 128 x 128 texture, 1.5 blocks tall). Collision and selection stay 1 x 1 x 1.
+- New 2D inventory icon (`wilds:aetherseed_roost` item that places the block; same id, recipe unchanged).
+- Blockbench source: `assets/aetherseed_roost/aetherseed_roost.bbmodel`.
+
 ## 0.0.22 (25 Nov 2026): Checkpoint D, architecture and expansion readiness (v0.0.18 audit)
 
 Statuses and test details per issue: `AUDIT_TRACKER.md`. All four checkpoints of the v0.0.18 audit are done.

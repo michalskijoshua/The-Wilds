@@ -115,6 +115,9 @@
     },
     "wilds_companion_whistle": {
       "textures": "textures/items/bone"
+    },
+    "wilds_aetherseed_roost": {
+      "textures": "textures/items/wilds/aetherseed_roost"
     }
   }
 }
