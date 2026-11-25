@@ -114,7 +114,10 @@
       "textures": "textures/items/wilds_eggs/wilds_egg_pebble_mimic_netherite"
     },
     "wilds_companion_whistle": {
-      "textures": "textures/items/bone"
+      "textures": "textures/items/wilds/companion_whistle"
+    },
+    "wilds_aetherseed_roost": {
+      "textures": "textures/items/wilds/aetherseed_roost"
     }
   }
 }

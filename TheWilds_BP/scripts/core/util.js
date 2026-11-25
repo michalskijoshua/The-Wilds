@@ -2,7 +2,7 @@
 import { world, system, EntityTypes } from "@minecraft/server";
 
 export const NS = "wilds";
-export const VERSION = "0.0.22-p0";
+export const VERSION = "0.0.23-p0";
 
 /** Errors are always reported, but the same one at most once a minute (with a count), so a broken entity can't flood
  *  the log (TW-53/54). */
