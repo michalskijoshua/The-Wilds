@@ -7,8 +7,10 @@
 //   Withered: no light, purple specks; follows players holding a torch (main or off hand); snuffs placed torches
 //         nearby (they pop off); summons zombies now and then (at most 2, long gaps) that vanish when it dies.
 //         It never attacks anyone itself.
-import { world, system, guard, jget, jset, dbg, dist, sfx } from "../core/util.js";
+import { world, system, guard, jget, jset, dbg, dist, sfx, each } from "../core/util.js";
 import { squareSpawner, biomeAt, groundAt } from "../core/spawner.js";
+import { near, lock, unlock, pay } from "../core/txn.js";
+import { glideToward } from "../core/move.js";
 
 const SEED = "wilds:aetherseed", FORMS = ["original", "bloom", "withered"];
 const formOf = (s) => s.getProperty("wilds:form");
@@ -59,7 +61,6 @@ export function villageCheck(p, force = false) {
 system.runInterval(guard("seed.village", () => { for (const p of world.getAllPlayers()) villageCheck(p); }), VILLAGE.every);
 
 // ---- bone meal
-const creative = (p) => { try { return String(p.getGameMode()).toLowerCase() === "creative"; } catch { return false; } };
 export function boneMeal(seed) {
   const f = formOf(seed), to = f === 2 ? (Math.random() < 0.5 ? 0 : 1) : 1 - f;
   seed.triggerEvent(`wilds:form_${FORMS[to]}`);
@@ -70,13 +71,10 @@ export function boneMeal(seed) {
 world.beforeEvents.playerInteractWithEntity.subscribe((e) => {
   if (e.target?.typeId !== SEED || e.itemStack?.typeId !== "minecraft:bone_meal") return;
   e.cancel = true;
-  const p = e.player, seed = e.target;
-  system.run(guard("seed.bonemeal", () => {
-    if (!seed.isValid) return;
-    boneMeal(seed);
-    if (creative(p)) return;
-    const inv = p.getComponent("minecraft:inventory")?.container, slot = p.selectedSlotIndex, it = inv?.getItem(slot);
-    if (it?.typeId === "minecraft:bone_meal") { if (it.amount > 1) { it.amount -= 1; inv.setItem(slot, it); } else inv.setItem(slot, undefined); }
+  const p = e.player, seed = e.target, slot = p.selectedSlotIndex;
+  system.run(guard("seed.bonemeal", () => {                  // TW-03: re-checked when it happens, paid before it works
+    if (!near(p, seed, 6) || !lock(seed)) return;
+    try { if (pay(p, slot, "minecraft:bone_meal", 1)) boneMeal(seed); } finally { unlock(seed); }
   }));
 });
 
@@ -120,17 +118,28 @@ function sweepLights() {                                   // any recorded light
   }
   if (changed) jset(REG, r);
 }
-system.runInterval(guard("seed.light", () => { for (const s of seeds()) if (s.isValid) keepLight(s); }), 5);
-system.runInterval(guard("seed.sweep", sweepLights), 100);
+// TW-51: once no light is recorded anywhere and no loaded seed carries one, the clean-up is done for this world
+// (wilds:lights_done). A seed from 0.0.12 that loads later still drops its own light the moment it is seen (cheap).
+const lightsDone = () => { try { return !!world.getDynamicProperty("wilds:lights_done"); } catch { return false; } };
+system.runInterval(guard("seed.light", () => {
+  if (lightsDone()) return;
+  each("seed.light", seeds(), (s) => { if (s.isValid) keepLight(s); });
+}), 20);
+system.runInterval(guard("seed.sweep", () => {
+  if (lightsDone()) { each("seed.light", seeds(), (s) => { if (s.getDynamicProperty("wilds:light")) dropLight(s); }); return; }
+  sweepLights();
+  if (!Object.keys(reg()).length && !seeds().some((s) => s.getDynamicProperty("wilds:light"))) world.setDynamicProperty("wilds:lights_done", true);
+}), 200);
 world.afterEvents.worldLoad.subscribe(guard("seed.load", () => system.runTimeout(guard("seed.sweep0", sweepLights), 40)));
 // dies or unloads: take its light now if the block is still loaded (otherwise the sweep does it later)
 world.beforeEvents.entityRemove.subscribe((e) => {
   const s = e.removedEntity; if (s?.typeId !== SEED) return;
-  let k, zs; try { k = s.getDynamicProperty("wilds:light"); zs = s.getDynamicProperty("wilds:zombies"); } catch { return; }
+  let k, zs, spell; try { k = s.getDynamicProperty("wilds:light"); zs = s.getDynamicProperty("wilds:zombies"); spell = s.getDynamicProperty("wilds:spell"); } catch { return; }
   const id = s.id, dying = (() => { try { return (s.getComponent("minecraft:health")?.currentValue ?? 1) <= 0; } catch { return false; } })();
   system.run(guard("seed.gone", () => {
     if (k && removeLight(k)) { const r = reg(); delete r[k]; jset(REG, r); }
-    if (dying && zs) for (const z of JSON.parse(zs)) vanish(world.getEntity(z));
+    if (dying && zs) for (const z of JSON.parse(zs)) vanish(world.getEntity(typeof z === "string" ? z : z.id));
+    if (dying && spell) endSpell(spell);
     if (dying) dbg(`Aetherseed ${id} died: light and summoned zombies cleared`);
   }));
 });
@@ -146,21 +155,38 @@ const holdsTorch = (p) => {
   return ["Mainhand", "Offhand"].some((slot) => { try { return /torch$/.test(eq?.getEquipment(slot)?.typeId ?? ""); } catch { return false; } });
 };
 const isPlacedTorch = (b) => /torch$/.test(b?.typeId ?? "");            // torch, soul_torch, redstone_torch, copper_torch...
-const zombiesOf = (s) => { try { return JSON.parse(s.getDynamicProperty("wilds:zombies") ?? "[]"); } catch { return []; } };
+// TW-22 (0.0.19): each run of summons ("a Withered spell") has its own id, stamped on its zombies. When the seed dies,
+// is caged or is healed, that id goes on a world list of ended spells; a zombie of an ended spell vanishes when it is
+// next loaded. A zombie whose seed is merely unloaded is left alone. Records: [{ id, t }] (t = when it was summoned).
+const ENDED = "wilds:ended_spells", ENDED_KEEP_MS = 7 * 24 * 3600 * 1000, UNSEEN_COUNTS_MS = 10 * 60 * 1000;
+const zombiesOf = (s) => { try { return JSON.parse(s.getDynamicProperty("wilds:zombies") ?? "[]").map((z) => (typeof z === "string" ? { id: z, t: Date.now() } : z)); } catch { return []; } };
 function vanish(z) { if (!z?.isValid) return; try { z.dimension.spawnParticle("minecraft:obsidian_glow_dust_particle", z.location); z.remove(); lifeStats.zombiesGone++; } catch { /* */ } }
-export function dismissZombies(s) { for (const id of zombiesOf(s)) vanish(world.getEntity(id)); try { s.setDynamicProperty("wilds:zombies", undefined); } catch { /* */ } }
+function endSpell(spell) {
+  if (!spell) return;
+  const now = Date.now(), ended = Object.fromEntries(Object.entries(jget(ENDED, {})).filter(([, t]) => now - t < ENDED_KEEP_MS));
+  ended[spell] = now; jset(ENDED, ended);
+}
+export function dismissZombies(s) {
+  let spell; try { spell = s.getDynamicProperty("wilds:spell"); } catch { /* */ }
+  for (const z of zombiesOf(s)) vanish(world.getEntity(z.id));
+  endSpell(spell);
+  try { s.setDynamicProperty("wilds:zombies", undefined); s.setDynamicProperty("wilds:spell", undefined); } catch { /* */ }
+}
 export const WITHERED = { followRange: 16, snuffRange: 4, zombieMax: 2, zombieGapMs: [120000, 240000], firstZombieMs: [60000, 120000] };
 const rnd = ([a, b]) => a + Math.random() * (b - a);
 
 export function summonZombie(s) {
-  const zs = zombiesOf(s).filter((id) => world.getEntity(id)?.isValid);
-  if (zs.length >= WITHERED.zombieMax) return "enough";
+  // still counted: zombies that are here, and zombies not seen for less than 10 minutes (they may just be unloaded)
+  const now = Date.now(), zs = zombiesOf(s).filter((z) => world.getEntity(z.id)?.isValid || now - z.t < UNSEEN_COUNTS_MS);
+  if (zs.length >= WITHERED.zombieMax) { s.setDynamicProperty("wilds:zombies", JSON.stringify(zs)); return "enough"; }
+  let spell = s.getDynamicProperty("wilds:spell");
+  if (!spell) { spell = `${s.id}:${now.toString(36)}`; s.setDynamicProperty("wilds:spell", spell); }
   for (let i = 0; i < 6; i++) {
     const a = Math.random() * Math.PI * 2, x = Math.floor(s.location.x + Math.cos(a) * 4), z = Math.floor(s.location.z + Math.sin(a) * 4);
     const y = groundAt(s.dimension, x, z); if (y === undefined) continue;
     const zb = s.dimension.spawnEntity("minecraft:zombie", { x: x + 0.5, y, z: z + 0.5 });
-    zb.setDynamicProperty("wilds:summoner", s.id);
-    zs.push(zb.id); s.setDynamicProperty("wilds:zombies", JSON.stringify(zs)); lifeStats.zombies++;
+    zb.setDynamicProperty("wilds:summoner", s.id); zb.setDynamicProperty("wilds:spell", spell);
+    zs.push({ id: zb.id, t: now }); s.setDynamicProperty("wilds:zombies", JSON.stringify(zs)); lifeStats.zombies++;
     sfx(s.dimension, "wilds.aetherseed.withered_summon", s.location);
     try { s.dimension.spawnParticle("minecraft:obsidian_glow_dust_particle", zb.location); } catch { /* */ }
     return "summoned";
@@ -180,26 +206,27 @@ let beat = 0;
 system.runInterval(guard("seed.withered", () => {
   beat++;
   const now = Date.now(), players = world.getAllPlayers();
-  for (const s of seeds()) {
-    if (!s.isValid || formOf(s) !== 2) continue;
+  each("seed.withered", seeds(), (s) => {
+    if (!s.isValid || formOf(s) !== 2) return;
     try { s.dimension.spawnParticle("minecraft:obsidian_glow_dust_particle", { x: s.location.x, y: s.location.y + 0.4, z: s.location.z }); } catch { /* */ }
     // follow a torch
     const p = players.filter((q) => q.dimension.id === s.dimension.id && dist(q.location, s.location) <= WITHERED.followRange && holdsTorch(q))
       .sort((a, b) => dist(a.location, s.location) - dist(b.location, s.location))[0];
     if (p) {
       const to = { x: p.location.x, y: p.location.y + 1.6, z: p.location.z }, d = dist(to, s.location);
-      if (d > 2.5) { const k = Math.min(0.6, d - 2.5) / d; s.teleport({ x: s.location.x + (to.x - s.location.x) * k, y: s.location.y + (to.y - s.location.y) * k, z: s.location.z + (to.z - s.location.z) * k }, { facingLocation: to }); }
+      if (d > 2.5) glideToward(s, to, 0.6, 2.5);                              // TW-20: never through walls, doors or ceilings
     }
     if (beat % 4 === 0) snuff(s);
     // zombies now and then
     const due = s.getDynamicProperty("wilds:next_zombie");
     if (due === undefined) s.setDynamicProperty("wilds:next_zombie", now + rnd(WITHERED.firstZombieMs));
     else if (now >= due) { summonZombie(s); s.setDynamicProperty("wilds:next_zombie", now + rnd(WITHERED.zombieGapMs)); }
-  }
+  });
   if (beat % 20 === 0) {                                   // a summoned zombie whose seed is gone vanishes too
     for (const d of DIMS) {
       let zs; try { zs = world.getDimension(d).getEntities({ type: "minecraft:zombie" }); } catch { continue; }
-      for (const z of zs) { const sid = z.getDynamicProperty("wilds:summoner"); if (sid && !world.getEntity(sid)?.isValid) vanish(z); }
+      const ended = jget(ENDED, {});
+      for (const z of zs) { const sp = z.getDynamicProperty("wilds:spell"); if (sp && ended[sp]) vanish(z); }   // TW-22: only ended spells
     }
   }
 }), 10);
@@ -207,7 +234,7 @@ system.runInterval(guard("seed.withered", () => {
 export function seedReport(p) {
   const r = reg();
   const near = p.dimension.getEntities({ type: SEED, location: p.location, maxDistance: 32 })
-    .map((s) => `${FORMS[formOf(s)]}@${Math.floor(s.location.x)},${Math.floor(s.location.y)},${Math.floor(s.location.z)} light=${s.getDynamicProperty("wilds:light") ?? "-"} zombies=${zombiesOf(s).length}`);
+    .map((s) => `${FORMS[formOf(s)]}@${Math.floor(s.location.x)},${Math.floor(s.location.y)},${Math.floor(s.location.z)} light=${s.getDynamicProperty("wilds:light") ?? "-"} zombies=${zombiesOf(s).length} spell=${s.getDynamicProperty("wilds:spell") ?? "-"}`);
   let lightBlocks = 0;
   for (let x = -12; x <= 12; x++) for (let z = -12; z <= 12; z++) for (let y = -6; y <= 6; y++) { try { if (isLight(p.dimension.getBlock({ x: p.location.x + x, y: p.location.y + y, z: p.location.z + z }))) lightBlocks++; } catch { /* */ } }
   return `seeds [${near.join("; ")}] | light blocks within 12: ${lightBlocks} | recorded lights ${Object.keys(r).length} | ${JSON.stringify(lifeStats)}`;

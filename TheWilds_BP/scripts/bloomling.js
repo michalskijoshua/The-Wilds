@@ -9,6 +9,11 @@
 import { world, system } from "@minecraft/server";
 import { guard, dbg, sfx } from "./core/util.js";
 import { biomeAt, groundAt } from "./core/spawner.js";
+import { registerLife, born, isBaby } from "./core/lifecycle.js";
+
+export const FLOWERS = ["dandelion", "poppy", "blue_orchid", "allium", "azure_bluet", "red_tulip", "orange_tulip", "white_tulip", "pink_tulip",
+  "oxeye_daisy", "cornflower", "lily_of_the_valley"].map((f) => `minecraft:${f}`);
+registerLife("wilds:bloomling", { breedItems: FLOWERS, grow: 24000, rest: 6000 });   // 20 min to grow up, 5 min rest (vanilla-style)
 
 const BL = "wilds:bloomling";
 export const LOOKS = ["original", "ember_tulip", "sunbonnet", "moonbell", "froststar", "poppy_patch", "clover_puff", "dusk_orchid"];
@@ -37,7 +42,15 @@ export const LOOK_RULES = {
 };
 export const isDay = () => { const t = world.getTimeOfDay(); return t < 12000 || t >= 23500; };
 const hasSnow = (dim, s) => { try { const a = dim.getBlock(s), b = dim.getBlock({ x: s.x, y: s.y - 1, z: s.z }); return a?.typeId === "minecraft:snow_layer" || b?.typeId === "minecraft:snow" || b?.typeId === "minecraft:snow_layer"; } catch { return false; } };
+const sunCache = new Map();                              // TW-48: "dim|x8|z8" -> { t, v }, kept 60 s (the area can change)
 function nearSunflower(dim, s) {
+  const k = `${dim.id}|${Math.floor(s.x / 8)}|${Math.floor(s.z / 8)}`, c = sunCache.get(k), now = Date.now();
+  if (c && now - c.t < 60000) return c.v;
+  const v = scanSunflower(dim, s); sunCache.set(k, { t: now, v });
+  if (sunCache.size > 500) for (const [kk, cc] of sunCache) if (now - cc.t > 60000) sunCache.delete(kk);
+  return v;
+}
+function scanSunflower(dim, s) {
   for (let x = -6; x <= 6; x++) for (let z = -6; z <= 6; z++) for (let y = -2; y <= 2; y++) {
     try { if (dim.getBlock({ x: s.x + x, y: s.y + y, z: s.z + z })?.typeId === "minecraft:sunflower") return true; } catch { /* */ }
   }
@@ -53,8 +66,13 @@ export function looksAt(dim, spot, day = isDay()) {
   return { biome, day, looks: out };
 }
 
-export function spawnBloomling(dim, at, look, wild = true) {
-  const e = dim.spawnEntity(BL, at), i = Math.max(0, LOOKS.indexOf(look));
+/** Room for a Bloomling: the block it stands in and the one above are air or a plant it can stand in (no water). */
+const SOFT = /(^minecraft:(short_grass|tall_grass|fern|large_fern|snow_layer|dead_bush|.*_flower|.*tulip|poppy|dandelion|blue_orchid|allium|azure_bluet|oxeye_daisy|cornflower|lily_of_the_valley|sweet_berry_bush|.*_sapling)$)/;
+function openAt(dim, s) {
+  try { for (const dy of [0, 1]) { const b = dim.getBlock({ x: s.x, y: s.y + dy, z: s.z }); if (!b || b.isLiquid || !(b.isAir || SOFT.test(b.typeId))) return false; } return true; } catch { return false; }
+}
+export function spawnBloomling(dim, at, look, wild = true, baby = false) {
+  const e = baby ? dim.spawnEntity(BL, at, { spawnEvent: "minecraft:entity_born" }) : dim.spawnEntity(BL, at), i = Math.max(0, LOOKS.indexOf(look));
   e.triggerEvent(`wilds:look_${i}`); e.setDynamicProperty("wilds:look", i);
   if (!wild) e.triggerEvent("wilds:keep");
   return e;
@@ -73,9 +91,20 @@ export function bloomVisit(p, force = false) {
     const spot = { x, y, z }, here = looksAt(dim, spot);
     if (!here.looks.length) continue;
     const look = here.looks[Math.floor(Math.random() * here.looks.length)], n = SPAWN.group[0] + Math.floor(Math.random() * (SPAWN.group[1] - SPAWN.group[0] + 1));
-    for (let k = 0; k < n; k++) spawnBloomling(dim, { x: x + 0.5 + (Math.random() - 0.5) * 2, y, z: z + 0.5 + (Math.random() - 0.5) * 2 }, look);
-    bloomStats.groups++; bloomStats.spawned += n;
-    return `${n} ${look} at ${x} ${y} ${z} (${here.biome}, ${here.day ? "day" : "night"})`;
+    // TW-36: every member gets its own checked spot (ground, open air, still allowed for this look); skip if none
+    let made = 0;
+    for (let k = 0; k < n; k++) {
+      for (let tries = 0; tries < 4; tries++) {
+        const mx = x + Math.round((Math.random() - 0.5) * 6), mz = z + Math.round((Math.random() - 0.5) * 6), my = groundAt(dim, mx, mz);
+        if (my === undefined || Math.abs(my - y) > 3) continue;
+        const ms = { x: mx, y: my, z: mz };
+        if (!openAt(dim, ms) || !looksAt(dim, ms).looks.includes(look)) continue;
+        spawnBloomling(dim, { x: mx + 0.5, y: my, z: mz + 0.5 }, look); made++; break;
+      }
+    }
+    if (!made) continue;
+    bloomStats.groups++; bloomStats.spawned += made;
+    return `${made} of ${n} ${look} at ${x} ${y} ${z} (${here.biome}, ${here.day ? "day" : "night"})`;
   }
   return "no spot";
 }
@@ -86,13 +115,13 @@ world.afterEvents.entitySpawn.subscribe(guard("bloom.new", (e) => {
   const b = e.entity; if (b?.typeId !== BL) return;
   system.runTimeout(guard("bloom.new2", () => {
     if (!b.isValid || b.getDynamicProperty("wilds:look") !== undefined) return;
-    if (b.getComponent("minecraft:is_baby")) {
-      const parents = b.dimension.getEntities({ type: BL, location: b.location, maxDistance: 5 })
-        .filter((x) => x.id !== b.id && !x.getComponent("minecraft:is_baby")).slice(0, 2);
+    if (isBaby(b)) {
+      // TW-37: the baby takes the look of one of its REAL parents (the pair fed a flower just now, right here)
+      const parents = born(b);
       const from = parents[Math.floor(Math.random() * parents.length)];
       const i = from?.getComponent("minecraft:mark_variant")?.value ?? 0;
       b.triggerEvent(`wilds:look_${i}`); b.setDynamicProperty("wilds:look", i); bloomStats.babies++;
-      dbg(`a ${LOOKS[i]} Bloomling was born (parents: ${parents.map((x) => LOOKS[x.getComponent("minecraft:mark_variant")?.value ?? 0]).join(" + ")})`);
+      dbg(`a ${LOOKS[i]} Bloomling was born (parents: ${parents.map((x) => LOOKS[x.getComponent("minecraft:mark_variant")?.value ?? 0]).join(" + ") || "not found"})`);
     } else {
       b.setDynamicProperty("wilds:look", b.getComponent("minecraft:mark_variant")?.value ?? 0);
       b.triggerEvent("wilds:keep");                     // not from the wild spawner: a spawn egg or a command

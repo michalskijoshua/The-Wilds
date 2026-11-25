@@ -24,7 +24,8 @@
         "sit_idle": "animation.wilds_frost_lynx.sit_idle",
         "stand_up": "animation.wilds_frost_lynx.stand_up",
         "hit_reaction": "animation.wilds_frost_lynx.hit_reaction",
-        "death_collapse": "animation.wilds_frost_lynx.death_collapse"
+        "death_collapse": "animation.wilds_frost_lynx.death_collapse",
+        "lying_dead": "animation.wilds_frost_lynx.lying_dead"
       },
       "scripts": {
         "animate": [

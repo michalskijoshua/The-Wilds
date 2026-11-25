@@ -14,6 +14,9 @@
               "dead": "!q.is_alive"
             },
             {
+              "down": "q.skin_id == 2"
+            },
+            {
               "sit": "q.skin_id == 1"
             },
             {
@@ -39,6 +42,9 @@
               "dead": "!q.is_alive"
             },
             {
+              "down": "q.skin_id == 2"
+            },
+            {
               "sit": "q.skin_id == 1"
             },
             {
@@ -57,6 +63,9 @@
           "transitions": [
             {
               "dead": "!q.is_alive"
+            },
+            {
+              "down": "q.skin_id == 2"
             },
             {
               "walk": "!(q.ground_speed > 5.5) && q.ground_speed > 0.4"
@@ -93,6 +102,9 @@
               "dead": "!q.is_alive"
             },
             {
+              "down": "q.skin_id == 2"
+            },
+            {
               "stand": "q.skin_id != 1"
             }
           ]
@@ -110,6 +122,29 @@
         "dead": {
           "animations": [
             "death_collapse"
+          ]
+        },
+        "down": {
+          "animations": [
+            "death_collapse"
+          ],
+          "transitions": [
+            {
+              "lying": "q.all_animations_finished"
+            },
+            {
+              "stand": "q.skin_id != 2"
+            }
+          ]
+        },
+        "lying": {
+          "animations": [
+            "lying_dead"
+          ],
+          "transitions": [
+            {
+              "stand": "q.skin_id != 2"
+            }
           ]
         }
       }

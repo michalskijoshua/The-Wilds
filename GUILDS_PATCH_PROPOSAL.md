@@ -84,3 +84,31 @@ records, so The Wilds can't read Guilds+'s records even when a list exists.
 
 **The Wilds side is already built (0.0.7) and idle until the tag exists:** a player carrying `guilds_member:<owner id>`
 may ride that owner's Tuskbeasts with no invite. Everyone else still needs an invite, so a war enemy can't take a seat.
+
+## Part 5 (proposed 25 Nov 2026, The Wilds 0.0.21, not applied): Companions at the Guild Table, and an integration handshake
+
+**Why (approved audit item TW-33):** players see their Wilds companions at the Guild Table and can call them home to
+the Guild Hall. The Wilds already keeps the companion records and does the recall; Guilds+ only needs a menu.
+
+**How the two packs talk:** script events (each pack's saved records stay private to it, so they ask each other).
+All of this is in The Wilds 0.0.21 already and does nothing until Guilds+ uses it.
+
+| Direction | Event id | Message | Meaning |
+|---|---|---|---|
+| The Wilds -> Guilds+ | `guilds:wilds_hello` | `{"version":"0.0.21-p0","caps":["companions.v1","recall.v1"]}` | sent once 3 s after a world loads: The Wilds is here and what it can do |
+| Guilds+ -> The Wilds | `wilds:companions` | `<player id>` | "list this player's companions" |
+| The Wilds -> Guilds+ | `guilds:wilds_companions` | `{"player":id,"list":[{uid,sp,name,hp,down,mode,last:{dim,x,y,z},...}]}` | the list (species id, name, health, knocked out, Follow/Stay/Wander, last known place) |
+| Guilds+ -> The Wilds | `wilds:recall` | `<player id> <uid> <dimension id> <x> <y> <z>` | "bring this companion to this spot" (a safe spot near the Guild Hall) |
+| The Wilds -> Guilds+ | `guilds:wilds_recall` | `{"player":id,"uid":uid,"result":"recalled" / "not yours" / "it couldn't be reached..."}` | the outcome |
+
+Guilds+ sends with `system.sendScriptEvent(id, message)` and listens with `system.afterEvents.scriptEventReceive`.
+The Wilds checks ownership itself (the player id must own the companion), never makes a replacement, never heals.
+
+**The Guilds+ side (a Guilds+ design job):**
+1. A **Companions** button at the Guild Table, shown only after a `guilds:wilds_hello` arrived.
+2. On open: send `wilds:companions <player id>`, show each companion from the reply (name or species, health,
+   "knocked out", mode, dimension and place), and a **Recall to the Hall** button each.
+3. Recall: send `wilds:recall ...` with a spot inside the hall; show the result message.
+4. Optional, for parts 4 and TW-55/56: answer the hello with `wilds:guilds_hello {"version":"0.9.x","caps":[...]}`
+   listing what Guilds+ supports (for example `membership.v1` once the `guilds_member:<owner id>` tag exists,
+   `alliances.v1`, `wounded.v1`). The Wilds will only use a feature Guilds+ says it has.

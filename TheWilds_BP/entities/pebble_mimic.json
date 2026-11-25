@@ -116,6 +116,51 @@
         "minecraft:mark_variant": {
           "value": 9
         }
+      },
+      "wilds:adult": {
+        "minecraft:breedable": {
+          "require_tame": false,
+          "breed_items": [
+            "minecraft:cobblestone"
+          ],
+          "breeds_with": {
+            "mate_type": "wilds:pebble_mimic",
+            "baby_type": "wilds:pebble_mimic",
+            "breed_event": {
+              "event": "minecraft:entity_born",
+              "target": "baby"
+            }
+          }
+        },
+        "minecraft:behavior.breed": {
+          "priority": 3,
+          "speed_multiplier": 1.0
+        }
+      },
+      "wilds:baby": {
+        "minecraft:is_baby": {},
+        "minecraft:scale": {
+          "value": 0.12
+        },
+        "minecraft:collision_box": {
+          "width": 0.45,
+          "height": 0.3
+        },
+        "minecraft:health": {
+          "value": 6,
+          "max": 6
+        },
+        "minecraft:ageable": {
+          "duration": 2400,
+          "grow_up": {
+            "event": "wilds:grow_up",
+            "target": "self"
+          }
+        },
+        "minecraft:behavior.follow_parent": {
+          "priority": 5,
+          "speed_multiplier": 1.1
+        }
       }
     },
     "components": {
@@ -170,11 +215,26 @@
       },
       "minecraft:behavior.random_look_around": {
         "priority": 8
+      },
+      "minecraft:behavior.tempt": {
+        "priority": 4,
+        "speed_multiplier": 1.0,
+        "items": [
+          "minecraft:cobblestone"
+        ],
+        "within_radius": 8
       }
     },
     "events": {
       "minecraft:entity_spawned": {
         "sequence": [
+          {
+            "add": {
+              "component_groups": [
+                "wilds:adult"
+              ]
+            }
+          },
           {
             "set_property": {
               "wilds:rolled": true
@@ -454,6 +514,112 @@
         "set_property": {
           "wilds:size": 1
         }
+      },
+      "minecraft:entity_born": {
+        "sequence": [
+          {
+            "set_property": {
+              "wilds:rolled": true
+            },
+            "randomize": [
+              {
+                "weight": 700,
+                "set_property": {
+                  "wilds:affinity": 0
+                }
+              },
+              {
+                "weight": 200,
+                "set_property": {
+                  "wilds:affinity": 1
+                }
+              },
+              {
+                "weight": 50,
+                "set_property": {
+                  "wilds:affinity": 2
+                }
+              },
+              {
+                "weight": 45,
+                "set_property": {
+                  "wilds:affinity": 3
+                }
+              },
+              {
+                "weight": 5,
+                "set_property": {
+                  "wilds:affinity": 4
+                }
+              }
+            ]
+          },
+          {
+            "randomize": [
+              {
+                "weight": 1,
+                "set_property": {
+                  "wilds:size": 0
+                }
+              },
+              {
+                "weight": 1,
+                "set_property": {
+                  "wilds:size": 1
+                }
+              }
+            ]
+          },
+          {
+            "add": {
+              "component_groups": [
+                "wilds:baby"
+              ]
+            }
+          }
+        ]
+      },
+      "wilds:grow_up": {
+        "sequence": [
+          {
+            "remove": {
+              "component_groups": [
+                "wilds:baby"
+              ]
+            },
+            "add": {
+              "component_groups": [
+                "wilds:adult"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "int_property",
+              "subject": "self",
+              "domain": "wilds:size",
+              "value": 0
+            },
+            "add": {
+              "component_groups": [
+                "wilds:small"
+              ]
+            }
+          },
+          {
+            "filters": {
+              "test": "int_property",
+              "subject": "self",
+              "domain": "wilds:size",
+              "value": 1
+            },
+            "add": {
+              "component_groups": [
+                "wilds:large"
+              ]
+            }
+          }
+        ]
       }
     }
   }

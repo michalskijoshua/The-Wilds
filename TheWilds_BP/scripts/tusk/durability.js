@@ -1,6 +1,7 @@
 // P0-3 Durability without invulnerability (proposal numbers, all in one place).
 // Entity file: 300 health (iron golem 100 x3), knockback_resistance 1.0, damage_multiplier 0.4 on all damage,
-// no fall or suffocation damage, no damage from its own riders or from Guilds+ mercenaries.
+// no fall or suffocation damage. Its OWN riders can't hurt it (below, TW-09/TW-10): anyone else can, mounted or not,
+// Guilds+ guards included.
 // Here: slow out-of-combat healing and the Wounded state.
 import { world, system, guard, dbg } from "../core/util.js";
 import { allBeasts } from "./seats.js";
@@ -12,6 +13,16 @@ export const TUNING = {
   recoverAt: 0.4,            // back to normal at 40 % (gap stops flicker)
 };
 const LAST_HURT = "wilds:last_hurt";
+export const immunityStats = { blocked: 0 };
+
+// TW-09/TW-10 (0.0.19): only someone riding THIS beast (a driver, a passenger, its seated crew, or an arrow they shot)
+// is stopped from hurting it. Riders of other mounts, boats, other Tuskbeasts and guards on foot do normal damage.
+const ridingOn = (e) => { try { return e?.getComponent("minecraft:riding")?.entityRidingOn; } catch { return undefined; } };
+world.beforeEvents.entityHurt.subscribe((e) => {
+  const b = e.hurtEntity; if (b?.typeId !== "wilds:tuskbeast") return;
+  const a = e.damageSource?.damagingEntity;
+  if (a && ridingOn(a)?.id === b.id) { e.cancel = true; immunityStats.blocked++; }
+});
 
 function health(b) { return b.getComponent("minecraft:health"); }
 function checkWounded(b) {

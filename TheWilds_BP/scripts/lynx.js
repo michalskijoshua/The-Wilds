@@ -11,11 +11,16 @@
 import { world, system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { guard, dbg, sfx, dist } from "./core/util.js";
+import { entityById } from "./core/util.js";
+import { near, lock, unlock, pay } from "./core/txn.js";
+import { registerCompanion, isDown, healDown, note } from "./companions.js";
 import { squareSpawner, squareTaken } from "./core/spawner.js";
 
 const LYNX = "wilds:frost_lynx";
 export const MEAT = ["minecraft:beef", "minecraft:porkchop", "minecraft:mutton", "minecraft:chicken", "minecraft:rabbit"];
 export const TRICKS = ["trick_spin", "trick_offer_paw", "listen_and_peek"];
+registerCompanion("wilds:frost_lynx", { name: "Frost Lynx", food: ["minecraft:beef", "minecraft:porkchop", "minecraft:mutton", "minecraft:chicken", "minecraft:rabbit"],
+  foodName: "raw meat", heal: 4, recoverAt: 10, downEvent: "wilds:down", upEvent: "wilds:up", modeEvent: (m) => `wilds:mode_${m}` });
 export const lynxStats = { tamed: 0, tricks: 0, bites: 0, anims: 0 };
 const anim = (e, clip) => {
   const name = `animation.wilds_frost_lynx.${clip}`;
@@ -23,9 +28,8 @@ const anim = (e, clip) => {
   try { e.runCommand(`playanimation @s ${name} default 0.2`); lynxStats.anims++; return true; } catch { return false; }
 };
 const tameOf = (e) => e.getComponent("minecraft:tameable");
-const ownerId = (e) => { try { return tameOf(e)?.tamedToPlayerId ?? e.getDynamicProperty("wilds:owner"); } catch { return e.getDynamicProperty("wilds:owner"); } };
+const ownerId = (e) => { try { return e.getDynamicProperty("wilds:owner") ?? tameOf(e)?.tamedToPlayerId; } catch { return undefined; } };   // TW-04: our record first
 const isTamed = (e) => !!e.getComponent("minecraft:is_tamed");
-const creative = (p) => { try { return String(p.getGameMode()).toLowerCase() === "creative"; } catch { return false; } };
 
 export const LYNX_BIOMES = ["cold_taiga", "cold_taiga_hills", "cold_taiga_mutated"];
 export const lynxSpawner = squareSpawner({
@@ -36,22 +40,34 @@ export const lynxSpawner = squareSpawner({
 // tamed: remember the owner (also for players who are offline) and greet
 world.afterEvents.dataDrivenEntityTrigger.subscribe(guard("lynx.tame", (e) => {
   const l = e.entity; if (!l?.isValid) return;
-  const p = tameOf(l)?.tamedToPlayer;
-  if (p) { l.setDynamicProperty("wilds:owner", p.id); l.setDynamicProperty("wilds:mode", "follow"); p.sendMessage("§aThe Frost Lynx trusts you now! Tap it with an empty hand to tell it to Follow, Stay or Wander."); }
+  // TW-04: the tameable component is already gone when this fires (the wild group was removed), so the owner is the
+  // player who fed it last (recorded at the feeding), else the nearest player.
+  let p; try { p = tameOf(l)?.tamedToPlayer; } catch { /* */ }
+  if (!p) { const fid = l.getDynamicProperty("wilds:feeder"); p = world.getAllPlayers().find((x) => x.id === fid); }
+  if (!p) p = l.dimension.getPlayers({ location: l.location, maxDistance: 8, closest: 1 })[0];
+  if (p) { l.setDynamicProperty("wilds:owner", p.id); l.setDynamicProperty("wilds:owner_name", p.name); l.setDynamicProperty("wilds:mode", "follow"); p.sendMessage("§aThe Frost Lynx trusts you now! Tap it with an empty hand to tell it to Follow, Stay or Wander."); }
   anim(l, "taming_nuzzle"); lynxStats.tamed++;
+  l.setDynamicProperty("wilds:c21", true); note(l);         // into the companion registry
   squareTaken(l);                                          // it left the wild: its square may get a new wild one later
 }), { entityTypes: [LYNX], eventTypes: ["wilds:on_tame"] });
 
 export function setMode(l, mode) {
-  l.triggerEvent(`wilds:mode_${mode}`); l.setDynamicProperty("wilds:mode", mode);
+  l.setDynamicProperty("wilds:mode", mode);
+  if (isDown(l)) return;                                     // knocked out: it takes the mode when it gets up
+  if (mode === "wander") {                                   // TW-32: home = where it is now (the entity file's home radius is 12)
+    const h = l.location; l.setDynamicProperty("wilds:home", JSON.stringify({ dim: l.dimension.id, x: Math.floor(h.x), y: Math.floor(h.y), z: Math.floor(h.z) }));
+  }
+  l.triggerEvent(`wilds:mode_${mode}`);
   if (mode === "stay") anim(l, "sit_down");
+  note(l);
 }
 async function menu(p, l) {
   const cur = l.getDynamicProperty("wilds:mode") ?? "follow";
   const f = new ActionFormData().title("Frost Lynx").body(`Now: ${cur === "follow" ? "following you" : cur === "stay" ? "staying put" : "wandering"}.\nRaw meat makes it do a trick.`)
     .button("§2Follow§r\n§8Walks with you").button("§6Stay§r\n§8Sits right here").button("§9Wander§r\n§8Roams nearby");
   const r = await f.show(p);
-  if (!r.canceled && r.selection !== undefined) setMode(l, ["follow", "stay", "wander"][r.selection]);
+  if (r.canceled || r.selection === undefined || !near(p, l, 12) || ownerId(l) !== p.id) return;   // still valid when it closes
+  setMode(l, ["follow", "stay", "wander"][r.selection]);
 }
 export function reward(p, l) {
   const h = l.getComponent("minecraft:health"); if (h) h.setCurrentValue(Math.min(h.effectiveMax, h.currentValue + 4));
@@ -59,19 +75,28 @@ export function reward(p, l) {
   anim(l, t); lynxStats.tricks++;
   sfx(l.dimension, "wilds.frost_lynx.eat", l.location);
   system.runTimeout(() => { if (l.isValid) sfx(l.dimension, "wilds.frost_lynx.trick", l.location); }, 16);
-  if (p && !creative(p)) {
-    const inv = p.getComponent("minecraft:inventory")?.container, slot = p.selectedSlotIndex, it = inv?.getItem(slot);
-    if (it && MEAT.includes(it.typeId)) { if (it.amount > 1) { it.amount -= 1; inv.setItem(slot, it); } else inv.setItem(slot, undefined); }
-  }
   return t;
 }
 world.beforeEvents.playerInteractWithEntity.subscribe((e) => {
   const l = e.target, p = e.player; if (l?.typeId !== LYNX) return;
   const item = e.itemStack?.typeId;
-  if (!isTamed(l)) { if (item && MEAT.includes(item)) system.run(() => { if (l.isValid) { anim(l, "sniff_offered_food"); sfx(l.dimension, "wilds.frost_lynx.eat", l.location); } }); return; }   // vanilla taming does the rest
+  if (!isTamed(l)) {                                       // vanilla taming does the rest; we remember who fed it (TW-04)
+    if (item && MEAT.includes(item)) system.run(() => { if (l.isValid) { l.setDynamicProperty("wilds:feeder", p.id); anim(l, "sniff_offered_food"); sfx(l.dimension, "wilds.frost_lynx.eat", l.location); } });
+    return;
+  }
   if (ownerId(l) !== p.id) return;
-  if (!item) { e.cancel = true; system.run(guard("lynx.menu", () => { menu(p, l).catch(() => {}); })); }
-  else if (MEAT.includes(item)) { e.cancel = true; system.run(guard("lynx.treat", () => { if (l.isValid) reward(p, l); })); }
+  if (!item) { e.cancel = true; system.run(guard("lynx.menu", () => { if (isDown(l)) p.sendMessage("§eIt's knocked out. Feed it raw meat to help it up."); else menu(p, l).catch(() => {}); })); }
+  else if (MEAT.includes(item)) {
+    e.cancel = true; const slot = p.selectedSlotIndex;
+    system.run(guard("lynx.treat", () => {                   // TW-03: same slot, same meat, close by, one at a time
+      if (!near(p, l, 6) || ownerId(l) !== p.id || !lock(l)) return;
+      try {
+        if (!pay(p, slot, item, 1)) return;
+        if (isDown(l)) { const hp = healDown(l); sfx(l.dimension, "wilds.frost_lynx.eat", l.location); p.sendMessage(isDown(l) ? `§7${hp} health. A little more...` : "§aIt's back on its feet!"); }
+        else reward(p, l);                                     // TW-30: knocked out = healing only, no trick
+      } finally { unlock(l); }
+    }));
+  }
 });
 // the bite
 world.afterEvents.entityHurt.subscribe(guard("lynx.bite", (e) => {
@@ -93,9 +118,9 @@ system.runInterval(guard("lynx.sounds", () => {
         const near = players.some((p) => p.dimension.id === l.dimension.id && !p.isSneaking && dist(p.location, l.location) <= 11);
         if (near && now - (lastHiss.get(l.id) ?? 0) > 12000) { lastHiss.set(l.id, now); sfx(l.dimension, "wilds.frost_lynx.flee", l.location); }
       } else {
-        const owner = world.getEntity(ownerId(l) ?? "");
+        const owner = entityById(ownerId(l) ?? "");
         const due = l.getDynamicProperty("wilds:next_purr") ?? 0;
-        if (owner?.isValid && owner.dimension.id === l.dimension.id && dist(owner.location, l.location) <= 4 && now >= due) {
+        if (!isDown(l) && owner?.isValid && owner.dimension.id === l.dimension.id && dist(owner.location, l.location) <= 4 && now >= due) {
           if (due) sfx(l.dimension, "wilds.frost_lynx.purr", l.location, 0.9);
           l.setDynamicProperty("wilds:next_purr", now + 15000 + Math.random() * 20000);
         }
@@ -103,3 +128,5 @@ system.runInterval(guard("lynx.sounds", () => {
     }
   }
 }), 20);
+
+system.runInterval(guard("lynx.tidy", () => { for (const id of lastHiss.keys()) if (!entityById(id)?.isValid) lastHiss.delete(id); }), 1200);   // TW-50

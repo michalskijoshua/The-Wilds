@@ -8,7 +8,7 @@
 // crossbowman adds shots: archer 1 arrow every 1.5 s; crossbowman 1 bolt every 2.5 s, faster and +2 damage on a hit.
 // Arrows leave from the top of the howdah at the nearest hostile mob in sight (24 blocks), and come out of the Howdah
 // chest (open your inventory while driving). The guards' own attacks are left alone.
-import { world, system, guard, dist, guildsPresent, dbg } from "../core/util.js";
+import { world, system, guard, dist, guildsPresent, dbg, entityById, each } from "../core/util.js";
 import { ownerOf, ownerNameOf, claim, mayRide } from "./owners.js";
 
 const BEAST = "wilds:tuskbeast";
@@ -17,6 +17,10 @@ const CREW = "wilds:crew";              // beast dynamic property: JSON [merc en
 const BOARD_RANGE = 24, SEATS = 5;      // driver + 4 passengers
 
 const isPlayer = (e) => e?.typeId === "minecraft:player";
+// TW-57: Guilds+ 0.9.18 has no wounded or knocked-out state for guards (checked), so The Wilds uses its own rule: a guard
+// at a quarter of his health or less is not fit to man the howdah (he isn't boarded and the tower doesn't count him).
+// If Guilds+ later announces "wounded.v1", its guilds_wounded tag counts too.
+export const unfit = (m) => { try { const h = m.getComponent("minecraft:health"); if (h && h.currentValue <= h.effectiveMax * 0.25) return true; return m.hasTag("guilds_wounded"); } catch { return true; } };
 const isCrewType = (e) => RANGED.has(e?.typeId) || (e?.isValid && e.matches({ families: ["wilds_archer"] }));
 const rideable = (b) => b.getComponent("minecraft:rideable");
 const ridingOn = (e) => { try { return e.getComponent("minecraft:riding")?.entityRidingOn; } catch { return undefined; } };
@@ -40,11 +44,15 @@ function onBeast(beast, ox, oy, oz) {
 
 const besideBeast = (beast, i) => onBeast(beast, i % 2 ? 3 : -3, 0.5, i < 2 ? 0 : -2);
 
+/** Guards climb down. TW-12 (0.0.19): the beast's owner sends down every guard; anyone else only their own guards
+ *  (tag ih_merc:<their id>). The crew record drops them at once, so they are never pulled back on (TW-13). */
 export function dismountCrew(beast, player) {
-  const rd = rideable(beast), crew = rd.getRiders().filter(isCrewType);
+  const rd = rideable(beast), mine = !player || ownerOf(beast) === player.id;
+  const crew = rd.getRiders().filter((m) => isCrewType(m) && (mine || m.hasTag(`ih_merc:${player.id}`)));
   crew.forEach((m, i) => { try { rd.ejectRider(m); m.teleport(besideBeast(beast, i)); } catch { /* */ } });
-  setCrew(beast, []);
-  player?.sendMessage(`§7${crew.length} guard${crew.length === 1 ? "" : "s"} climbed down.`);
+  const gone = new Set(crew.map((m) => m.id));
+  setCrew(beast, crewOf(beast).filter((id) => !gone.has(id)));
+  player?.sendMessage(crew.length ? `§7${crew.length} guard${crew.length === 1 ? "" : "s"} climbed down.` : "§7None of the guards aboard are yours to send down.");
 }
 
 /** The driver's seat (seat 0) is for players only (Director 24 Nov 2026). With a player aboard, a player sits there.
@@ -95,7 +103,7 @@ export function boardCrew(beast, player) {
   const free = SEATS - rd.getRiders().filter((r) => !isKeeper(r)).length - (rd.getRiders().some(isPlayer) ? 0 : 1);
   if (free <= 0) return player.sendMessage("§7The howdah is full.");
   const cands = beast.dimension.getEntities({ families: ["ironhome_mercenary"], location: beast.location, maxDistance: BOARD_RANGE })
-    .filter((m) => RANGED.has(m.typeId) && m.hasTag(`ih_merc:${player.id}`) && !ridingOn(m))
+    .filter((m) => RANGED.has(m.typeId) && m.hasTag(`ih_merc:${player.id}`) && !ridingOn(m) && !unfit(m))
     .sort((a, b) => dist(a.location, beast.location) - dist(b.location, beast.location))
     .slice(0, free);
   if (!cands.length) return player.sendMessage("§7No archers or crossbowmen of yours within 24 blocks.");
@@ -114,18 +122,18 @@ export function boardCrew(beast, player) {
 // ---- riders: only the owner and invited players; a player drives; crew dropped by a reload climbs back on
 // Re-seating only happens in the first 30 s after a beast loads (that is when a reload drops riders). A guard who gets
 // off later (the Guilds+ Commander's Horn "Return to posts", a command) leaves the crew for good.
-const RESEAT_WINDOW = 600, seenAt = new Map();          // beast id -> tick this loop first saw it loaded
+const RESEAT_WINDOW = 200, RESEAT_NEAR = 4, seenAt = new Map();   // TW-13: 10 s, and only guards still beside the beast
 system.runInterval(guard("riders", () => {
-  for (const beast of allBeasts()) {
+  each("riders", allBeasts(), (beast) => {
     const rd = rideable(beast);
-    if (!isTame(beast)) continue;                                              // wild: anyone may try to tame it
+    if (!isTame(beast)) return;                                              // wild: anyone may try to tame it
     for (const r of rd.getRiders()) {
       if (!isPlayer(r)) continue;
       if (!ownerOf(beast)) claim(beast, r);                                    // tamed with no owner on record
       else if (!mayRide(r, beast)) { rd.ejectRider(r); r.sendMessage(`§eThis Tuskbeast belongs to ${ownerNameOf(beast)}. Ask them to invite you.`); }
     }
     playerFirst(beast);
-  }
+  });
   for (const d of ["overworld", "nether", "the_end"]) {                       // a seat keeper off its beast has no job
     try { for (const k of world.getDimension(d).getEntities({ type: KEEPER })) if (!ridingOn(k)) k.remove(); } catch { /* */ }
   }
@@ -133,29 +141,29 @@ system.runInterval(guard("riders", () => {
 system.runInterval(guard("crew", () => {
   const now = system.currentTick, beasts = allBeasts(), here = new Set(beasts.map((b) => b.id));
   for (const id of seenAt.keys()) if (!here.has(id)) seenAt.delete(id);      // unloaded: fresh again when it loads
-  for (const beast of beasts) {
+  each("crew", beasts, (beast) => {
     if (!seenAt.has(beast.id)) seenAt.set(beast.id, now);
     const fresh = now - seenAt.get(beast.id) <= RESEAT_WINDOW;
-    const ids = crewOf(beast); if (!ids.length || shuffling.has(beast.id)) continue;
+    const ids = crewOf(beast); if (!ids.length || shuffling.has(beast.id)) return;
     const rd = rideable(beast), keep = [];
     for (const id of ids) {
-      const m = world.getEntity(id);
+      const m = entityById(id);
       if (!m) { keep.push(id); continue; }                                           // unloaded: keep the record
       if (!m.isValid) continue;
       const on = ridingOn(m);
       if (on?.id === beast.id) { keep.push(id); continue; }
-      if (fresh && !on && dist(m.location, beast.location) <= BOARD_RANGE && rd.getRiders().length < SEATS) {
+      if (fresh && !on && dist(m.location, beast.location) <= RESEAT_NEAR && rd.getRiders().length < SEATS) {
         if (rd.addRider(m)) { keep.push(id); dbg(`re-seated ${m.nameTag || m.typeId} after reload`); }
       }
     }
     if (keep.length !== ids.length) setCrew(beast, keep);
-  }
+  });
 }), 40);
 
 world.afterEvents.entityDie.subscribe(guard("crew.die", (e) => {
   let id; try { id = e.deadEntity.id; } catch { return; }
   for (const b of allBeasts()) { const c = crewOf(b); if (c.includes(id)) setCrew(b, c.filter((x) => x !== id)); }
-}));
+}), { entityTypes: [...RANGED] });   // TW-52: only guards' deaths, not every death in the world
 
 // ---- the howdah tower
 export const stats = { nativeShots: 0, towerShots: 0, bolts: 0, boltHits: 0 };
@@ -212,13 +220,13 @@ function fire(beast, from, t, shooter, gun) {
 }
 system.runInterval(guard("tower", () => {
   const now = system.currentTick;
-  for (const beast of allBeasts()) {
-    const crew = rideable(beast).getRiders().filter((r) => GUN[r.typeId]);
-    if (!crew.length) continue;
+  each("tower", allBeasts(), (beast) => {
+    const crew = rideable(beast).getRiders().filter((r) => GUN[r.typeId] && !unfit(r));   // TW-57
+    if (!crew.length) return;
     const ready = crew.filter((m) => (nextShot.get(m.id) ?? 0) <= now);
-    if (!ready.length) continue;
+    if (!ready.length) return;
     const from = onBeast(beast, ...TOWER), t = towerTarget(beast, from);
-    if (!t) continue;
+    if (!t) return;
     for (const m of ready) {
       if (!takeArrow(beast)) {
         if (now - (lastOut.get(beast.id) ?? -9999) > 1200) {
@@ -231,7 +239,7 @@ system.runInterval(guard("tower", () => {
       fire(beast, from, t, m, gun);
       nextShot.set(m.id, now + gun.every);
     }
-  }
+  });
 }), 5);
 system.runInterval(() => { const old = system.currentTick - 200; for (const [k, v] of bolts) if (v[1] < old) bolts.delete(k); }, 200);
 // crossbow bolts hit harder (+2), on top of their faster flight
@@ -284,3 +292,8 @@ export function seatReport() {
     return `Tuskbeast at ${Math.floor(b.location.x)} ${Math.floor(b.location.y)} ${Math.floor(b.location.z)}: seats [${rs.join(", ")}], crew record ${crewOf(b).length}, owner ${ownerNameOf(b)}`;
   });
 }
+
+// TW-50: forget guards and beasts that are gone, so these maps don't grow through a long Realm session
+system.runInterval(guard("tusk.tidy", () => {
+  for (const m of [nextShot, lastOut]) for (const id of m.keys()) if (!entityById(id)?.isValid) m.delete(id);
+}), 1200);

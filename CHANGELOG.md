@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.0.22 (25 Nov 2026): Checkpoint D, architecture and expansion readiness (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`. All four checkpoints of the v0.0.18 audit are done.
+- Landmarks (TW-42 to TW-45): plans differ per world (world seed); room checks per species; never closer than 40-64
+  blocks to a player; per-species return time and role.
+- Performance (TW-46 to TW-54): staggered pulses, sunflower cache, pruned maps, light clean-up that stops when done,
+  filtered death listeners, debug log off by default (`/scriptevent wilds:log on|off`), per-creature error isolation
+  with rate-limited reports.
+- Integration (TW-55 to TW-57): `core/integration.js` (features detected one by one; Guilds+ can announce more);
+  the guild-member tag only counts if Guilds+ says it exists; guards at a quarter health or less don't man the howdah.
+- Test hooks: `caps`, `lm_plan`, `lm_room`, `lm_why`.
+
+## 0.0.21 (25 Nov 2026): Checkpoint C, the companion system (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`.
+- New `scripts/companions.js` (reusable for later pets): tamed companions are knocked out instead of dying, rescued
+  from lava, fire, water, suffocation and the void, kept in a world registry, and can be recalled.
+- Frost Lynx: knocked-out state and look; owner assist; Wander keeps a 12-block home; healing with raw meat while
+  knocked out (no trick); purring only when up.
+- **Companion Whistle** (`wilds:companion_whistle`, shapeless: bone + iron nugget): lists your companions and calls one.
+- Guilds+ link by script events (hello, list, recall); Guild Table menu proposed in `GUILDS_PATCH_PROPOSAL.md` part 5.
+- `core/util.js`: `entityById` (a lookup that never throws).
+- Test hooks: `comp_hit`, `comp_feed`, `comp_list`, `comp_recall`, `comp_recall_other`.
+
+## 0.0.20 (25 Nov 2026): Checkpoint B, existing creature gameplay (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`.
+- TW-02, TW-18: Pebble Mimics spawn naturally (stone-family ground, caves), breed with cobblestone, have babies that
+  roll their own affinity (same odds) and grow up small or large in 20 minutes.
+- TW-19, TW-27: the **Aetherseed Roost** (new block, placeholder look; recipe: moss block on top, 2 sticks and a
+  plank in the middle row, 3 planks at the bottom). Tap it to give the nearest Original or Bloom seed a home or let
+  it go. Homed seeds stay within 2 blocks; Roosts 8 apart; breaking it frees the seed.
+- TW-20: floating creatures glide step by step with a wall check (torch-following, coming home).
+- TW-25: crop registry (`core/crops.js`) with Guilds+'s 21 crops.
+- TW-36, TW-37, TW-39/40: Bloomling groups spawn member by member on checked spots; babies take a real parent's look;
+  cages keep name, baby, growth and rest (shared `core/lifecycle.js`, ready for later creatures).
+- New `core/clock.js`: a play clock that keeps running with the daylight cycle off (fixes the frozen wilting timer).
+- `CODEX_HANDOFF_ROOST.md`: the Roost model brief.
+- Test hooks: `roost_*`, `crop`, `crop_stage`, `mimic_visit`, `mimic_babies`, `mimic_ages`, `baby`, `fed`, `grow_all`,
+  `who`, `clock`.
+
+## 0.0.19 (25 Nov 2026): Checkpoint A, critical stabilization (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`.
+- TW-01: APIs checked against Mojang's 2.6.0 packages; `BiomeTypes` removed; `min_engine_version` 1.26.10.
+- TW-03: new `core/txn.js` (re-check, pay first, refund, one exchange per creature): cage catch/release, Aetherseed bone
+  meal, Frost Lynx treats.
+- TW-04: the Frost Lynx's owner is the player who fed it (recorded at the feeding), saved as a player id.
+- TW-05 (+ TW-49, TW-52): spawn records with id, dimension, spot, times and misses; failed spawns and lost creatures
+  free their square; unloaded is never dead; records written only on change; the Tuskbeast moved onto the shared
+  spawner with its old records carried over.
+- TW-09, TW-10: a Tuskbeast only ignores damage from its own riders; other riders and guards hurt it normally.
+- TW-12, TW-13, TW-15: owners send down every guard, invited riders only their own; sent-down guards leave the crew at
+  once; re-seat after a load only 10 s and within 4 blocks; menus re-check before acting.
+- TW-22: summoned zombies vanish only when their seed's spell has ended (death, cage, healing), not when it's unloaded.
+- TW-24: pulse deduplication keyed by dimension; new flowers count as touched.
+- Test hooks: `tusk_hit`, `senddown`, `txn`, `sq_check`, `sq_remove`, `sq_fake`, `sq_legacy`, `zombies`.
+
 ## 0.0.18 (24 Nov 2026): Codex's icons and sounds
 
 - **13 inventory icons** (`TheWilds_RP/textures/items/wilds/`): the empty Cage, 3 caged Aetherseeds, 8 caged Bloomlings,
