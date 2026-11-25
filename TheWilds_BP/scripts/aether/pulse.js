@@ -6,7 +6,7 @@
 // world; on top of that, every target must stand on soil (farmland for crops, dirt-family for the rest).
 // No duplicate pulses: one loop, the due time is stored on the seed itself (wilds:next_pulse), and a block is touched
 // by at most one seed per loop.
-import { world, system, guard, dbg, sfx } from "../core/util.js";
+import { world, system, guard, dbg, sfx, each } from "../core/util.js";
 import { CROPS, canGrow, growBy } from "../core/crops.js";
 
 const SEED = "wilds:aetherseed";
@@ -78,18 +78,21 @@ function pulse(seed, touched) {
   return n;
 }
 
+// TW-46/47: at most PER_RUN seeds pulse per run (every second), the rest wait their turn, so a big garden of seeds
+// never scans all at once; each seed's scan is on its own (one bad seed doesn't stop the rest).
+const PER_RUN = 4;
 system.runInterval(guard("aether", () => {
-  const t = Date.now(), touched = new Set();
+  const t = Date.now(), touched = new Set(); let done = 0;
   for (const d of ["overworld", "nether", "the_end"]) {
     let list; try { list = world.getDimension(d).getEntities({ type: SEED }); } catch { continue; }
-    for (const s of list) {
-      if (!s.isValid) continue;
+    each("pulse", list, (s) => {
+      if (done >= PER_RUN || !s.isValid) return;
       const due = s.getDynamicProperty("wilds:next_pulse");
-      if (due === undefined) { s.setDynamicProperty("wilds:next_pulse", t + PULSE.everyMs * (0.5 + Math.random() * 0.5)); continue; }   // stagger new seeds
-      if (t < due) continue;
+      if (due === undefined) { s.setDynamicProperty("wilds:next_pulse", t + PULSE.everyMs * (0.5 + Math.random() * 0.5)); return; }   // stagger new seeds
+      if (t < due) return;
       s.setDynamicProperty("wilds:next_pulse", t + PULSE.everyMs);                // set before acting: one pulse per due time
-      pulse(s, touched);
-    }
+      pulse(s, touched); done++;
+    });
   }
 }), 20);
 

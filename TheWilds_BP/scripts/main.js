@@ -1,5 +1,6 @@
 // The Wilds 0.0.1-p0: Phase 0 prototypes only. Works with or without Guilds+ (detected at runtime, never edited).
-import { world, system, guard, guildsPresent, VERSION } from "./core/util.js";
+import { world, system, guard, guildsPresent, VERSION, setLogging } from "./core/util.js";
+import { caps } from "./core/integration.js";
 import { ItemStack } from "@minecraft/server";
 import { seatReport, stats as seatStats, testSeat, allBeasts, towerReport } from "./tusk/seats.js";
 import { invites, toggleInvite, uninvite, mayRide } from "./tusk/owners.js";
@@ -9,7 +10,7 @@ import "./tusk/tame.js";
 import { wildVisit, wildInfo, wildAge } from "./tusk/wild.js";
 import { guardStats } from "./tusk/crewguard.js";
 import { mimicInfo, mimicCensus, mimicSpawn } from "./mimic/affinity.js";
-import { landmarkInfo, landmarkAudit, visit } from "./landmarks/cells.js";
+import { landmarkInfo, landmarkAudit, visit, plan, worldSalt, roomFor, KINDS, explainSpots } from "./landmarks/cells.js";
 import { seedForm, pulseStats } from "./aether/pulse.js";
 import { capture, release, CAGEABLE, cageStats, catchWith, releaseWith, EMPTY } from "./cage.js";
 import { dismountCrew } from "./tusk/seats.js";
@@ -90,6 +91,11 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Checkpoint D (0.0.22)
+  caps: (p) => p.sendMessage(JSON.stringify(caps())),
+  lm_why: (p, [key]) => p.sendMessage(explainSpots(p, key ?? "oni")),
+  lm_plan: (p, [cx, cz]) => p.sendMessage(`seed ${world.seed}, salt ${worldSalt()}, cell ${cx},${cz}: ${JSON.stringify(Object.fromEntries(Object.entries(plan(+cx, +cz).kinds).map(([k, v]) => [k, v.state === "absent" ? "-" : `${v.ax},${v.az}`])))}`),
+  lm_room: (p, [key]) => { const k = KINDS.find((x) => x.key === key); p.sendMessage(`${key} (${k.w}x${k.w}x${k.h}${k.flying ? ", flying" : ""}) room here: ${roomFor(p.dimension, k, Math.floor(p.location.x), Math.floor(p.location.y), Math.floor(p.location.z))}`); },
   // Checkpoint C (0.0.21)
   comp_hit: (p, [dmg, cause]) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 32, closest: 1 })[0]; if (!l) return p.sendMessage("no lynx");
     const before = l.getComponent("minecraft:health").currentValue; l.applyDamage(+dmg || 5, { cause: cause ?? "entityAttack" });
@@ -285,6 +291,12 @@ const TESTS = {
     p.sendMessage(`garden: ${JSON.stringify(out)}`);
   },
 };
+// TW-53: "/scriptevent wilds:log on|off" (operators, or the server console) switches the debug log
+system.afterEvents.scriptEventReceive.subscribe(guard("log", (e) => {
+  if (e.id !== "wilds:log") return;
+  const on = (e.message ?? "").trim() !== "off"; setLogging(on);
+  const msg = `The Wilds debug log ${on ? "on" : "off"}.`; if (e.sourceEntity?.sendMessage) e.sourceEntity.sendMessage(msg); else console.warn(`[wilds] ${msg}`);
+}));
 system.afterEvents.scriptEventReceive.subscribe(guard("test", (e) => {
   if (e.id !== "wilds:test") return;
   const [cmd, x, y, z, ...a] = (e.message ?? "").trim().split(/\s+/);

@@ -78,6 +78,7 @@ export function healDown(e) {
   return h.currentValue;
 }
 const lastRescue = new Map();
+system.runInterval(() => { const old = system.currentTick - 200; for (const [k, t] of lastRescue) if (t < old) lastRescue.delete(k); }, 1200);   // TW-50
 export function rescue(e, why) {
   const t = system.currentTick; if (t - (lastRescue.get(e.id) ?? -999) < 60) return "too soon";
   lastRescue.set(e.id, t);

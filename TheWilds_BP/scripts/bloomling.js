@@ -42,7 +42,15 @@ export const LOOK_RULES = {
 };
 export const isDay = () => { const t = world.getTimeOfDay(); return t < 12000 || t >= 23500; };
 const hasSnow = (dim, s) => { try { const a = dim.getBlock(s), b = dim.getBlock({ x: s.x, y: s.y - 1, z: s.z }); return a?.typeId === "minecraft:snow_layer" || b?.typeId === "minecraft:snow" || b?.typeId === "minecraft:snow_layer"; } catch { return false; } };
+const sunCache = new Map();                              // TW-48: "dim|x8|z8" -> { t, v }, kept 60 s (the area can change)
 function nearSunflower(dim, s) {
+  const k = `${dim.id}|${Math.floor(s.x / 8)}|${Math.floor(s.z / 8)}`, c = sunCache.get(k), now = Date.now();
+  if (c && now - c.t < 60000) return c.v;
+  const v = scanSunflower(dim, s); sunCache.set(k, { t: now, v });
+  if (sunCache.size > 500) for (const [kk, cc] of sunCache) if (now - cc.t > 60000) sunCache.delete(kk);
+  return v;
+}
+function scanSunflower(dim, s) {
   for (let x = -6; x <= 6; x++) for (let z = -6; z <= 6; z++) for (let y = -2; y <= 2; y++) {
     try { if (dim.getBlock({ x: s.x + x, y: s.y + y, z: s.z + z })?.typeId === "minecraft:sunflower") return true; } catch { /* */ }
   }

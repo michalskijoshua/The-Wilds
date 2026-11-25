@@ -38,3 +38,5 @@ export function give(p, item, slot) {
   if (inv && slot !== undefined && !inv.getItem(slot)) { inv.setItem(slot, item); return; }
   const left = inv?.addItem(item); if (left || !inv) p.dimension.spawnItem(left ?? item, p.location);
 }
+
+system.runInterval(() => { const old = system.currentTick - 200; for (const [k, t] of busy) if (t < old) busy.delete(k); }, 1200);   // TW-50: stale locks

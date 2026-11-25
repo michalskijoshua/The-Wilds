@@ -7,7 +7,7 @@
 //   Withered: no light, purple specks; follows players holding a torch (main or off hand); snuffs placed torches
 //         nearby (they pop off); summons zombies now and then (at most 2, long gaps) that vanish when it dies.
 //         It never attacks anyone itself.
-import { world, system, guard, jget, jset, dbg, dist, sfx } from "../core/util.js";
+import { world, system, guard, jget, jset, dbg, dist, sfx, each } from "../core/util.js";
 import { squareSpawner, biomeAt, groundAt } from "../core/spawner.js";
 import { near, lock, unlock, pay } from "../core/txn.js";
 import { glideToward } from "../core/move.js";
@@ -118,8 +118,18 @@ function sweepLights() {                                   // any recorded light
   }
   if (changed) jset(REG, r);
 }
-system.runInterval(guard("seed.light", () => { for (const s of seeds()) if (s.isValid) keepLight(s); }), 5);
-system.runInterval(guard("seed.sweep", sweepLights), 100);
+// TW-51: once no light is recorded anywhere and no loaded seed carries one, the clean-up is done for this world
+// (wilds:lights_done). A seed from 0.0.12 that loads later still drops its own light the moment it is seen (cheap).
+const lightsDone = () => { try { return !!world.getDynamicProperty("wilds:lights_done"); } catch { return false; } };
+system.runInterval(guard("seed.light", () => {
+  if (lightsDone()) return;
+  each("seed.light", seeds(), (s) => { if (s.isValid) keepLight(s); });
+}), 20);
+system.runInterval(guard("seed.sweep", () => {
+  if (lightsDone()) { each("seed.light", seeds(), (s) => { if (s.getDynamicProperty("wilds:light")) dropLight(s); }); return; }
+  sweepLights();
+  if (!Object.keys(reg()).length && !seeds().some((s) => s.getDynamicProperty("wilds:light"))) world.setDynamicProperty("wilds:lights_done", true);
+}), 200);
 world.afterEvents.worldLoad.subscribe(guard("seed.load", () => system.runTimeout(guard("seed.sweep0", sweepLights), 40)));
 // dies or unloads: take its light now if the block is still loaded (otherwise the sweep does it later)
 world.beforeEvents.entityRemove.subscribe((e) => {
@@ -196,8 +206,8 @@ let beat = 0;
 system.runInterval(guard("seed.withered", () => {
   beat++;
   const now = Date.now(), players = world.getAllPlayers();
-  for (const s of seeds()) {
-    if (!s.isValid || formOf(s) !== 2) continue;
+  each("seed.withered", seeds(), (s) => {
+    if (!s.isValid || formOf(s) !== 2) return;
     try { s.dimension.spawnParticle("minecraft:obsidian_glow_dust_particle", { x: s.location.x, y: s.location.y + 0.4, z: s.location.z }); } catch { /* */ }
     // follow a torch
     const p = players.filter((q) => q.dimension.id === s.dimension.id && dist(q.location, s.location) <= WITHERED.followRange && holdsTorch(q))
@@ -211,7 +221,7 @@ system.runInterval(guard("seed.withered", () => {
     const due = s.getDynamicProperty("wilds:next_zombie");
     if (due === undefined) s.setDynamicProperty("wilds:next_zombie", now + rnd(WITHERED.firstZombieMs));
     else if (now >= due) { summonZombie(s); s.setDynamicProperty("wilds:next_zombie", now + rnd(WITHERED.zombieGapMs)); }
-  }
+  });
   if (beat % 20 === 0) {                                   // a summoned zombie whose seed is gone vanishes too
     for (const d of DIMS) {
       let zs; try { zs = world.getDimension(d).getEntities({ type: "minecraft:zombie" }); } catch { continue; }

@@ -5,6 +5,7 @@
 // Guild friends: if Guilds+ one day tags its members "guilds_member:<guild owner id>" (see GUILDS_PATCH_PROPOSAL.md,
 // part 4), members of the owner's guild may ride without an invite. Until then the tag never exists and this is idle.
 import { world, system, guard } from "../core/util.js";
+import { hasCap } from "../core/integration.js";
 import { CommandPermissionLevel, CustomCommandParamType, CustomCommandStatus } from "@minecraft/server";
 
 const OWNER = "wilds:owner", OWNER_NAME = "wilds:owner_name";
@@ -22,7 +23,8 @@ const saveInvites = (ownerId, list) => world.setDynamicProperty(invKey(ownerId),
 /** May this player ride this beast? Unowned beasts: yes (the first rider claims it). */
 export function mayRide(player, beast) {
   const o = ownerOf(beast);
-  return !o || o === player.id || invites(o).some((i) => i.id === player.id) || !!player.hasTag?.(`guilds_member:${o}`);
+  // TW-55: the guild-member tag does not exist in Guilds+ 0.9.18, so it only counts once Guilds+ says it supports it
+  return !o || o === player.id || invites(o).some((i) => i.id === player.id) || (hasCap("membership") && !!player.hasTag?.(`guilds_member:${o}`));
 }
 
 export function invite(owner, target) {

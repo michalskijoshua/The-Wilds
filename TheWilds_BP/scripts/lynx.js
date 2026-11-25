@@ -128,3 +128,5 @@ system.runInterval(guard("lynx.sounds", () => {
     }
   }
 }), 20);
+
+system.runInterval(guard("lynx.tidy", () => { for (const id of lastHiss.keys()) if (!entityById(id)?.isValid) lastHiss.delete(id); }), 1200);   // TW-50

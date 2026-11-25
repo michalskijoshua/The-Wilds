@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.22 (25 Nov 2026): Checkpoint D, architecture and expansion readiness (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`. All four checkpoints of the v0.0.18 audit are done.
+- Landmarks (TW-42 to TW-45): plans differ per world (world seed); room checks per species; never closer than 40-64
+  blocks to a player; per-species return time and role.
+- Performance (TW-46 to TW-54): staggered pulses, sunflower cache, pruned maps, light clean-up that stops when done,
+  filtered death listeners, debug log off by default (`/scriptevent wilds:log on|off`), per-creature error isolation
+  with rate-limited reports.
+- Integration (TW-55 to TW-57): `core/integration.js` (features detected one by one; Guilds+ can announce more);
+  the guild-member tag only counts if Guilds+ says it exists; guards at a quarter health or less don't man the howdah.
+- Test hooks: `caps`, `lm_plan`, `lm_room`, `lm_why`.
+
 ## 0.0.21 (25 Nov 2026): Checkpoint C, the companion system (v0.0.18 audit)
 
 Statuses and test details per issue: `AUDIT_TRACKER.md`.

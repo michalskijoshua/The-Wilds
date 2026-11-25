@@ -2,12 +2,26 @@
 import { world, system, EntityTypes } from "@minecraft/server";
 
 export const NS = "wilds";
-export const VERSION = "0.0.21-p0";
+export const VERSION = "0.0.22-p0";
 
+/** Errors are always reported, but the same one at most once a minute (with a count), so a broken entity can't flood
+ *  the log (TW-53/54). */
+const errSeen = new Map();
+export function report(label, err) {
+  const k = `${label}: ${err}`, now = Date.now(), r = errSeen.get(k);
+  if (r && now - r.t < 60000) { r.n++; return; }
+  console.warn(`[wilds] ${k}${r?.n ? ` (and ${r.n} more times)` : ""}`);
+  errSeen.set(k, { t: now, n: 0 });
+  if (errSeen.size > 200) errSeen.clear();
+}
 /** Wrap a callback so one error never kills a loop or an event subscription. */
 export const guard = (label, fn) => (...a) => {
-  try { return fn(...a); } catch (err) { console.warn(`[wilds] ${label}: ${err}`); }
+  try { return fn(...a); } catch (err) { report(label, err); }
 };
+/** TW-54: runs fn for each item on its own, so one bad (invalid, unloaded) entity never stops the others. */
+export function each(label, list, fn) {
+  for (const x of list) { try { fn(x); } catch (err) { report(label, err); } }
+}
 
 export const jget = (key, dflt) => {
   try { const v = world.getDynamicProperty(key); return v === undefined ? dflt : JSON.parse(v); } catch { return dflt; }
@@ -26,9 +40,13 @@ export function guildsPresent() {
   return guildsCache;
 }
 
-/** Debug log for testers: chat for players with the wilds:debug tag, always the content log. */
+/** Debug log (TW-53): off by default. "/scriptevent wilds:log on" (operators) writes it to the content log; players with
+ *  the wilds:debug tag also see it in chat. Errors are not affected (see report). */
+let logOn, logCheck = -1e9;
+export const logging = () => { if (Date.now() - logCheck > 5000) { logCheck = Date.now(); try { logOn = !!world.getDynamicProperty("wilds:log"); } catch { /* */ } } return logOn; };
+export function setLogging(on) { world.setDynamicProperty("wilds:log", on ? true : undefined); logCheck = -1e9; }
 export function dbg(msg) {
-  console.info(`[wilds] ${msg}`);
+  if (logging()) console.info(`[wilds] ${msg}`);
   for (const p of world.getAllPlayers()) if (p.hasTag("wilds:debug")) p.sendMessage(`§7[wilds] ${msg}`);
 }
 
