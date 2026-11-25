@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.0.21 (25 Nov 2026): Checkpoint C, the companion system (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`.
+- New `scripts/companions.js` (reusable for later pets): tamed companions are knocked out instead of dying, rescued
+  from lava, fire, water, suffocation and the void, kept in a world registry, and can be recalled.
+- Frost Lynx: knocked-out state and look; owner assist; Wander keeps a 12-block home; healing with raw meat while
+  knocked out (no trick); purring only when up.
+- **Companion Whistle** (`wilds:companion_whistle`, shapeless: bone + iron nugget): lists your companions and calls one.
+- Guilds+ link by script events (hello, list, recall); Guild Table menu proposed in `GUILDS_PATCH_PROPOSAL.md` part 5.
+- `core/util.js`: `entityById` (a lookup that never throws).
+- Test hooks: `comp_hit`, `comp_feed`, `comp_list`, `comp_recall`, `comp_recall_other`.
+
 ## 0.0.20 (25 Nov 2026): Checkpoint B, existing creature gameplay (v0.0.18 audit)
 
 Statuses and test details per issue: `AUDIT_TRACKER.md`.

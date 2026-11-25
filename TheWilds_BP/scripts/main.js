@@ -14,6 +14,7 @@ import { seedForm, pulseStats } from "./aether/pulse.js";
 import { capture, release, CAGEABLE, cageStats, catchWith, releaseWith, EMPTY } from "./cage.js";
 import { dismountCrew } from "./tusk/seats.js";
 import { hatch, eggStats } from "./eggs.js";
+import { companionsOf, recallCompanion, healDown, isDown, compStats } from "./companions.js";
 import { mimicVisit, mimicLifeStats } from "./mimic/life.js";
 import { placeRoost, assignNearest, freeRoost, roostList, roostStats } from "./aether/roost.js";
 import { moveStats } from "./core/move.js";
@@ -89,6 +90,15 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Checkpoint C (0.0.21)
+  comp_hit: (p, [dmg, cause]) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 32, closest: 1 })[0]; if (!l) return p.sendMessage("no lynx");
+    const before = l.getComponent("minecraft:health").currentValue; l.applyDamage(+dmg || 5, { cause: cause ?? "entityAttack" });
+    system.runTimeout(() => p.sendMessage(`${cause ?? "entityAttack"} ${dmg}: hp ${before} -> ${l.isValid ? l.getComponent("minecraft:health").currentValue : "DEAD"}, down ${l.isValid && isDown(l)}, at ${l.isValid ? `${l.location.x.toFixed(1)},${l.location.y.toFixed(1)},${l.location.z.toFixed(1)}` : "-"}, speed ${l.isValid ? l.getComponent("minecraft:movement")?.currentValue : "-"} | ${JSON.stringify(compStats)}`), 3); },
+  comp_feed: (p) => { const l = p.dimension.getEntities({ type: "wilds:frost_lynx", location: p.location, maxDistance: 32, closest: 1 })[0]; const hp = healDown(l); system.runTimeout(() => p.sendMessage(`fed: hp ${hp}, down ${isDown(l)}, mode ${l.getDynamicProperty("wilds:mode")}, speed ${l.getComponent("minecraft:movement")?.currentValue}`), 2); },
+  comp_list: (p, [owner]) => p.sendMessage(JSON.stringify(companionsOf(owner ?? "T1"))),
+  comp_recall: (p, [owner]) => { const c = companionsOf(owner ?? "T1")[0]; if (!c) return p.sendMessage("none");
+    recallCompanion(c[0], { x: p.location.x, y: p.location.y, z: p.location.z, dim: p.dimension, dimId: p.dimension.id }, { id: owner ?? "T1" }).then((r) => p.sendMessage(`recall: ${r}`)); },
+  comp_recall_other: (p) => { const c = companionsOf("T1")[0]; recallCompanion(c[0], { ...p.location, dim: p.dimension, dimId: p.dimension.id }, { id: "STRANGER" }).then((r) => p.sendMessage(`stranger recall: ${r}`)); },
   // Checkpoint B (0.0.20)
   mimic_ages: (p) => { const c = {}; for (const m of p.dimension.getEntities({ type: "wilds:pebble_mimic" })) { const k = `${m.getComponent("minecraft:is_baby") ? "baby" : "adult"} size${m.getProperty("wilds:size")} scale${m.getComponent("minecraft:scale")?.value}`; c[k] = (c[k] ?? 0) + 1; } p.sendMessage(JSON.stringify(c)); },
   clock: (p) => p.sendMessage(`absolute ${world.getAbsoluteTime()} day ${world.getTimeOfDay()} tick ${system.currentTick} wilds clock ${playTicks()}`),

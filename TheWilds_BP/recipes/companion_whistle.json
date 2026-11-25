@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "wilds:companion_whistle"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:bone"
+      },
+      {
+        "item": "minecraft:iron_nugget"
+      }
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:bone"
+      }
+    ],
+    "result": {
+      "item": "wilds:companion_whistle",
+      "count": 1
+    }
+  }
+}

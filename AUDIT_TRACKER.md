@@ -43,8 +43,15 @@ Status words (from the handoff):
 saved in the world; wilting, growing up and resting use it. Tested: it ran with the daylight cycle off and carried on
 after a restart.
 
-## Checkpoint C: companion system (not started)
-TW-30 (incapacitation), environmental rescue, TW-31, TW-32, TW-33, Companion Whistle, Guild Table companions.
+## Checkpoint C: companion system (The Wilds 0.0.21)
+
+| Id | Issue | Status | Notes |
+|---|---|---|---|
+| TW-30 | Companion incapacitation | Fixed and tested (server); the lying-down look awaits Android | `companions.js`: lethal damage to a tamed companion is cancelled in `beforeEvents.entityHurt` (one huge hit included) and it is knocked out at 1 health: no movement, no fighting (its defend group is removed), no tricks, immune, no loot, still owned. Raw meat heals 4; it gets up at 10. Wild ones stay mortal. Look: the Director's `death_collapse` then `lying_dead` (`q.skin_id == 2`). Tested: wild lynx died; tamed: a 5 hit landed, a 500 hit -> knocked out at 1, a later hit did nothing, fed 1 -> 5 -> 9 -> 13 and stood up; lethal fall -> knocked out in place; knocked out and restored through a restart. |
+| (rescue) | Environmental emergency rescue | Fixed and tested | Lava, fire, magma, drowning, suffocation, void: moved to safe ground within 8 blocks, else beside its owner (any dimension), else its Wander home, else its last safe spot (recorded every 5 s); stays knocked out; at most once per 3 s. Tested: lava pool -> moved to the edge; water pit -> moved out; buried in stone -> moved up into the air; void (y -70, owner offline, no home) -> back to its last safe spot. |
+| TW-31 | Owner combat assistance | Implemented, awaiting runtime test | `minecraft:behavior.owner_hurt_target` added; targets exclude players, other Frost Lynxes, Guilds+ guards and any tamed creature (no guild-ally data exists yet: TW-55). Defending (`owner_hurt_by_target`) kept. Both are removed while knocked out. Needs a real owner. |
+| TW-32 | Bounded wandering | Fixed and tested (compromise) | Wander records the spot (with dimension) as home, saved on the creature. The entity file's own home behaviour did not bring it back on the server, so the script pushes it home (physics impulses, walls still stop it) while it is more than 12 blocks away. Tested: carried 35 blocks away, it was back within 12 in about 15 s. |
+| TW-33 | Persistent companion registry | Fixed and tested (records, recall); Whistle awaits a player; Guild Table blocked on Guilds+ | World record per companion: uid, species, variant, name, owner id and name, health, knocked out, mode, home, last place and dimension, waiting recall; written only on change; last place also saved the moment it unloads. Recall: loaded -> moved to safe ground by the caller; unloaded -> a short ticking area at its last place loads it, then it is moved; if that fails it waits and is delivered the next time it loads (seen working). Never a replacement, never a heal, owner only (a stranger was refused). **Companion Whistle** (bone + iron nugget, placeholder bone icon) opens the list. **Guild Table:** The Wilds side done (script events), Guilds+ part: `GUILDS_PATCH_PROPOSAL.md` part 5. |
 
 ## Checkpoint D: architecture and expansion (not started; some parts done early)
 TW-42 to TW-45 (landmarks) · TW-46 to TW-54 (performance) · TW-55 to TW-57 (integration).

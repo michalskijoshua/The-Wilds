@@ -170,9 +170,6 @@
         "minecraft:health": {
           "value": 20,
           "max": 20
-        },
-        "minecraft:behavior.owner_hurt_by_target": {
-          "priority": 1
         }
       },
       "wilds:mode_follow": {
@@ -207,6 +204,57 @@
         },
         "minecraft:skin_id": {
           "value": 0
+        },
+        "minecraft:home": {
+          "restriction_radius": 12
+        },
+        "minecraft:behavior.move_towards_home_restriction": {
+          "priority": 5,
+          "speed_multiplier": 1.0
+        }
+      },
+      "wilds:guard": {
+        "minecraft:behavior.owner_hurt_by_target": {
+          "priority": 1
+        },
+        "minecraft:behavior.owner_hurt_target": {
+          "priority": 2,
+          "entity_types": [
+            {
+              "filters": {
+                "none_of": [
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "player"
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "wilds_frost_lynx"
+                  },
+                  {
+                    "test": "is_family",
+                    "subject": "other",
+                    "value": "ironhome_mercenary"
+                  },
+                  {
+                    "test": "is_tamed",
+                    "subject": "other",
+                    "value": true
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "wilds:down": {
+        "minecraft:movement": {
+          "value": 0.0
+        },
+        "minecraft:skin_id": {
+          "value": 2
         }
       }
     },
@@ -297,6 +345,7 @@
         "add": {
           "component_groups": [
             "wilds:tamed",
+            "wilds:guard",
             "wilds:mode_follow"
           ]
         }
@@ -305,7 +354,8 @@
         "remove": {
           "component_groups": [
             "wilds:mode_stay",
-            "wilds:mode_wander"
+            "wilds:mode_wander",
+            "wilds:down"
           ]
         },
         "add": {
@@ -318,7 +368,8 @@
         "remove": {
           "component_groups": [
             "wilds:mode_follow",
-            "wilds:mode_wander"
+            "wilds:mode_wander",
+            "wilds:down"
           ]
         },
         "add": {
@@ -331,12 +382,47 @@
         "remove": {
           "component_groups": [
             "wilds:mode_follow",
-            "wilds:mode_stay"
+            "wilds:mode_stay",
+            "wilds:down"
           ]
         },
         "add": {
           "component_groups": [
             "wilds:mode_wander"
+          ]
+        }
+      },
+      "wilds:guard_on": {
+        "add": {
+          "component_groups": [
+            "wilds:guard"
+          ]
+        }
+      },
+      "wilds:down": {
+        "remove": {
+          "component_groups": [
+            "wilds:guard",
+            "wilds:mode_follow",
+            "wilds:mode_stay",
+            "wilds:mode_wander"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:down"
+          ]
+        }
+      },
+      "wilds:up": {
+        "remove": {
+          "component_groups": [
+            "wilds:down"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "wilds:guard"
           ]
         }
       }
