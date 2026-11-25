@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.0.20 (25 Nov 2026): Checkpoint B, existing creature gameplay (v0.0.18 audit)
+
+Statuses and test details per issue: `AUDIT_TRACKER.md`.
+- TW-02, TW-18: Pebble Mimics spawn naturally (stone-family ground, caves), breed with cobblestone, have babies that
+  roll their own affinity (same odds) and grow up small or large in 20 minutes.
+- TW-19, TW-27: the **Aetherseed Roost** (new block, placeholder look; recipe: moss block on top, 2 sticks and a
+  plank in the middle row, 3 planks at the bottom). Tap it to give the nearest Original or Bloom seed a home or let
+  it go. Homed seeds stay within 2 blocks; Roosts 8 apart; breaking it frees the seed.
+- TW-20: floating creatures glide step by step with a wall check (torch-following, coming home).
+- TW-25: crop registry (`core/crops.js`) with Guilds+'s 21 crops.
+- TW-36, TW-37, TW-39/40: Bloomling groups spawn member by member on checked spots; babies take a real parent's look;
+  cages keep name, baby, growth and rest (shared `core/lifecycle.js`, ready for later creatures).
+- New `core/clock.js`: a play clock that keeps running with the daylight cycle off (fixes the frozen wilting timer).
+- `CODEX_HANDOFF_ROOST.md`: the Roost model brief.
+- Test hooks: `roost_*`, `crop`, `crop_stage`, `mimic_visit`, `mimic_babies`, `mimic_ages`, `baby`, `fed`, `grow_all`,
+  `who`, `clock`.
+
 ## 0.0.19 (25 Nov 2026): Checkpoint A, critical stabilization (v0.0.18 audit)
 
 Statuses and test details per issue: `AUDIT_TRACKER.md`.

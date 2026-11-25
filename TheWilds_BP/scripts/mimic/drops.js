@@ -4,6 +4,7 @@
 import { world, ItemStack } from "@minecraft/server";
 import { guard, dbg } from "../core/util.js";
 import { FORMS } from "./affinity.js";
+import { isBaby } from "../core/lifecycle.js";
 
 export const DROPS = {                                     // form name -> [item, amount for a large Mimic]
   stone: ["minecraft:cobblestone", 15], mossy: ["minecraft:mossy_cobblestone", 15], sand: ["minecraft:sand", 15],
@@ -26,7 +27,7 @@ world.afterEvents.entityDie.subscribe(guard("mimic.drops", (e) => {
   if (killer?.typeId !== "minecraft:player" || src.cause !== "entityAttack") return;
   let held; try { held = killer.getComponent("minecraft:equippable")?.getEquipment("Mainhand")?.typeId; } catch { /* */ }
   let form, large, at, dim;
-  try { form = m.getProperty("wilds:form"); large = m.getProperty("wilds:size") === 1; at = m.location; dim = m.dimension; } catch { return; }
+  try { form = m.getProperty("wilds:form"); large = m.getProperty("wilds:size") === 1 && !isBaby(m); at = m.location; dim = m.dimension; } catch { return; }   // a baby drops like a small one
   dropStats.kills++;
   for (const [item, n] of dropsFor(form, large, held)) { dim.spawnItem(new ItemStack(item, n), at); dropStats.dropped += n; }
   dbg(`a ${FORMS[form]?.name} Mimic was killed with ${held ?? "a bare hand"}`);

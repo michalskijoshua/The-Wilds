@@ -14,6 +14,12 @@ import { seedForm, pulseStats } from "./aether/pulse.js";
 import { capture, release, CAGEABLE, cageStats, catchWith, releaseWith, EMPTY } from "./cage.js";
 import { dismountCrew } from "./tusk/seats.js";
 import { hatch, eggStats } from "./eggs.js";
+import { mimicVisit, mimicLifeStats } from "./mimic/life.js";
+import { placeRoost, assignNearest, freeRoost, roostList, roostStats } from "./aether/roost.js";
+import { moveStats } from "./core/move.js";
+import { playTicks } from "./core/clock.js";
+import { stageOf } from "./core/crops.js";
+import { lifeStats, snapshot } from "./core/lifecycle.js";
 import { allSpawners, spawnerStats } from "./core/spawner.js";
 import { lock, unlock } from "./core/txn.js";
 import { immunityStats } from "./tusk/durability.js";
@@ -83,6 +89,22 @@ const TESTS = {
   },
   wild_visit: (p) => { wildVisit(p); wildInfo(p); },
   wild_info: (p) => wildInfo(p),
+  // Checkpoint B (0.0.20)
+  mimic_ages: (p) => { const c = {}; for (const m of p.dimension.getEntities({ type: "wilds:pebble_mimic" })) { const k = `${m.getComponent("minecraft:is_baby") ? "baby" : "adult"} size${m.getProperty("wilds:size")} scale${m.getComponent("minecraft:scale")?.value}`; c[k] = (c[k] ?? 0) + 1; } p.sendMessage(JSON.stringify(c)); },
+  clock: (p) => p.sendMessage(`absolute ${world.getAbsoluteTime()} day ${world.getTimeOfDay()} tick ${system.currentTick} wilds clock ${playTicks()}`),
+  mimic_babies: (p, [n]) => { for (let i = 0; i < (+n || 100); i++) p.dimension.spawnEntity("wilds:pebble_mimic", { x: p.location.x + (i % 10), y: p.location.y, z: p.location.z + Math.floor(i / 10) }, { spawnEvent: "minecraft:entity_born" }); p.sendMessage(`born ${n}`); },
+  who: (p) => { for (const e of p.dimension.getEntities({ location: p.location, maxDistance: 6, families: ["wilds"] })) p.sendMessage(`${e.typeId} name="${e.nameTag}" ${JSON.stringify(snapshot(e))}`); },
+  roost_place: (p) => { const b = p.dimension.getBlock(p.location); b.setType("wilds:aetherseed_roost"); p.sendMessage(`place: ${placeRoost(b, undefined)}`); },
+  roost_assign: (p) => { const k = Object.keys(roostList()).find((x) => { const o = roostList()[x]; return Math.hypot(o.x - p.location.x, o.z - p.location.z) < 3; }); p.sendMessage(k ? assignNearest(k) : "no roost here"); },
+  roost_free: (p) => { const k = Object.keys(roostList()).find((x) => { const o = roostList()[x]; return Math.hypot(o.x - p.location.x, o.z - p.location.z) < 3; }); if (k) freeRoost(k); p.sendMessage(k ? "freed" : "no roost here"); },
+  roost_list: (p) => { const r = roostList(); p.sendMessage(`${Object.keys(r).length} roosts: ${JSON.stringify(r)} | ${JSON.stringify(roostStats)} | move ${JSON.stringify(moveStats)}`);
+    for (const s of p.dimension.getEntities({ type: "wilds:aetherseed", location: p.location, maxDistance: 48 })) p.sendMessage(`  seed ${s.location.x.toFixed(1)},${s.location.y.toFixed(1)},${s.location.z.toFixed(1)} roost=${s.getDynamicProperty("wilds:roost") ?? "-"}`); },
+  crop: (p, [id, stage]) => { const b = p.dimension.getBlock(p.location); p.dimension.getBlock({ ...p.location, y: p.location.y - 1 }).setType("minecraft:farmland"); try { b.setType(id); } catch (err) { return p.sendMessage(`${id}: ${err}`); } p.sendMessage(`${id} stage ${stageOf(b)}`); },
+  crop_stage: (p) => { const b = p.dimension.getBlock(p.location); p.sendMessage(`${b.typeId} stage ${stageOf(b)}`); },
+  mimic_visit: (p, [force]) => p.sendMessage(`${mimicVisit(p, force === "force")} | ${JSON.stringify(mimicLifeStats)} ${JSON.stringify(lifeStats)}`),
+  baby: (p, [type, look]) => { const e = p.dimension.spawnEntity(type, p.location, { spawnEvent: "minecraft:entity_born" }); system.runTimeout(() => p.sendMessage(`${type} baby: ${JSON.stringify(snapshot(e))} affinity ${e.getProperty?.("wilds:affinity") ?? "-"} | ${JSON.stringify(lifeStats)}`), 3); },
+  fed: (p) => { for (const e of p.dimension.getEntities({ location: p.location, maxDistance: 6, families: ["wilds"] })) e.setDynamicProperty("wilds:fed_at", playTicks()); p.sendMessage("all creatures here count as just fed"); },
+  grow_all: (p) => { for (const e of p.dimension.getEntities({ location: p.location, maxDistance: 48, families: ["wilds"] })) { const at = e.getDynamicProperty("wilds:born_at"); if (at !== undefined) e.setDynamicProperty("wilds:born_at", at - 30000); } p.sendMessage("babies here now count as old enough"); },
   // Checkpoint A (0.0.19)
   sq_remove: (p) => { const e = p.dimension.getEntities({ location: p.location, maxDistance: 64 }).find((x) => x.getDynamicProperty("wilds:sq") || x.getDynamicProperty("wilds:tb_square")); if (!e) return p.sendMessage("none"); p.sendMessage(`removed ${e.typeId} quietly (no death)`); e.remove(); },
   sq_fake: (p) => { const cx = Math.floor(p.location.x / 750), cz = Math.floor(p.location.z / 750); world.setDynamicProperty(`wilds:sq:tuskbeast:${cx},${cz}`, JSON.stringify({ v: 2, s: "live", id: null, t: Date.now() - 61000 })); p.sendMessage("fake reservation with no creature, 61 s old"); },
@@ -171,7 +193,7 @@ const TESTS = {
   },
   cage_release: (p, [minutes]) => {
     if (!cageHeld) return p.sendMessage("nothing caged");
-    if (minutes) cageHeld.setDynamicProperty("wilds:caught", world.getAbsoluteTime() - Math.round(+minutes * 1200));
+    if (minutes) cageHeld.setDynamicProperty("wilds:caught", playTicks() - Math.round(+minutes * 1200));
     const e = release(cageHeld, p.dimension, p.location); cageHeld = undefined;
     system.runTimeout(() => p.sendMessage(`released ${e.typeId}: form ${e.getProperty("wilds:form")}, look ${e.getComponent("minecraft:mark_variant")?.value}, hp ${e.getComponent("minecraft:health")?.currentValue} | ${JSON.stringify(cageStats)}`), 2);
   },

@@ -10,6 +10,7 @@
 import { world, system, guard, jget, jset, dbg, dist, sfx } from "../core/util.js";
 import { squareSpawner, biomeAt, groundAt } from "../core/spawner.js";
 import { near, lock, unlock, pay } from "../core/txn.js";
+import { glideToward } from "../core/move.js";
 
 const SEED = "wilds:aetherseed", FORMS = ["original", "bloom", "withered"];
 const formOf = (s) => s.getProperty("wilds:form");
@@ -203,7 +204,7 @@ system.runInterval(guard("seed.withered", () => {
       .sort((a, b) => dist(a.location, s.location) - dist(b.location, s.location))[0];
     if (p) {
       const to = { x: p.location.x, y: p.location.y + 1.6, z: p.location.z }, d = dist(to, s.location);
-      if (d > 2.5) { const k = Math.min(0.6, d - 2.5) / d; s.teleport({ x: s.location.x + (to.x - s.location.x) * k, y: s.location.y + (to.y - s.location.y) * k, z: s.location.z + (to.z - s.location.z) * k }, { facingLocation: to }); }
+      if (d > 2.5) glideToward(s, to, 0.6, 2.5);                              // TW-20: never through walls, doors or ceilings
     }
     if (beat % 4 === 0) snuff(s);
     // zombies now and then

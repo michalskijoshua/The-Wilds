@@ -87,7 +87,7 @@
           "value": 0.5
         },
         "minecraft:ageable": {
-          "duration": 1200,
+          "duration": 2400,
           "feed_items": [
             "minecraft:dandelion",
             "minecraft:poppy",

@@ -7,11 +7,11 @@
 // No duplicate pulses: one loop, the due time is stored on the seed itself (wilds:next_pulse), and a block is touched
 // by at most one seed per loop.
 import { world, system, guard, dbg, sfx } from "../core/util.js";
+import { CROPS, canGrow, growBy } from "../core/crops.js";
 
 const SEED = "wilds:aetherseed";
 export const PULSE = { everyMs: 45000, radius: 5, maxTargets: 3, below: 3, above: 3 };   // below 3: it hovers 1-2 blocks up
 const FORM = ["original", "bloom", "withered"];
-const CROPS = new Set(["wheat", "carrots", "potatoes", "beetroot", "melon_stem", "pumpkin_stem"].map((b) => `minecraft:${b}`));
 const FLOWERS = new Set(["dandelion", "poppy", "blue_orchid", "allium", "azure_bluet", "red_tulip", "orange_tulip", "white_tulip", "pink_tulip",
   "oxeye_daisy", "cornflower", "lily_of_the_valley"].map((b) => `minecraft:${b}`));
 const SAPLINGS = new Set(["oak_sapling", "spruce_sapling", "birch_sapling", "jungle_sapling", "acacia_sapling", "dark_oak_sapling", "cherry_sapling"].map((b) => `minecraft:${b}`));
@@ -20,11 +20,7 @@ export const pulseStats = { pulses: 0, changes: 0, skippedNoTarget: 0 };
 
 function eligible(form, b, under) {
   const id = b.typeId;
-  if (CROPS.has(id)) {
-    if (under?.typeId !== "minecraft:farmland") return false;
-    const g = b.permutation.getState("growth"); if (g === undefined) return false;
-    return form === 2 ? g > 0 : form === 0 ? g < 7 : false;
-  }
+  if (CROPS.has(id)) return form === 1 ? false : canGrow(b, under, form === 2 ? -1 : 1);   // TW-25: vanilla and Guilds+ crops
   if (!SOIL.has(under?.typeId)) return false;
   if (FLOWERS.has(id)) return form === 1 || form === 2;
   if (SAPLINGS.has(id)) return form === 2 || (form === 1 && b.permutation.getState("age_bit") === false);
@@ -34,8 +30,7 @@ function eligible(form, b, under) {
 function apply(form, b, dim, touched) {
   const id = b.typeId, at = { x: b.location.x + 0.5, y: b.location.y + 0.5, z: b.location.z + 0.5 };
   if (CROPS.has(id)) {
-    const g = b.permutation.getState("growth");
-    b.setPermutation(b.permutation.withState("growth", form === 2 ? g - 1 : g + 1));
+    if (!growBy(b, form === 2 ? -1 : 1)) return false;
   } else if (form === 2) {
     b.setType("minecraft:deadbush");
   } else if (SAPLINGS.has(id)) {

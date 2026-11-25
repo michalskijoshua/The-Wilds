@@ -4,11 +4,15 @@
 // Tap the ground with a full cage: the creature comes out with the same look and health, and you get the empty cage back.
 // Wilting: an Original or Bloom Aetherseed kept in a cage for more than 30 minutes of play time comes out Withered.
 // Nothing ticks while it is carried: the times are only compared on release.
-// Cageable: Aetherseed, Bloomling (0.0.15; a caged baby comes out grown). Not cageable: Frost Lynx, Tuskbeast, Pebble Mimic, the giants.
+// Cageable: Aetherseed, Bloomling. 0.0.20 (TW-39/40): name, baby or adult, growth left and breeding rest left are kept;
+// time in the cage doesn't count for growing up or resting (the Aetherseed still wilts: on purpose). Not cageable: Frost Lynx, Tuskbeast, Pebble Mimic, the giants.
 // Why a cage and not a lead: a floating mob may not take a lead in Bedrock; the cage does not depend on that.
 import { world, system, ItemStack } from "@minecraft/server";
 import { guard, dbg } from "./core/util.js";
 import { near, lock, unlock, pay, give, heldAt } from "./core/txn.js";
+import { snapshot, restore } from "./core/lifecycle.js";
+import { playTicks } from "./core/clock.js";
+import { unhome } from "./aether/roost.js";
 import { squareTaken } from "./core/spawner.js";
 import { spawnSeed, dismissZombies } from "./aether/life.js";
 import { spawnBloomling, LOOKS as BLOOM_LOOKS } from "./bloomling.js";
@@ -20,14 +24,14 @@ export const CAGEABLE = {
   "wilds:aetherseed": {
     kind: "aetherseed", looks: SEED_FORMS,
     lookOf: (e) => SEED_FORMS[e.getProperty("wilds:form")] ?? "original",
-    before: (e) => dismissZombies(e),
+    before: (e) => { dismissZombies(e); unhome(e); },          // a caged seed leaves its Roost
     wilt: (look, kept) => (look !== "withered" && kept > WILT_TICKS ? "withered" : look),
     release: (dim, at, look) => spawnSeed(dim, { x: at.x, y: at.y + 1, z: at.z }, look),
   },
   "wilds:bloomling": {
     kind: "bloomling", looks: BLOOM_LOOKS,
     lookOf: (e) => BLOOM_LOOKS[e.getComponent("minecraft:mark_variant")?.value ?? 0] ?? "original",
-    release: (dim, at, look) => spawnBloomling(dim, at, look, false),
+    release: (dim, at, look, state) => spawnBloomling(dim, at, look, false, !!state?.baby),
   },
 };
 const byKind = Object.fromEntries(Object.values(CAGEABLE).map((d) => [d.kind, d]));
@@ -43,8 +47,10 @@ export function cageItem(e) {
   const hp = Math.max(1, Math.round(h?.currentValue ?? 1)), max = Math.round(h?.effectiveMax ?? hp);
   const item = new ItemStack(fullCageId(def.kind, look), 1);
   item.setDynamicProperty("wilds:hp", hp);
-  item.setDynamicProperty("wilds:caught", world.getAbsoluteTime());
-  item.setLore([`§7Health ${hp}/${max}`]);
+  item.setDynamicProperty("wilds:caught", playTicks());
+  const st = snapshot(e);                                  // TW-39/40: name, baby, growth left, breeding rest left
+  item.setDynamicProperty("wilds:state", JSON.stringify(st));
+  item.setLore([...(st.name ? [`§f${st.name}`] : []), `§7Health ${hp}/${max}`, ...(st.baby ? ["§7Baby"] : [])]);
   return item;
 }
 /** The creature leaves the world (after its cage item exists). */
@@ -61,10 +67,12 @@ export function capture(e) { const item = cageItem(e); if (item) takeIn(e); retu
 /** Lets the creature out at a spot. Returns the creature. */
 export function release(item, dim, at) {
   const p = parseFull(item.typeId); if (!p) return undefined;
-  const caught = item.getDynamicProperty("wilds:caught"), kept = caught === undefined ? 0 : world.getAbsoluteTime() - caught;
+  const caught = item.getDynamicProperty("wilds:caught"), kept = caught === undefined ? 0 : Math.max(0, playTicks() - caught);   // older cages (absolute time) count as fresh
   const look = p.def.wilt ? p.def.wilt(p.look, kept) : p.look;
   if (look !== p.look) cageStats.wilted++;
-  const e = p.def.release(dim, at, look);
+  let st; try { st = JSON.parse(item.getDynamicProperty("wilds:state") ?? "{}"); } catch { st = {}; }
+  const e = p.def.release(dim, at, look, st);
+  restore(e, st);
   const hp = item.getDynamicProperty("wilds:hp"), h = e.getComponent("minecraft:health");
   if (hp !== undefined && h) h.setCurrentValue(Math.min(h.effectiveMax, hp));
   cageStats.released++;

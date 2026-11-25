@@ -24,9 +24,24 @@ Status words (from the handoff):
 | TW-22 | Summoned zombie lifecycle | Fixed and tested | Each run of summons has an id stamped on its zombies; it is recorded as ended when the seed dies, is caged or healed, and only zombies of ended runs vanish. Unseen zombies still count towards the limit of 2 for 10 minutes. Tested: zombies stayed while their seed was far away (unloaded); a seed that died took only its own zombie. |
 | TW-24 | Dimension-aware pulse deduplication | Implemented, awaiting runtime test | Key is now `dimensionId:x:y:z`; a flower placed by a Bloom pulse is added to the touched list. |
 
-## Checkpoint B: existing creature gameplay (not started)
-TW-02, TW-18 (Pebble Mimic survival loop) · TW-19, TW-27 (Aetherseed Roost) · TW-20 (collision-safe torch following) ·
-TW-25 (Guilds+ crop registry) · TW-36 (Bloomling spawn safety) · TW-37 (real parents) · TW-39, TW-40 (cage state).
+## Checkpoint B: existing creature gameplay (The Wilds 0.0.20)
+
+| Id | Issue | Status | Notes |
+|---|---|---|---|
+| TW-02 | Pebble Mimic natural spawning and breeding | Fixed and tested (spawning, babies, growing up); breeding by a player awaits Android | Natural spawning (`mimic/life.js`, Claude's numbers): every 60 s per player, 3 in 10, at most 4 within 64 blocks, 12-28 blocks away, on open stone-family ground (stone, gravel, sand, clay, tuff...) or on a cave floor near a player below y 50. Breeding with cobblestone (native `breedable`); babies grow up in 20 minutes into small or large; parents rest 5 minutes; names work (`nameable`). Tested: spawned on stone, never on grass; 200 babies grew into 98 large / 102 small with their luck unchanged. |
+| TW-18 | Resource progression and balancing | Fixed and tested | Each baby rolls its own affinity at birth with the unchanged odds (entity file, once: births don't re-roll on reload). 200 babies: 68 / 22.5 / 4.5 / 5.0 / 0 %. One change of form, drops (a baby drops like a small one) and transformation rules unchanged; wild and bred treated the same. |
+| TW-19 | Aetherseed home behaviour | Fixed and tested | `aether/roost.js`: a homed seed gliding back from 8 blocks ended within 2 blocks of its Roost; crossed a fence row; the bond survived restarts. Placeholder block until Codex's model (`CODEX_HANDOFF_ROOST.md`). |
+| TW-27 | Population management | Fixed and tested | One seed per Roost, one Roost per seed (both sides checked), Roosts 8 blocks apart (a second one 4 blocks away was given back), Withered can't be homed. No global cap. |
+| TW-20 | Collision-safe torch attraction | Fixed and tested | `core/move.js`: one small step at a time with a ray check; rises at most 2 blocks above its target (over fences, never up walls); otherwise waits. Tested: never passed a wall or a roof; floated over a fence. Doors: closed doors block the ray (not separately tested). |
+| TW-25 | Guilds+ crop compatibility | Fixed and tested | `core/crops.js`: 21 Guilds+ crops read from the Guilds+ 0.9.18 build (`guilds_farming:crop_<name>`, state `guilds_farming:age` 0..3, farmland) plus the vanilla crops. Tested: Original grew a tomato, corn and wheat; Withered shrank all three. Without Guilds+ those blocks never exist. |
+| TW-36 | Bloomling spawn safety | Implemented, awaiting runtime test | Each group member gets its own spot (ground within 3 blocks of the group's height, open air or a plant, allowed for that look); members with no valid spot are skipped. |
+| TW-37 | Real parents | Fixed and tested | `core/lifecycle.js`: parents are the adults fed a breeding item within the last 35 s, closest to the baby. Tested 8 times with an unfed adult standing closer: every baby took a fed parent's look. Breeding by a real player awaits Android. |
+| TW-39/40 | Cage state preservation | Fixed and tested | The cage keeps name, baby or adult, growth left, breeding rest left (and health, look). Tested: a named baby came out named, a baby, with its growth time untouched after 40 simulated minutes; a resting parent kept its rest. Aetherseed wilting still counts (on purpose). |
+
+**Also found and fixed:** `world.getAbsoluteTime()` stops when the daylight cycle is off and jumps with `/time set`
+(seen on the server), so the 0.0.13 wilting timer froze in such worlds. New `core/clock.js` counts play ticks and is
+saved in the world; wilting, growing up and resting use it. Tested: it ran with the daylight cycle off and carried on
+after a restart.
 
 ## Checkpoint C: companion system (not started)
 TW-30 (incapacitation), environmental rescue, TW-31, TW-32, TW-33, Companion Whistle, Guild Table companions.

@@ -1,0 +1,36 @@
+{
+  "format_version": "1.21.90",
+  "minecraft:block": {
+    "description": {
+      "identifier": "wilds:aetherseed_roost",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:display_name": "tile.wilds:aetherseed_roost.name",
+      "minecraft:geometry": "minecraft:geometry.full_block",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "wilds_roost_side",
+          "render_method": "opaque"
+        },
+        "up": {
+          "texture": "wilds_roost_top",
+          "render_method": "opaque"
+        },
+        "down": {
+          "texture": "wilds_roost_bottom",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 1.0
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 3
+      },
+      "minecraft:map_color": "#6b8a3a"
+    }
+  }
+}
