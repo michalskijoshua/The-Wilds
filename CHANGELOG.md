@@ -4,8 +4,9 @@
 
 - The Roost's placeholder look is replaced by the real model: a carved oak pedestal with a woven, mossy nest
   (`geometry.wilds_aetherseed_roost`, 128 x 128 texture, 1.5 blocks tall). Collision and selection stay 1 x 1 x 1.
-- New 2D inventory icon (`wilds:aetherseed_roost` item that places the block; same id, recipe unchanged).
-- Blockbench source: `assets/aetherseed_roost/aetherseed_roost.bbmodel`.
+- New 16 x 16 inventory icon (`wilds:aetherseed_roost` item that places the block; same id, recipe unchanged).
+- Companion Whistle: its own icon (was the vanilla bone).
+- Blockbench source and preview: `assets/aetherseed_roost/`.
 
 ## 0.0.22 (25 Nov 2026): Checkpoint D, architecture and expansion readiness (v0.0.18 audit)
 
